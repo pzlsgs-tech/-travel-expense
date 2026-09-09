@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Equator Journey - 旅行记账</title>
+<!-- PWA 支持与全屏 App 体验 -->
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="default" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="旅行记账" name="apple-mobile-web-app-title"/>
+<meta content="#0d9488" name="theme-color"/>
+<!-- 引入 Google Fonts & Tailwind CSS CDN -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Noto+Sans+SC:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Lucide 图标库 -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0fdfa',
+              100: '#ccfbf1',
+              200: '#99f6e4',
+              300: '#5eead4',
+              400: '#2dd4bf',
+              500: '#14b8a6',
+              600: '#0d9488',
+              700: '#0f766e',
+              800: '#115e59',
+              900: '#134e4a',
+            },
+            surface: {
+              base: '#faf8ff',
+              card: '#ffffff',
+              cardSub: '#f8fafc',
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '"Noto Sans SC"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    body {
+      background-color: #f1f5f9;
+      font-family: 'Plus Jakarta Sans', 'Noto Sans SC', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    /* 隐藏滚动条 */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    /* 视图平滑淡入切换 */
+    .view-content {
+      animation: fadeIn 0.22s ease-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex justify-center items-start text-slate-800 antialiased">
+<!-- 移动端主容器 (限制在 390px-430px 居中自适应，真机全屏适配) -->
+<div class="w-full max-w-[430px] min-h-screen bg-[#faf8ff] flex flex-col shadow-2xl relative pb-28" id="app-container">
+<!-- ==================== 顶部统一 Header (明细、清账、统计页共享) ==================== -->
+<header class="sticky top-0 z-30 bg-[#faf8ff]/95 backdrop-blur-md px-5 py-3 border-b border-slate-100 flex items-center justify-between" id="global-header">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-teal-600 to-emerald-400 flex items-center justify-center text-white font-black text-sm shadow-sm">
+          EJ
+        </div>
+<div>
+<div class="flex items-center gap-1.5">
+<span class="font-extrabold text-slate-800 tracking-tight text-base">Equator</span>
+<span class="text-[10px] font-bold bg-teal-50 text-teal-700 px-1.5 py-0.5 rounded border border-teal-200/60">SGD</span>
+</div>
+<div class="text-[11px] text-slate-400 font-medium" id="header-subtitle">Expenses Timeline</div>
+</div>
+</div>
+<!-- 房间号与成员头像 -->
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-1 px-2.5 py-1 bg-teal-50 hover:bg-teal-100/80 text-teal-800 rounded-full text-xs font-semibold border border-teal-100 transition-colors" onclick="copyRoomCode()">
+<span class="text-[10px] text-teal-600 font-normal">ROOM</span>
+<span class="font-bold">TYO-882</span>
+<i class="w-3 h-3 text-teal-600 ml-0.5" data-lucide="copy"></i>
+</button>
+<div class="w-8 h-8 rounded-full bg-slate-100 border-2 border-white shadow-sm flex items-center justify-center overflow-hidden">
+<img alt="Avatar" class="w-full h-full object-cover" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"/>
+</div>
+</div>
+</header>
+<!-- ==================== 视图 1：行程账本明细 (Tab 1) ==================== -->
+<main class="view-content flex-1 px-4 pt-3 pb-4" id="view-timeline">
+<!-- 行程标题卡片 -->
+<div class="bg-gradient-to-r from-teal-700 via-teal-800 to-emerald-800 text-white rounded-3xl p-5 shadow-lg shadow-teal-900/15 relative overflow-hidden mb-4">
+<div class="absolute -right-6 -bottom-6 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+<div class="flex justify-between items-start mb-3">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<h2 class="text-xl font-bold tracking-tight">东京 5 日美食与探店之旅</h2>
+</div>
+<p class="text-xs text-teal-100/90 flex items-center gap-1.5">
+<i class="w-3.5 h-3.5" data-lucide="calendar"></i> 10月12日 - 10月16日 · Day 3
+            </p>
+</div>
+</div>
+<div class="flex items-center justify-between pt-2 border-t border-white/15 text-xs">
+<div class="flex items-center -space-x-1.5">
+<div class="w-6 h-6 rounded-full border border-white bg-slate-200 overflow-hidden"><img class="w-full h-full object-cover" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"/></div>
+<div class="w-6 h-6 rounded-full border border-white bg-slate-300 overflow-hidden"><img class="w-full h-full object-cover" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"/></div>
+<div class="w-6 h-6 rounded-full border border-white bg-slate-400 overflow-hidden"><img class="w-full h-full object-cover" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"/></div>
+<span class="pl-3 text-[11px] text-teal-100">3 人实时在线同步</span>
+</div>
+<span class="flex items-center gap-1 text-[11px] text-emerald-300 bg-black/20 px-2 py-0.5 rounded-full">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> 云端已备份
+          </span>
+</div>
+</div>
+<!-- 总花费看板 -->
+<div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 mb-4">
+<div class="flex justify-between items-center mb-1">
+<span class="text-xs font-semibold text-slate-500">团队总消费支出</span>
+<span class="text-[11px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md font-medium">1 SGD ≈ 109.55 JPY</span>
+</div>
+<div class="flex items-baseline gap-1.5 mb-1">
+<span class="text-sm font-extrabold text-teal-700">S$</span>
+<span class="text-3xl font-black text-slate-800 tracking-tight">2,450.80</span>
+<span class="text-xs font-medium text-slate-400 ml-1">SGD</span>
+</div>
+<div class="text-xs text-slate-500 mb-3">约合 ¥268,500 JPY · 实时汇率折算</div>
+<!-- 3人垫付比例卡 -->
+<div class="grid grid-cols-3 gap-2 pt-3 border-t border-slate-100 text-center">
+<div class="bg-slate-50 p-2 rounded-xl">
+<div class="text-[10px] text-slate-500 flex items-center justify-center gap-1 mb-0.5">
+              我已垫付 <span class="bg-teal-100 text-teal-800 text-[9px] px-1 rounded">45.7%</span>
+</div>
+<div class="text-xs font-bold text-slate-800">S$1,120.50</div>
+<div class="text-[9px] text-slate-400">¥122,750</div>
+</div>
+<div class="bg-slate-50 p-2 rounded-xl">
+<div class="text-[10px] text-slate-500 flex items-center justify-center gap-1 mb-0.5">
+              小林垫付 <span class="bg-slate-200 text-slate-700 text-[9px] px-1 rounded">34.7%</span>
+</div>
+<div class="text-xs font-bold text-slate-800">S$850.30</div>
+<div class="text-[9px] text-slate-400">¥93,150</div>
+</div>
+<div class="bg-slate-50 p-2 rounded-xl">
+<div class="text-[10px] text-slate-500 flex items-center justify-center gap-1 mb-0.5">
+              阿伟垫付 <span class="bg-slate-200 text-slate-700 text-[9px] px-1 rounded">19.6%</span>
+</div>
+<div class="text-xs font-bold text-slate-800">S$480.00</div>
+<div class="text-[9px] text-slate-400">¥52,600</div>
+</div>
+</div>
+</div>
+<!-- 分类筛选器 -->
+<div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 mb-3">
+<button class="px-3.5 py-1.5 bg-teal-800 text-white rounded-full text-xs font-semibold whitespace-nowrap shadow-sm">全部</button>
+<button class="px-3.5 py-1.5 bg-white text-slate-600 rounded-full text-xs font-medium border border-slate-200/80 whitespace-nowrap">🍴 餐饮</button>
+<button class="px-3.5 py-1.5 bg-white text-slate-600 rounded-full text-xs font-medium border border-slate-200/80 whitespace-nowrap">🚇 交通</button>
+<button class="px-3.5 py-1.5 bg-white text-slate-600 rounded-full text-xs font-medium border border-slate-200/80 whitespace-nowrap">🏨 住宿</button>
+<button class="px-3.5 py-1.5 bg-white text-slate-600 rounded-full text-xs font-medium border border-slate-200/80 whitespace-nowrap">🎡 玩乐</button>
+</div>
+<!-- 明细列表 (时间轴) -->
+<div class="space-y-4">
+<!-- 10月14日 -->
+<div>
+<div class="flex justify-between items-center text-xs font-bold text-slate-500 mb-2 px-1">
+<span class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-teal-600"></span> 今天 · 10月14日
+            </span>
+<span class="text-slate-400 font-normal">共 2 笔 · S$ 350.52</span>
+</div>
+<div class="space-y-2">
+<!-- Item 1 -->
+<div class="bg-white rounded-2xl p-3.5 border border-slate-100 shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-lg">
+                  🍴
+                </div>
+<div>
+<div class="flex items-center gap-1.5">
+<span class="font-bold text-slate-800 text-sm">银座叙叙苑烧肉</span>
+<span class="text-[9px] bg-teal-50 text-teal-700 px-1 rounded font-semibold">AA</span>
+</div>
+<div class="text-[11px] text-slate-400 flex items-center gap-2 mt-0.5">
+<span>我垫付</span>·<span>19:40</span>·<span class="text-emerald-600 flex items-center gap-0.5"><i class="w-3 h-3" data-lucide="receipt"></i>发票已存</span>
+</div>
+</div>
+</div>
+<div class="text-right">
+<div class="font-extrabold text-slate-800 text-sm">S$ 295.75</div>
+<div class="text-[10px] text-slate-400">¥32,400 JPY</div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="bg-white rounded-2xl p-3.5 border border-slate-100 shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center font-bold text-lg">
+                  🚇
+                </div>
+<div>
+<div class="flex items-center gap-1.5">
+<span class="font-bold text-slate-800 text-sm">JR山手线 &amp; Suica充值</span>
+<span class="text-[9px] bg-teal-50 text-teal-700 px-1 rounded font-semibold">AA</span>
+</div>
+<div class="text-[11px] text-slate-400 flex items-center gap-2 mt-0.5">
+<span>小林垫付</span>·<span>11:15</span>
+</div>
+</div>
+</div>
+<div class="text-right">
+<div class="font-extrabold text-slate-800 text-sm">S$ 54.77</div>
+<div class="text-[10px] text-slate-400">¥6,000 JPY</div>
+</div>
+</div>
+</div>
+</div>
+<!-- 10月13日 -->
+<div>
+<div class="flex justify-between items-center text-xs font-bold text-slate-500 mb-2 px-1">
+<span class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-slate-300"></span> 昨天 · 10月13日
+            </span>
+<span class="text-slate-400 font-normal">共 2 笔 · S$ 963.03</span>
+</div>
+<div class="space-y-2">
+<!-- Item 3 -->
+<div class="bg-white rounded-2xl p-3.5 border border-slate-100 shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-lg">
+                  🏨
+                </div>
+<div>
+<div class="flex items-center gap-1.5">
+<span class="font-bold text-slate-800 text-sm">新宿格拉斯丽酒店 3晚</span>
+<span class="text-[9px] bg-teal-50 text-teal-700 px-1 rounded font-semibold">AA</span>
+</div>
+<div class="text-[11px] text-slate-400 flex items-center gap-2 mt-0.5">
+<span>我垫付</span>·<span>15:30</span>·<span class="text-teal-600 flex items-center gap-0.5"><i class="w-3 h-3" data-lucide="scan-line"></i>OCR已核验</span>
+</div>
+</div>
+</div>
+<div class="text-right">
+<div class="font-extrabold text-slate-800 text-sm">S$ 894.57</div>
+<div class="text-[10px] text-slate-400">¥98,000 JPY</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- ==================== 视图 2：智能清账结算 (Tab 2) ==================== -->
+<main class="view-content flex-1 px-4 pt-3 pb-4 hidden" id="view-settlement">
+<!-- 汇总卡片 -->
+<div class="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 mb-4">
+<div class="flex justify-between items-center mb-1">
+<span class="text-xs font-semibold text-slate-500 flex items-center gap-1">
+<i class="w-3.5 h-3.5 text-teal-600" data-lucide="file-check-2"></i> 东京7日行 · 账单汇总
+          </span>
+<span class="text-[11px] bg-teal-50 text-teal-800 px-2 py-0.5 rounded-full font-bold">3位同行伙伴</span>
+</div>
+<div class="text-xs text-slate-400">本次旅行总支出 (SGD)</div>
+<div class="text-3xl font-black text-slate-900 mt-1 mb-3">S$ 2,450.80</div>
+<div class="grid grid-cols-2 gap-3 pt-3 border-t border-slate-100">
+<div class="bg-slate-50 p-2.5 rounded-xl">
+<div class="text-[10px] text-slate-400">3人均摊基准</div>
+<div class="text-sm font-bold text-slate-800">S$ 816.93 <span class="text-[10px] font-normal text-slate-500">/人</span></div>
+</div>
+<div class="bg-teal-50/60 p-2.5 rounded-xl border border-teal-100">
+<div class="text-[10px] text-teal-700">算法极致优化</div>
+<div class="text-sm font-bold text-teal-800">仅需 2 笔转账</div>
+</div>
+</div>
+</div>
+<!-- 成员应收应付净额 -->
+<div class="mb-4">
+<div class="flex justify-between items-center mb-2 px-1">
+<span class="text-xs font-bold text-slate-700">成员应收应付净额</span>
+<span class="text-[11px] text-slate-400">实时对账</span>
+</div>
+<div class="space-y-2">
+<!-- Alex (我) -->
+<div class="bg-white rounded-2xl p-3 border border-slate-100 shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-full bg-slate-200 overflow-hidden"><img class="w-full h-full object-cover" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"/></div>
+<div>
+<div class="flex items-center gap-1.5">
+<span class="text-sm font-bold text-slate-800">我 (Alex)</span>
+<span class="text-[9px] bg-teal-100 text-teal-800 px-1.5 py-0.2 rounded font-semibold">组织者</span>
+</div>
+<div class="text-[11px] text-slate-400">实际垫付 S$ 1,120.50</div>
+</div>
+</div>
+<div class="text-right">
+<span class="text-sm font-black text-emerald-600">+ S$ 303.57</span>
+<div class="text-[9px] text-emerald-700 font-semibold bg-emerald-50 px-1.5 rounded inline-block">应收回</div>
+</div>
+</div>
+<!-- 小林 -->
+<div class="bg-white rounded-2xl p-3 border border-slate-100 shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-full bg-slate-200 overflow-hidden"><img class="w-full h-full object-cover" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"/></div>
+<div>
+<div class="text-sm font-bold text-slate-800">小林 (Lin)</div>
+<div class="text-[11px] text-slate-400">实际垫付 S$ 850.30</div>
+</div>
+</div>
+<div class="text-right">
+<span class="text-sm font-black text-emerald-600">+ S$ 33.37</span>
+<div class="text-[9px] text-emerald-700 font-semibold bg-emerald-50 px-1.5 rounded inline-block">应收回</div>
+</div>
+</div>
+<!-- 阿伟 -->
+<div class="bg-white rounded-2xl p-3 border border-slate-100 shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-full bg-slate-200 overflow-hidden"><img class="w-full h-full object-cover" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"/></div>
+<div>
+<div class="text-sm font-bold text-slate-800">阿伟 (David)</div>
+<div class="text-[11px] text-slate-400">实际垫付 S$ 480.00</div>
+</div>
+</div>
+<div class="text-right">
+<span class="text-sm font-black text-rose-600">- S$ 336.93</span>
+<div class="text-[9px] text-rose-700 font-semibold bg-rose-50 px-1.5 rounded inline-block">需支付他人</div>
+</div>
+</div>
+</div>
+</div>
+<!-- 最优清账建议 -->
+<div class="bg-white rounded-3xl p-4 border border-slate-100 shadow-sm mb-4">
+<div class="flex justify-between items-center mb-3">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-lg bg-teal-600 text-white flex items-center justify-center text-xs">
+<i class="w-3.5 h-3.5" data-lucide="sparkles"></i>
+</div>
+<span class="text-sm font-bold text-slate-800">最优清账推荐</span>
+</div>
+<span class="text-[10px] text-teal-800 bg-teal-50 px-2 py-0.5 rounded-full font-semibold">省去4次繁琐操作</span>
+</div>
+<div class="space-y-3">
+<!-- Step 1 -->
+<div class="p-3 bg-teal-50/50 rounded-2xl border border-teal-100">
+<div class="flex justify-between items-center text-xs mb-2">
+<span class="font-bold text-teal-900 flex items-center gap-1.5">
+<span class="w-4 h-4 rounded-full bg-teal-700 text-white text-[10px] flex items-center justify-center">1</span>
+                第一步：还清主要份额
+              </span>
+<span class="text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.2 rounded">待结清</span>
+</div>
+<div class="flex items-center justify-between py-1 px-2 bg-white rounded-xl mb-2.5">
+<span class="text-xs font-bold text-slate-700">阿伟</span>
+<div class="flex flex-col items-center">
+<span class="text-xs font-extrabold text-teal-800">S$ 303.57</span>
+<span class="text-[9px] text-slate-400">→ 转账给 →</span>
+</div>
+<span class="text-xs font-bold text-slate-700">我 (Alex)</span>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 py-1.5 bg-teal-700 text-white text-xs font-bold rounded-lg flex items-center justify-center gap-1 shadow-sm" onclick="alert('已模拟打开 PayNow / FAST 支付链接')">
+<i class="w-3 h-3" data-lucide="zap"></i> PayNow 一键转账
+              </button>
+<button class="px-3 py-1.5 bg-white border border-slate-200 text-slate-700 text-xs font-medium rounded-lg" onclick="navigator.clipboard.writeText('+65 8890 2311'); alert('已复制 Alex 收款账号: +65 8890 2311')">
+                复制账号
+              </button>
+</div>
+</div>
+<!-- Step 2 -->
+<div class="p-3 bg-slate-50 rounded-2xl border border-slate-100">
+<div class="flex justify-between items-center text-xs mb-2">
+<span class="font-bold text-slate-700 flex items-center gap-1.5">
+<span class="w-4 h-4 rounded-full bg-slate-400 text-white text-[10px] flex items-center justify-center">2</span>
+                第二步：平账零头尾款
+              </span>
+<span class="text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.2 rounded">待结清</span>
+</div>
+<div class="flex items-center justify-between py-1 px-2 bg-white rounded-xl mb-1.5">
+<span class="text-xs font-bold text-slate-700">阿伟</span>
+<div class="flex flex-col items-center">
+<span class="text-xs font-extrabold text-slate-800">S$ 33.37</span>
+<span class="text-[9px] text-slate-400">→ 转账给 →</span>
+</div>
+<span class="text-xs font-bold text-slate-700">小林</span>
+</div>
+<div class="text-[10px] text-slate-500 px-1">小林 PayNow: +65 9123 4567</div>
+</div>
+</div>
+</div>
+<!-- 底部结清按钮 -->
+<button class="w-full py-3.5 bg-teal-800 hover:bg-teal-900 text-white font-bold text-sm rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-teal-900/20" onclick="alert('🎉 全员账单已标记结清完毕！')">
+<i class="w-4 h-4" data-lucide="check-circle"></i> 标记全部已结清 (Mark All Settled)
+      </button>
+</main>
+<!-- ==================== 视图 3：记一笔与发票上传 (Tab 3 - 模态全屏页) ==================== -->
+<main class="view-content flex-1 px-4 pt-3 pb-6 hidden" id="view-add-expense">
+<!-- 顶部返回 -->
+<div class="flex items-center justify-between mb-3">
+<button class="p-2 -ml-2 text-slate-600 hover:text-slate-900" onclick="switchTab('timeline')">
+<i class="w-6 h-6" data-lucide="arrow-left"></i>
+</button>
+<span class="font-bold text-base text-slate-800">记一笔消费</span>
+<button class="text-xs text-slate-400" onclick="switchTab('timeline')">取消</button>
+</div>
+<!-- 金额输入看板 -->
+<div class="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 mb-4">
+<div class="flex justify-between items-center mb-3">
+<div class="flex items-center gap-1.5 bg-slate-100 px-3 py-1.5 rounded-full text-xs font-bold text-slate-700">
+<span>🇯🇵 JPY 日本日元</span>
+<i class="w-3.5 h-3.5" data-lucide="chevron-down"></i>
+</div>
+<span class="text-[10px] text-teal-700 font-semibold bg-teal-50 px-2 py-0.5 rounded-md flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse"></span> 实时计算中
+          </span>
+</div>
+<div class="flex items-baseline gap-2 mb-2">
+<span class="text-2xl font-bold text-slate-400">¥</span>
+<input class="w-full text-4xl font-black text-slate-800 tracking-tight outline-none border-b border-transparent focus:border-teal-500" id="input-amount" type="number" value="18500"/>
+</div>
+<!-- 汇率自动折算展示 -->
+<div class="p-3 bg-teal-50/70 rounded-2xl flex items-center justify-between">
+<div>
+<div class="text-xs font-extrabold text-teal-800">≈ S$ 168.87 SGD <span class="text-[9px] font-normal text-teal-600 bg-white/70 px-1 rounded">基准币种</span></div>
+<div class="text-[10px] text-teal-700/80">1 SGD ≈ 109.55 JPY (自动更新于 10分钟前)</div>
+</div>
+<i class="w-4 h-4 text-teal-600" data-lucide="refresh-cw"></i>
+</div>
+</div>
+<!-- 智能收据凭证拍照识别 -->
+<div class="bg-white rounded-3xl p-4 shadow-sm border border-slate-100 mb-4">
+<div class="flex justify-between items-center mb-2.5">
+<span class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+<i class="w-4 h-4 text-teal-600" data-lucide="camera"></i> 智能收据凭证
+          </span>
+<span class="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-semibold flex items-center gap-1">
+<i class="w-3 h-3" data-lucide="check"></i> OCR 已核验
+          </span>
+</div>
+<div class="flex items-center gap-3 p-2 bg-slate-50 rounded-2xl border border-slate-100">
+<div class="w-16 h-16 rounded-xl bg-slate-200 overflow-hidden relative flex-shrink-0">
+<img class="w-full h-full object-cover" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"/>
+<div class="absolute inset-0 bg-black/20 flex items-center justify-center text-white">
+<i class="w-4 h-4" data-lucide="zoom-in"></i>
+</div>
+</div>
+<div class="flex-1 text-xs">
+<div class="font-bold text-slate-800">筑地市场 丼物合计</div>
+<div class="text-[11px] text-slate-500 mt-0.5">识别金额: <span class="font-bold text-teal-800">¥18,500</span></div>
+<div class="text-[9px] text-slate-400 mt-0.5">自动校准税费 10% &amp; 服务费已包含</div>
+</div>
+<button class="p-2.5 bg-white rounded-xl text-slate-700 shadow-sm border border-slate-200" onclick="alert('启动手机相机或打开相册')">
+<i class="w-4 h-4" data-lucide="camera"></i>
+</button>
+</div>
+</div>
+<!-- 支出项目名称 & 分类 -->
+<div class="bg-white rounded-3xl p-4 shadow-sm border border-slate-100 mb-4 space-y-3">
+<div>
+<label class="text-[11px] font-bold text-slate-500 block mb-1">支出项目名称</label>
+<input class="w-full px-3 py-2 bg-slate-50 rounded-xl text-sm font-semibold text-slate-800 outline-none border border-slate-200/80 focus:border-teal-500" type="text" value="筑地市场海鲜丼午餐"/>
+</div>
+<!-- 谁垫付的钱 -->
+<div>
+<label class="text-[11px] font-bold text-slate-500 block mb-1.5">谁垫付的钱？</label>
+<div class="grid grid-cols-3 gap-2">
+<div class="p-2.5 bg-teal-50 border-2 border-teal-600 rounded-2xl flex flex-col items-center text-center">
+<div class="w-8 h-8 rounded-full bg-teal-200 overflow-hidden mb-1"><img class="w-full h-full object-cover" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"/></div>
+<span class="text-xs font-bold text-teal-900">我 (先行垫付)</span>
+<span class="text-[9px] text-teal-700">¥18,500</span>
+</div>
+<div class="p-2.5 bg-slate-50 border border-slate-200 rounded-2xl flex flex-col items-center text-center opacity-70">
+<div class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden mb-1"><img class="w-full h-full object-cover" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"/></div>
+<span class="text-xs font-bold text-slate-700">小林</span>
+<span class="text-[9px] text-slate-400">未垫付</span>
+</div>
+<div class="p-2.5 bg-slate-50 border border-slate-200 rounded-2xl flex flex-col items-center text-center opacity-70">
+<div class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden mb-1"><img class="w-full h-full object-cover" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"/></div>
+<span class="text-xs font-bold text-slate-700">阿伟</span>
+<span class="text-[9px] text-slate-400">未垫付</span>
+</div>
+</div>
+</div>
+<!-- 均摊模式 -->
+<div class="pt-2">
+<label class="text-[11px] font-bold text-slate-500 block mb-1.5">费用分摊方式 (3人全员)</label>
+<div class="p-3 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between">
+<div>
+<span class="text-xs font-bold text-slate-800">3人全员均摊 (AA)</span>
+<div class="text-[11px] text-slate-500">每人应付: <span class="font-extrabold text-teal-800">S$ 56.29</span> (¥6,166 JPY)</div>
+</div>
+<span class="text-[10px] bg-teal-100 text-teal-800 font-bold px-2 py-0.5 rounded">标准模式</span>
+</div>
+</div>
+</div>
+<!-- 保存并同步按钮 -->
+<button class="w-full py-4 bg-teal-800 hover:bg-teal-900 text-white font-bold text-sm rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-teal-900/20 mb-3" onclick="saveAndGoTimeline()">
+<i class="w-4 h-4" data-lucide="cloud-upload"></i> 保存并同步 (Save &amp; Sync)
+      </button>
+</main>
+<!-- ==================== 视图 4：支出统计与报表 (Tab 4) ==================== -->
+<main class="view-content flex-1 px-4 pt-3 pb-4 hidden" id="view-analytics">
+<!-- 顶部统计看板 -->
+<div class="bg-gradient-to-tr from-teal-700 to-emerald-800 text-white rounded-3xl p-5 shadow-lg shadow-teal-900/15 mb-4">
+<div class="text-xs font-semibold text-teal-100/90 mb-1">团队总支出 (Total Spent)</div>
+<div class="text-3xl font-black tracking-tight mb-3">S$ 2,450.80</div>
+<div class="grid grid-cols-3 gap-2 pt-3 border-t border-white/15 text-center">
+<div>
+<div class="text-[10px] text-teal-100">共计记账</div>
+<div class="text-sm font-extrabold">18 笔</div>
+</div>
+<div>
+<div class="text-[10px] text-teal-100">日均花费</div>
+<div class="text-sm font-extrabold">S$ 490.16</div>
+</div>
+<div>
+<div class="text-[10px] text-teal-100">主币种占比</div>
+<div class="text-sm font-extrabold">92% JPY</div>
+</div>
+</div>
+</div>
+<!-- 分类支出分布 (模拟环形占比) -->
+<div class="bg-white rounded-3xl p-4 shadow-sm border border-slate-100 mb-4">
+<div class="flex justify-between items-center mb-3">
+<span class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+<i class="w-4 h-4 text-teal-600" data-lucide="pie-chart"></i> 分类支出分布
+          </span>
+<span class="text-[11px] text-slate-400">5 大类目</span>
+</div>
+<div class="space-y-2.5">
+<div>
+<div class="flex justify-between text-xs font-semibold mb-1">
+<span>🏨 住宿旅馆</span>
+<span>S$ 894.57 (36.5%)</span>
+</div>
+<div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-blue-500 rounded-full" style="width: 36.5%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-xs font-semibold mb-1">
+<span>🍴 餐饮美食</span>
+<span>S$ 860.20 (35.1%)</span>
+</div>
+<div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-teal-600 rounded-full" style="width: 35.1%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-xs font-semibold mb-1">
+<span>🚇 交通出游</span>
+<span>S$ 380.00 (15.5%)</span>
+</div>
+<div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-cyan-500 rounded-full" style="width: 15.5%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-xs font-semibold mb-1">
+<span>🎟️ 景点门票</span>
+<span>S$ 195.03 (8.0%)</span>
+</div>
+<div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-amber-500 rounded-full" style="width: 8.0%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- 报表与凭证导出中心 -->
+<div class="bg-white rounded-3xl p-4 shadow-sm border border-slate-100 mb-4">
+<div class="flex justify-between items-center mb-3">
+<span class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+<i class="w-4 h-4 text-teal-600" data-lucide="download-cloud"></i> 数据导出中心
+          </span>
+<span class="text-[10px] text-slate-400">随时取用对账</span>
+</div>
+<div class="space-y-2">
+<!-- 导出 CSV -->
+<button class="w-full p-3 bg-slate-50 hover:bg-slate-100 rounded-2xl flex items-center justify-between text-left transition-colors border border-slate-100" onclick="downloadCSV()">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center font-bold text-xs">
+                CSV
+              </div>
+<div>
+<div class="text-xs font-bold text-slate-800">完整 CSV 明细表 (Excel)</div>
+<div class="text-[10px] text-slate-400">含原币、S$折算、记账人及明细分摊</div>
+</div>
+</div>
+<i class="w-4 h-4 text-slate-400" data-lucide="download"></i>
+</button>
+<!-- 导出文本 -->
+<button class="w-full p-3 bg-slate-50 hover:bg-slate-100 rounded-2xl flex items-center justify-between text-left transition-colors border border-slate-100" onclick="copyTextSummary()">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">
+                TXT
+              </div>
+<div>
+<div class="text-xs font-bold text-slate-800">生成纯文本对账清单</div>
+<div class="text-[10px] text-slate-400">一键复制发群，谁欠谁钱一目了然</div>
+</div>
+</div>
+<i class="w-4 h-4 text-slate-400" data-lucide="copy"></i>
+</button>
+</div>
+</div>
+</main>
+<!-- ==================== 底部固定导航栏 (含居中加号记账 FAB) ==================== -->
+<nav class="fixed bottom-0 left-0 right-0 z-40 flex justify-center pointer-events-none">
+<div class="w-full max-w-[430px] bg-white/95 backdrop-blur-md border-t border-slate-200/80 px-4 py-2 flex items-center justify-between pointer-events-auto shadow-lg shadow-slate-200">
+<!-- Tab 1: 明细 -->
+<button class="flex flex-col items-center gap-1 text-teal-700 flex-1 py-1 transition-colors" id="nav-timeline" onclick="switchTab('timeline')">
+<i class="w-5 h-5" data-lucide="receipt-text"></i>
+<span class="text-[10px] font-bold">账本明细</span>
+</button>
+<!-- Tab 2: 清账 -->
+<button class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 flex-1 py-1 transition-colors" id="nav-settlement" onclick="switchTab('settlement')">
+<i class="w-5 h-5" data-lucide="arrow-left-right"></i>
+<span class="text-[10px] font-medium">智能清账</span>
+</button>
+<!-- 居中高亮快捷记账 FAB -->
+<div class="flex-1 flex justify-center -mt-6">
+<button class="w-13 h-13 p-3.5 bg-gradient-to-tr from-teal-700 to-teal-500 hover:from-teal-800 hover:to-teal-600 text-white rounded-full shadow-lg shadow-teal-700/40 flex items-center justify-center active:scale-95 transition-transform border-4 border-white" onclick="switchTab('add-expense')">
+<i class="w-6 h-6 stroke-[2.5]" data-lucide="plus"></i>
+</button>
+</div>
+<!-- Tab 4: 统计 -->
+<button class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 flex-1 py-1 transition-colors" id="nav-analytics" onclick="switchTab('analytics')">
+<i class="w-5 h-5" data-lucide="pie-chart"></i>
+<span class="text-[10px] font-medium">统计报表</span>
+</button>
+<!-- Tab 5: 成员 -->
+<button class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 flex-1 py-1 transition-colors" onclick="alert('旅伴管理：当前成员 Alex (我)、小林、阿伟，房间号 TYO-882')">
+<i class="w-5 h-5" data-lucide="users"></i>
+<span class="text-[10px] font-medium">旅伴成员</span>
+</button>
+</div>
+</nav>
+</div>
+<!-- 交互脚本：Tab 切换与功能逻辑 -->
+<script>
+    // 初始化 Lucide 图标
+    lucide.createIcons();
+
+    function switchTab(tabId) {
+      // 隐藏所有视图
+      const views = ['timeline', 'settlement', 'add-expense', 'analytics'];
+      views.forEach(v => {
+        const el = document.getElementById('view-' + v);
+        if (el) el.classList.add('hidden');
+      });
+
+      // 显示目标视图
+      const target = document.getElementById('view-' + tabId);
+      if (target) {
+        target.classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // 控制顶部 Header 的显示状态与副标题
+      const header = document.getElementById('global-header');
+      const subtitle = document.getElementById('header-subtitle');
+      if (tabId === 'add-expense') {
+        header.classList.add('hidden');
+      } else {
+        header.classList.remove('hidden');
+        if (tabId === 'timeline') subtitle.textContent = 'Expenses Timeline';
+        if (tabId === 'settlement') subtitle.textContent = 'Smart Settlement';
+        if (tabId === 'analytics') subtitle.textContent = 'Trip Analytics';
+      }
+
+      // 更新导航栏高亮状态
+      const navButtons = ['timeline', 'settlement', 'analytics'];
+      navButtons.forEach(btn => {
+        const el = document.getElementById('nav-' + btn);
+        if (el) {
+          if (btn === tabId) {
+            el.className = 'flex flex-col items-center gap-1 text-teal-700 flex-1 py-1 transition-colors';
+            el.querySelector('span').className = 'text-[10px] font-bold';
+          } else {
+            el.className = 'flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 flex-1 py-1 transition-colors';
+            el.querySelector('span').className = 'text-[10px] font-medium';
+          }
+        }
+      });
+
+      // 重新渲染新插入的图标
+      lucide.createIcons();
+    }
+
+    function saveAndGoTimeline() {
+      alert('✅ 消费已成功记录，汇率换算并同步至房间 TYO-882！');
+      switchTab('timeline');
+    }
+
+    function copyRoomCode() {
+      navigator.clipboard.writeText('TYO-882');
+      alert('已复制房间邀请码：TYO-882，快分享给旅伴吧！');
+    }
+
+    function downloadCSV() {
+      const csvContent = "data:text/csv;charset=utf-8," 
+        + "日期,项目,分类,原币金额,币种,SGD折算,垫付人,分摊方式\n"
+        + "2023-10-14,银座叙叙苑烧肉,餐饮,32400,JPY,295.75,我,3人AA\n"
+        + "2023-10-14,JR山手线 & Suica充值,交通,6000,JPY,54.77,小林,3人AA\n"
+        + "2023-10-13,新宿格拉斯丽酒店 3晚,住宿,98000,JPY,894.57,我,3人AA\n"
+        + "2023-10-13,涩谷SHIBUYA SKY观景台,玩乐,7500,JPY,68.46,阿伟,3人AA\n";
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "Equator_Tokyo_Expenses.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function copyTextSummary() {
+      const summary = "【东京5日游 · 智能清账汇总】\n团队总花费：S$ 2,450.80 SGD\n3人AA人均：S$ 816.93\n\n【最简转账方案】：\n1. 阿伟 -> Alex (我): S$ 303.57\n2. 阿伟 -> 小林: S$ 33.37\n（完成以上2笔转账即可全员两清）";
+      navigator.clipboard.writeText(summary);
+      alert('已复制纯文本结账清单，直接去微信/WhatsApp粘贴即可！\n\n' + summary);
+    }
+  </script>
+</body>
+</html>
