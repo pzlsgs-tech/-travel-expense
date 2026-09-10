@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 
-<html lang="zh-CN">
-<head>
+<html lang="zh-CN"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
-<title>Equator Journey - 旅行记账 (SGD新币基准联动版)</title>
+<title>Equator Journey - 旅行记账 (SGD新币基准持久化版)</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Noto+Sans+SC:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
@@ -53,8 +52,8 @@
 <span class="font-black" id="global-room-tag">TYO-882</span>
 <i class="w-3 h-3 text-teal-600" data-lucide="chevron-down"></i>
 </button>
-<button class="w-7 h-7 rounded-full bg-slate-100 border border-white shadow-sm overflow-hidden ring-1 ring-teal-500/20" onclick="openProfileModal()">
-<img alt="Avatar" class="w-full h-full object-cover" id="my-header-avatar" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"/>
+<button class="w-7 h-7 rounded-full bg-slate-100 border border-white shadow-sm overflow-hidden ring-1 ring-teal-500/20 active:scale-95 transition-transform" onclick="openProfileModal()">
+<img alt="Avatar" class="w-full h-full object-cover" id="my-header-avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcjFS5EG8PI8Jx3idyEWpqPPbOcToMLF-85JO9ShaHPszDqPRWfpE7Zt7aHv71IcqT-8oeYvsMewvlY4h1F7DynerAD63gwU01ES4zUA5v2Voy_j5ck03fXZeacPy4TF7Iifiomb4iLVYRRkTB4lz4oLqV9sRmpAPl8aQBHMWwDKaWHDu5Tb1Sj1PVBpq3gZrJlYKNUuYDI-kaFgkgggsFtaA33_Knq4glIHlgPHqXMZNLwtlSj7Zp"/>
 </button>
 </div>
 </header>
@@ -81,7 +80,7 @@
 <div class="flex items-center justify-between pt-2 border-t border-white/15 text-xs">
 <div class="flex items-center -space-x-1.5" id="timeline-member-avatar-stack"></div>
 <span class="flex items-center gap-1 text-[10px] text-emerald-200 bg-black/20 px-2 py-0.5 rounded-full">
-<i class="w-3 h-3 text-emerald-300" data-lucide="check-circle"></i> SGD 基准实时联动
+<i class="w-3 h-3 text-emerald-300" data-lucide="check-circle"></i> SGD 实时联动 &amp; 本地已持久化
           </span>
 </div>
 </div>
@@ -417,11 +416,34 @@
 </span>
 </button>
 </div>
-<p class="text-[11px] text-slate-400 mb-3">支持自由增、删、改旅伴资料与收款账号，变更后自动联动垫付与清账算法。</p>
+<p class="text-[11px] text-slate-400 mb-3">支持自定义照片头像、自由增删改资料，修改后自动保存本地并在账本、清算各处全局同步联动。</p>
 <button class="w-full mb-3 py-2.5 bg-teal-800 hover:bg-teal-900 active:scale-95 text-white rounded-2xl font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm" onclick="openAddMemberModal()">
 <i class="w-3.5 h-3.5" data-lucide="user-plus"></i> + 添加新旅伴成员
         </button>
 <div class="space-y-2" id="members-list-container"></div>
+</div>
+<!-- 本地持久化与数据备份管理面板 -->
+<div class="bg-white rounded-3xl p-4 shadow-sm border border-slate-100 mb-4 space-y-2.5">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<i class="w-4 h-4 text-teal-700" data-lucide="database"></i>
+<span class="text-xs font-bold text-slate-800">本地存储与数据管理</span>
+</div>
+<span class="text-[10px] font-black text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+已启用 LocalStorage
+</span>
+</div>
+<p class="text-[10px] text-slate-400 leading-relaxed">
+所有行程、账目、旅伴照片与汇率变更均实时保存在浏览器本地，刷新或关闭不会丢失。
+</p>
+<div class="grid grid-cols-2 gap-2 pt-1">
+<button class="py-2 px-2.5 bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 flex items-center justify-center gap-1 active:scale-95 transition-transform" onclick="exportBackupJSON()">
+<i class="w-3.5 h-3.5 text-teal-600" data-lucide="file-down"></i> 导出备份 (JSON)
+</button>
+<button class="py-2 px-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs rounded-xl border border-rose-200 flex items-center justify-center gap-1 active:scale-95 transition-transform" onclick="resetToSampleData()">
+<i class="w-3.5 h-3.5 text-rose-600" data-lucide="rotate-ccw"></i> 重置演示数据
+</button>
+</div>
 </div>
 </main>
 <!-- 底部导航栏 -->
@@ -452,12 +474,29 @@
 </div>
 </nav>
 <!-- ==================== 模态弹窗区 ==================== -->
-<!-- 弹窗 1: 旅伴编辑 / 新增 -->
+<!-- 弹窗 1: 旅伴编辑 / 新增 (支持照片上传与预设头像) -->
 <div class="fixed inset-0 z-50 modal-backdrop flex items-end sm:items-center justify-center p-0 sm:p-4 hidden" id="member-modal">
-<div class="w-full max-w-[420px] bg-white rounded-t-3xl sm:rounded-3xl p-4 shadow-2xl">
+<div class="w-full max-w-[420px] max-h-[92vh] overflow-y-auto bg-white rounded-t-3xl sm:rounded-3xl p-4 shadow-2xl">
 <div class="flex justify-between items-center mb-2">
 <h3 class="text-sm font-black text-slate-900" id="member-modal-title">编辑旅伴资料</h3>
 <button class="p-1 text-slate-400 hover:text-slate-600" onclick="closeMemberModal()"><i class="w-4 h-4" data-lucide="x"></i></button>
+</div>
+<!-- 旅伴照片设置区域 -->
+<div class="p-3 bg-slate-50 rounded-2xl border border-slate-100 mb-3 text-center">
+<div class="relative w-16 h-16 mx-auto mb-2 group">
+<img class="w-16 h-16 rounded-full object-cover shadow-sm ring-2 ring-teal-600/30" id="member-modal-avatar-preview" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWPYvArIsSfRQl9jHBzDpaZ34vbZRqKYJAtxkdUPgNhAV-ywvIQu2jzaX5tXzU-WE5ru7_LAnxaTk9bm63DnIa3asXqbhdorPaR0lnGMKnbW04mf3-DC0yfrekfsVBhCO4F5VbmnfnVXQK3Y9Q6Q0xmtNtx3TCSHtVJdHoCD2aTkp08yE5_oK-Hdr43fUJjjxytYp-nGz3RBUPgyUPNo3NVQKQRCiARowzc1LyjLfITvw8WGoEKRef"/>
+<label class="absolute inset-0 bg-black/40 text-white rounded-full flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity text-[10px] font-bold" for="member-avatar-file">
+<i class="w-4 h-4 mb-0.5" data-lucide="camera"></i>更换
+  </label>
+</div>
+<input accept="image/*" class="hidden" id="member-avatar-file" onchange="handleMemberAvatarUpload(event)" type="file"/>
+<div class="flex justify-center items-center gap-2 mb-2">
+<label class="text-[11px] font-bold text-teal-800 bg-teal-100/70 hover:bg-teal-200/80 px-2.5 py-1 rounded-full cursor-pointer flex items-center gap-1" for="member-avatar-file">
+<i class="w-3 h-3" data-lucide="image"></i> 从手机相册上传照片
+  </label>
+</div>
+<div class="text-[10px] text-slate-400 mb-1.5">或选择经典预设头像：</div>
+<div class="flex items-center justify-center gap-1.5 overflow-x-auto no-scrollbar py-1" id="avatar-presets-container"></div>
 </div>
 <div class="space-y-2 mb-3">
 <div>
@@ -548,6 +587,13 @@
 <button class="p-1 text-slate-400" onclick="closeProfileModal()"><i class="w-4 h-4" data-lucide="x"></i></button>
 </div>
 <div class="space-y-2 mb-3">
+<div class="flex items-center gap-3 p-2 bg-slate-50 rounded-xl">
+<img class="w-12 h-12 rounded-full object-cover ring-1 ring-teal-500/30" id="my-profile-preview" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMwhGciGbjNaUIsvq3Pao96A6kZIuxUkkA7aeJdyCcEXM0D_HcqCxyagcMGs8ZC06DmPB6Rzs2DJvPm2uE5h3g4JrAAUfajg1wKYLAsZB-z0BRXZDd2BX387O5nCCxTY4AU-_UqmFyuV2w0hcumXCv6t9h1uP1t1l1uNpO75wqRVuTkXaYcB5jKlBdFMY8u_mwuLR-6steQCqIC4uePatVuRsx60jbpy19Q23Px-iqMsP6CiT_cUhH"/>
+<label class="text-xs font-bold text-teal-800 bg-teal-100 hover:bg-teal-200 px-3 py-1.5 rounded-lg cursor-pointer" for="my-avatar-file">
+    更换我的头像
+  </label>
+<input accept="image/*" class="hidden" id="my-avatar-file" onchange="handleMyAvatarUpload(event)" type="file"/>
+</div>
 <input class="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold" id="profile-input-name" value="Alex Tan (我)"/>
 <input class="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono font-bold" id="profile-input-phone" value="+65 8890 2311"/>
 </div>
@@ -568,19 +614,20 @@
 </div>
 </div>
 </div>
-<!-- ==================== 统一数据模型与全模块严格 SGD 计算逻辑 ==================== -->
+<!-- ==================== 统一数据模型与全模块严格 SGD 计算逻辑 + LocalStorage 持久化 ==================== -->
 <script>
-    const state = {
+    const STORAGE_KEY = 'EQUATOR_JOURNEY_DATA_V2';
+
+    // 默认演示初始样本数据 (初次启动或用户点击重置时使用)
+    const defaultData = {
       currentTab: 'timeline',
       currentTripId: 'TRIP_1',
-      activeTripFilter: 'ALL', // ALL 或具体 tripId
-      activeCatFilter: 'ALL',  // ALL 或具体分类
+      activeTripFilter: 'ALL',
+      activeCatFilter: 'ALL',
       roomCode: 'TYO-882',
       appLogoText: 'EJ',
       appTitle: 'Equator',
-      baseCurrency: 'SGD', // 唯一结算基准货币
-
-      // 汇率定义：1 SGD = rate 目标货币
+      baseCurrency: 'SGD',
       currencies: [
         { code: 'CNY', symbol: '¥', rate: 5.35, flag: '🇨🇳' },
         { code: 'JPY', symbol: '¥', rate: 112.50, flag: '🇯🇵' },
@@ -589,22 +636,16 @@
         { code: 'THB', symbol: '฿', rate: 26.50, flag: '🇹🇭' }
       ],
       selectedCurrency: 'CNY',
-
-      // 行程库 (支持增、删、改)
       trips: [
         { id: 'TRIP_1', title: '🇨🇳 中国15日深度游 · 成都-重庆', date: '10月12日 - 10月26日', room: 'TYO-882' },
         { id: 'TRIP_2', title: '🇪🇺 欧洲35日畅游 · 法意德瑞', date: '12月1日出发', room: 'EUR-902' },
         { id: 'TRIP_3', title: '🇯🇵 东京美食5日游', date: '9月已完成', room: 'TYO-101' }
       ],
-
-      // 旅伴库 (支持增、删、改)
       members: [
-        { id: 'mem_1', name: 'Alex Tan (我)', shortName: '我', role: '房主 · 财务', paynow: '+65 8890 2311', isMe: true, avatar: 'https://6aa23f9cea08b9137fd539c4.imgix.net/sandbox/IMG_5091.png' },
-        { id: 'mem_2', name: '小林 (Lin)', shortName: '小林', role: '美食达人', paynow: '+65 9123 4567', isMe: false, avatar: 'https://6aa23f9cea08b9137fd539c4.imgix.net/sandbox/IMG_0924.JPG?auto=format,compress,redeye,enhance&ar=4:3&fit=crop&fp-debug=true&crop=faces&fp-x=0.52&h=5082' },
+        { id: 'mem_1', name: 'Alex Tan (我)', shortName: '我', role: '房主 · 财务', paynow: '+65 8890 2311', isMe: true, avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80' },
+        { id: 'mem_2', name: '小林 (Lin)', shortName: '小林', role: '美食达人', paynow: '+65 9123 4567', isMe: false, avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80' },
         { id: 'mem_3', name: '阿伟 (David)', shortName: '阿伟', role: '向导司乘', paynow: '+65 9876 5432', isMe: false, avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80' }
       ],
-
-      // 真实账本流水：原始金额精确折算为 sgdAmount
       expenses: [
         { id: 'exp_1', tripId: 'TRIP_1', category: '餐饮', catIcon: '🍲', title: '宽窄巷子川菜聚餐', rawAmount: 1582.00, currency: 'CNY', rate: 5.35, sgdAmount: 295.70, payerId: 'mem_1', splitWith: ['mem_1', 'mem_2', 'mem_3'], date: '2023-10-14 19:40' },
         { id: 'exp_2', tripId: 'TRIP_1', category: '交通', catIcon: '🚕', title: '天府机场商务专车接机', rawAmount: 293.00, currency: 'CNY', rate: 5.35, sgdAmount: 54.77, payerId: 'mem_2', splitWith: ['mem_1', 'mem_2', 'mem_3'], date: '2023-10-14 11:15' },
@@ -612,17 +653,149 @@
         { id: 'exp_4', tripId: 'TRIP_1', category: '门票', catIcon: '🎟️', title: '九寨沟门票与观光车套票', rawAmount: 1043.40, currency: 'CNY', rate: 5.35, sgdAmount: 195.03, payerId: 'mem_3', splitWith: ['mem_1', 'mem_2', 'mem_3'], date: '2023-10-12 09:10' },
         { id: 'exp_5', tripId: 'TRIP_1', category: '餐饮', catIcon: '🍲', title: '九寨沟藏家牦牛肉火锅', rawAmount: 564.45, currency: 'CNY', rate: 5.35, sgdAmount: 105.50, payerId: 'mem_2', splitWith: ['mem_1', 'mem_2', 'mem_3'], date: '2023-10-12 20:00' },
         { id: 'exp_6', tripId: 'TRIP_1', category: '交通', catIcon: '🚅', title: '高铁一等座 成都东-镇江关', rawAmount: 460.00, currency: 'CNY', rate: 5.35, sgdAmount: 85.98, payerId: 'mem_3', splitWith: ['mem_1', 'mem_2', 'mem_3'], date: '2023-10-12 07:30' }
-      ],
+      ]
+    };
 
+    // 快捷备选头像库
+    const avatarPresets = [
+      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
+      'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80',
+      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80',
+      'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
+      'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=200&q=80'
+    ];
+
+    // 全局响应式状态对象
+    let state = {
+      ...JSON.parse(JSON.stringify(defaultData)),
       addForm: {
         selectedPayerId: 'mem_1',
         category: '🍲 餐饮',
         splitMembers: ['mem_1', 'mem_2', 'mem_3']
       },
-      editingMemberId: null
+      editingMemberId: null,
+      tempMemberAvatar: null
     };
 
+    // ==================== LocalStorage 完整持久化机制 ====================
+    function saveToLocalStorage() {
+      try {
+        const payload = {
+          trips: state.trips,
+          expenses: state.expenses,
+          members: state.members,
+          currencies: state.currencies,
+          roomCode: state.roomCode,
+          appLogoText: state.appLogoText,
+          appTitle: state.appTitle,
+          currentTripId: state.currentTripId,
+          activeTripFilter: state.activeTripFilter,
+          activeCatFilter: state.activeCatFilter,
+          selectedCurrency: state.selectedCurrency
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      } catch (err) {
+        console.warn('LocalStorage 存储失败(可能超过限额):', err);
+      }
+    }
+
+    function loadFromLocalStorage() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return false;
+        const data = JSON.parse(raw);
+        if (data && Array.isArray(data.trips) && Array.isArray(data.members)) {
+          state.trips = data.trips;
+          state.expenses = data.expenses || [];
+          state.members = data.members;
+          if (data.currencies) state.currencies = data.currencies;
+          if (data.roomCode) state.roomCode = data.roomCode;
+          if (data.appLogoText) state.appLogoText = data.appLogoText;
+          if (data.appTitle) state.appTitle = data.appTitle;
+          if (data.currentTripId) state.currentTripId = data.currentTripId;
+          if (data.activeTripFilter) state.activeTripFilter = data.activeTripFilter;
+          if (data.activeCatFilter) state.activeCatFilter = data.activeCatFilter;
+          if (data.selectedCurrency) state.selectedCurrency = data.selectedCurrency;
+          
+          // 修正分摊人员与垫付人有效性
+          state.addForm.splitMembers = state.members.map(m => m.id);
+          state.addForm.selectedPayerId = state.members[0] ? state.members[0].id : '';
+          return true;
+        }
+      } catch (err) {
+        console.error('加载 LocalStorage 出错，使用默认数据', err);
+      }
+      return false;
+    }
+
+    function resetToSampleData() {
+      if (!confirm('确定要清空本地修改并恢复初始演示数据吗？')) return;
+      localStorage.removeItem(STORAGE_KEY);
+      state = {
+        ...JSON.parse(JSON.stringify(defaultData)),
+        addForm: {
+          selectedPayerId: 'mem_1',
+          category: '🍲 餐饮',
+          splitMembers: defaultData.members.map(m => m.id)
+        },
+        editingMemberId: null,
+        tempMemberAvatar: null
+      };
+      applyHeaderInfo();
+      syncSelectors();
+      renderCurrencies();
+      renderPayerGrid();
+      renderSplitCheckboxes();
+      renderMembersList();
+      renderTripModalList();
+      refreshAllViews();
+      alert('✅ 已重置为演示数据！');
+    }
+
+    function exportBackupJSON() {
+      const payload = {
+        app: 'Equator Journey',
+        version: '2.0',
+        exportedAt: new Date().toISOString(),
+        trips: state.trips,
+        expenses: state.expenses,
+        members: state.members,
+        currencies: state.currencies,
+        roomCode: state.roomCode
+      };
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(payload, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `Equator_Backup_${Date.now()}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
+
+    function applyHeaderInfo() {
+      document.getElementById('app-logo-badge').textContent = state.appLogoText || 'EJ';
+      document.getElementById('app-title-text').textContent = state.appTitle || 'Equator';
+      document.getElementById('global-room-tag').textContent = state.roomCode || 'TYO-882';
+      document.getElementById('members-room-code-badge').textContent = 'ROOM ' + (state.roomCode || 'TYO-882');
+      const myMem = state.members.find(m => m.isMe) || state.members[0];
+      if (myMem && myMem.avatar) {
+        document.getElementById('my-header-avatar').src = myMem.avatar;
+      }
+      const curTrip = state.trips.find(t => t.id === state.currentTripId) || state.trips[0];
+      if (curTrip) {
+        document.getElementById('timeline-trip-title').textContent = curTrip.title;
+        document.getElementById('timeline-trip-date').innerHTML = `<i class="w-3 h-3" data-lucide="calendar"></i> ${curTrip.date}`;
+        document.getElementById('add-selected-trip-name').textContent = curTrip.title;
+        document.getElementById('members-trip-name').textContent = curTrip.title.split(' · ')[0];
+      }
+    }
+
+    // ==================== 初始化 ====================
     document.addEventListener('DOMContentLoaded', () => {
+      // 尝试从 LocalStorage 读取数据
+      loadFromLocalStorage();
+
       // 初始化时间
       const now = new Date();
       const pad = n => String(n).padStart(2, '0');
@@ -630,12 +803,14 @@
       const dtEl = document.getElementById('input-datetime');
       if (dtEl) dtEl.value = dt;
 
+      applyHeaderInfo();
       syncSelectors();
       renderCurrencies();
       renderPayerGrid();
       renderSplitCheckboxes();
       renderMembersList();
       renderTripModalList();
+      renderAvatarPresetPicker();
 
       // 执行全模块联动刷新
       refreshAllViews();
@@ -645,7 +820,6 @@
     // ==================== 全局联动核心：筛选与刷新 ====================
     function onTripFilterChange(tripVal) {
       state.activeTripFilter = tripVal;
-      // 同步所有筛选框的值
       const t1 = document.getElementById('timeline-trip-select');
       const t2 = document.getElementById('settle-trip-filter');
       const t3 = document.getElementById('analytics-trip-filter');
@@ -663,6 +837,7 @@
           document.getElementById('members-trip-name').textContent = trip.title.split(' · ')[0];
         }
       }
+      saveToLocalStorage();
       refreshAllViews();
     }
 
@@ -675,6 +850,7 @@
       if (c2) c2.value = catVal;
       if (c3) c3.value = catVal;
 
+      saveToLocalStorage();
       refreshAllViews();
     }
 
@@ -719,38 +895,52 @@
         }).join('');
       }
 
-      // 明细列表渲染：主金额突出为 S$ SGD
+      // 明细列表渲染
       const listEl = document.getElementById('timeline-items-list');
       if (!listEl) return;
 
       if (items.length === 0) {
-        listEl.innerHTML = `<div class="p-6 text-center text-xs text-slate-400 bg-white rounded-2xl border border-slate-100">当前筛选条件下暂无账单</div>`;
+        listEl.innerHTML = `<div class="p-6 text-center text-xs text-slate-400 bg-white rounded-2xl border border-slate-100">当前筛选条件下暂无账单记录</div>`;
         return;
       }
 
       listEl.innerHTML = items.map(exp => {
-        const payer = state.members.find(m => m.id === exp.payerId) || state.members[0];
+        const payer = state.members.find(m => m.id === exp.payerId) || state.members[0] || { shortName: '成员', avatar: '' };
         const curObj = state.currencies.find(c => c.code === exp.currency) || { symbol: exp.currency };
         return `
-          <div class="bg-white rounded-2xl p-3 shadow-xs border border-slate-100 flex items-center justify-between">
+          <div class="bg-white rounded-2xl p-3 shadow-xs border border-slate-100 flex items-center justify-between group">
             <div class="flex items-center gap-2.5">
-              <div class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-base flex-shrink-0">
-                ${exp.catIcon || '💳'}
+              <div class="relative flex-shrink-0">
+                <div class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-base">
+                  ${exp.catIcon || '💳'}
+                </div>
+                <img src="${payer.avatar}" class="w-4 h-4 rounded-full border border-white absolute -bottom-1 -right-1 object-cover shadow-xs" title="垫付人: ${payer.name}">
               </div>
               <div>
                 <div class="text-xs font-black text-slate-800">${exp.title}</div>
                 <div class="text-[10px] text-slate-400 mt-0.5">${payer.shortName} 垫付 · ${exp.date.split(' ')[0]}</div>
-                <!-- 原始币种明确标出 -->
                 <div class="text-[9px] text-slate-400 font-mono">原币: ${curObj.symbol} ${exp.rawAmount.toFixed(2)} ${exp.currency} @ ${exp.rate}</div>
               </div>
             </div>
-            <div class="text-right">
-              <div class="text-xs font-black text-teal-900">S$ ${exp.sgdAmount.toFixed(2)} SGD</div>
-              <span class="text-[9px] text-emerald-700 bg-emerald-50 px-1 py-0.2 rounded font-bold">新币计入</span>
+            <div class="text-right flex items-center gap-2">
+              <div>
+                <div class="text-xs font-black text-teal-900">S$ ${exp.sgdAmount.toFixed(2)} SGD</div>
+                <span class="text-[9px] text-emerald-700 bg-emerald-50 px-1 py-0.2 rounded font-bold">新币计入</span>
+              </div>
+              <button onclick="deleteExpense('${exp.id}')" class="p-1 text-slate-300 hover:text-rose-500 rounded-lg opacity-80 hover:opacity-100" title="删除该笔账单">
+                <i class="w-3.5 h-3.5" data-lucide="trash-2"></i>
+              </button>
             </div>
           </div>
         `;
       }).join('');
+    }
+
+    function deleteExpense(expId) {
+      if (!confirm('确定要删除这笔记账吗？此操作不可撤销。')) return;
+      state.expenses = state.expenses.filter(e => e.id !== expId);
+      saveToLocalStorage();
+      refreshAllViews();
     }
 
     // ==================== 模块 2：智能清账结算 (严格 SGD 结算) ====================
@@ -759,7 +949,7 @@
       const totalSgd = items.reduce((sum, i) => sum + i.sgdAmount, 0);
       document.getElementById('settle-total-display').textContent = `S$ ${totalSgd.toFixed(2)} SGD`;
 
-      // 严谨计算每位成员垫付总额 (Paid) 与应分摊总额 (Share)
+      // 计算每位成员垫付总额 (Paid) 与应分摊总额 (Share)
       const paidMap = {};
       const shareMap = {};
       state.members.forEach(m => {
@@ -776,7 +966,6 @@
         });
       });
 
-      // Net Balance = Paid - Share
       const balances = state.members.map(m => {
         const paid = paidMap[m.id] || 0;
         const share = shareMap[m.id] || 0;
@@ -840,18 +1029,24 @@
       if (routes.length === 0) {
         stepEl.innerHTML = `<div class="p-3 bg-emerald-50 rounded-xl text-center text-xs font-bold text-emerald-800">🎉 当前筛选条件下账目已完全两清，无需转账！</div>`;
       } else {
-        stepEl.innerHTML = routes.map((r, idx) => `
+        stepEl.innerHTML = routes.map((r) => `
           <div class="p-2.5 bg-teal-50/60 rounded-xl border border-teal-100">
-            <div class="flex justify-between items-center text-xs py-1 px-2 bg-white rounded-lg mb-1.5">
-              <span class="font-bold text-slate-800">${r.from.name}</span>
+            <div class="flex justify-between items-center text-xs py-1.5 px-2.5 bg-white rounded-lg mb-1.5 shadow-xs">
+              <div class="flex items-center gap-1.5">
+                <img src="${r.from.avatar}" class="w-5 h-5 rounded-full object-cover">
+                <span class="font-bold text-slate-800">${r.from.name}</span>
+              </div>
               <span class="font-black text-teal-800">S$ ${r.amount} SGD</span>
-              <span class="font-bold text-slate-800">${r.to.name}</span>
+              <div class="flex items-center gap-1.5">
+                <span class="font-bold text-slate-800">${r.to.name}</span>
+                <img src="${r.to.avatar}" class="w-5 h-5 rounded-full object-cover">
+              </div>
             </div>
             <div class="flex gap-1.5">
               <button class="flex-1 py-1 bg-teal-700 hover:bg-teal-800 text-white text-[11px] font-bold rounded-lg" onclick="alert('触发 PayNow 支付: S$ ${r.amount} SGD 至 ${r.to.name} (${r.to.paynow})')">
                 PayNow 结算
               </button>
-              <button class="px-2 py-1 bg-white border border-slate-200 text-slate-700 text-[11px] rounded-lg" onclick="navigator.clipboard.writeText('${r.to.paynow}'); alert('已复制账号：${r.to.paynow}')">
+              <button class="px-2 py-1 bg-white border border-slate-200 text-slate-700 text-[11px] rounded-lg active:scale-95" onclick="navigator.clipboard.writeText('${r.to.paynow}'); alert('已复制账号：${r.to.paynow}')">
                 复制账号
               </button>
             </div>
@@ -903,9 +1098,12 @@
           const mPaid = items.filter(i => i.payerId === m.id).reduce((s, i) => s + i.sgdAmount, 0);
           const pct = total > 0 ? ((mPaid / total) * 100).toFixed(1) : 0;
           return `
-            <div class="p-1.5 bg-slate-50 rounded-xl border border-slate-100">
-              <div class="flex justify-between text-[11px] mb-0.5">
-                <span class="font-bold text-slate-800">${m.name}</span>
+            <div class="p-2 bg-slate-50 rounded-xl border border-slate-100 flex flex-col gap-1">
+              <div class="flex items-center justify-between text-[11px]">
+                <div class="flex items-center gap-1.5">
+                  <img src="${m.avatar}" class="w-4 h-4 rounded-full object-cover">
+                  <span class="font-bold text-slate-800">${m.name}</span>
+                </div>
                 <span class="font-black text-teal-800">S$ ${mPaid.toFixed(2)} SGD (${pct}%)</span>
               </div>
               <div class="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
@@ -979,6 +1177,7 @@
       document.getElementById('currency-symbol').textContent = cur.symbol;
       renderCurrencies();
       calculateExchange();
+      saveToLocalStorage();
     }
 
     function calculateExchange() {
@@ -1031,7 +1230,10 @@
         const chk = state.addForm.splitMembers.includes(m.id);
         return `
           <label class="flex items-center justify-between p-1.5 rounded-lg bg-slate-50 border border-slate-200 text-xs">
-            <span class="font-bold text-slate-800">${m.name}</span>
+            <div class="flex items-center gap-2">
+              <img src="${m.avatar}" class="w-5 h-5 rounded-full object-cover">
+              <span class="font-bold text-slate-800">${m.name}</span>
+            </div>
             <input type="checkbox" ${chk ? 'checked' : ''} onchange="toggleSplit('${m.id}')" class="rounded text-teal-700"/>
           </label>
         `;
@@ -1072,8 +1274,10 @@
         date: new Date().toISOString().slice(0, 16).replace('T', ' ')
       });
 
+      // 持久化存储
+      saveToLocalStorage();
       refreshAllViews();
-      alert(`🎉 记账成功！折合 S$ ${sgd.toFixed(2)} SGD 已精确入账并联动清算！`);
+      alert(`🎉 记账成功！折合 S$ ${sgd.toFixed(2)} SGD 已保存并联动清算！`);
       if (recordMore) {
         document.getElementById('input-amount').value = '';
       } else {
@@ -1081,34 +1285,95 @@
       }
     }
 
+    // ==================== 旅伴与头像自定义全面支持 ====================
     function renderMembersList() {
       const c = document.getElementById('members-list-container');
       if (!c) return;
       c.innerHTML = state.members.map(m => `
         <div class="flex items-center justify-between p-2 bg-slate-50 rounded-xl border border-slate-100">
-          <div class="flex items-center gap-2">
-            <img class="w-8 h-8 rounded-full object-cover" src="${m.avatar}"/>
+          <div class="flex items-center gap-2.5">
+            <div class="relative">
+              <img class="w-9 h-9 rounded-full object-cover ring-1 ring-teal-500/20 shadow-xs" src="${m.avatar}"/>
+              <button onclick="openEditMemberModal('${m.id}')" class="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5 shadow-sm border border-slate-200 hover:bg-slate-50" title="更换照片">
+                <i class="w-2.5 h-2.5 text-slate-600" data-lucide="camera"></i>
+              </button>
+            </div>
             <div>
-              <div class="text-xs font-bold text-slate-900">${m.name}</div>
-              <div class="text-[9px] text-slate-400 font-mono">PayNow: ${m.paynow}</div>
+              <div class="text-xs font-bold text-slate-900">${m.name} ${m.isMe ? '<span class="text-[9px] bg-teal-100 text-teal-800 px-1 rounded">我</span>' : ''}</div>
+              <div class="text-[9px] text-slate-400 font-mono">${m.role} · ${m.paynow}</div>
             </div>
           </div>
-          <button class="px-2 py-1 bg-white border border-slate-200 text-xs font-bold rounded-lg" onclick="openEditMemberModal('${m.id}')">编辑</button>
+          <button class="px-2.5 py-1 bg-white border border-slate-200 text-xs font-bold text-slate-700 rounded-lg shadow-2xs hover:bg-slate-50 active:scale-95" onclick="openEditMemberModal('${m.id}')">编辑</button>
         </div>
       `).join('');
 
       const stk = document.getElementById('timeline-member-avatar-stack');
       if (stk) {
-        stk.innerHTML = state.members.map(m => `<img class="w-5 h-5 rounded-full border border-white object-cover" src="${m.avatar}"/>`).join('');
+        stk.innerHTML = state.members.map(m => `<img class="w-5 h-5 rounded-full border border-white object-cover shadow-xs" src="${m.avatar}"/>`).join('');
       }
+      lucide.createIcons();
+    }
+
+    function renderAvatarPresetPicker() {
+      const container = document.getElementById('avatar-presets-container');
+      if (!container) return;
+      container.innerHTML = avatarPresets.map(url => `
+        <button type="button" onclick="selectPresetAvatar('${url}')" class="w-7 h-7 rounded-full overflow-hidden border border-slate-200 hover:border-teal-600 hover:scale-110 transition-transform flex-shrink-0">
+          <img src="${url}" class="w-full h-full object-cover"/>
+        </button>
+      `).join('');
+    }
+
+    function selectPresetAvatar(url) {
+      state.tempMemberAvatar = url;
+      const preview = document.getElementById('member-modal-avatar-preview');
+      if (preview) preview.src = url;
+    }
+
+    function handleMemberAvatarUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      if (file.size > 2 * 1024 * 1024) {
+        alert('请选择小于 2MB 的图片');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        state.tempMemberAvatar = e.target.result;
+        const preview = document.getElementById('member-modal-avatar-preview');
+        if (preview) preview.src = state.tempMemberAvatar;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function handleMyAvatarUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const base64 = e.target.result;
+        document.getElementById('my-profile-preview').src = base64;
+        const myMem = state.members.find(m => m.isMe) || state.members[0];
+        if (myMem) {
+          myMem.avatar = base64;
+          document.getElementById('my-header-avatar').src = base64;
+          saveToLocalStorage();
+          renderMembersList();
+          renderPayerGrid();
+          refreshAllViews();
+        }
+      };
+      reader.readAsDataURL(file);
     }
 
     function openAddMemberModal() {
       state.editingMemberId = null;
+      state.tempMemberAvatar = avatarPresets[Math.floor(Math.random() * avatarPresets.length)];
       document.getElementById('member-modal-title').textContent = '添加新旅伴';
       document.getElementById('member-input-name').value = '';
       document.getElementById('member-input-role').value = '同行伙伴';
       document.getElementById('member-input-paynow').value = '';
+      document.getElementById('member-modal-avatar-preview').src = state.tempMemberAvatar;
       document.getElementById('member-modal-delete-btn').classList.add('hidden');
       document.getElementById('member-modal').classList.remove('hidden');
     }
@@ -1117,10 +1382,12 @@
       state.editingMemberId = id;
       const m = state.members.find(x => x.id === id);
       if (!m) return;
+      state.tempMemberAvatar = m.avatar;
       document.getElementById('member-modal-title').textContent = '编辑旅伴资料';
       document.getElementById('member-input-name').value = m.name;
       document.getElementById('member-input-role').value = m.role;
       document.getElementById('member-input-paynow').value = m.paynow;
+      document.getElementById('member-modal-avatar-preview').src = m.avatar;
       if (m.isMe) document.getElementById('member-modal-delete-btn').classList.add('hidden');
       else document.getElementById('member-modal-delete-btn').classList.remove('hidden');
       document.getElementById('member-modal').classList.remove('hidden');
@@ -1130,18 +1397,37 @@
 
     function saveMemberData() {
       const name = document.getElementById('member-input-name').value.trim();
-      if (!name) return;
+      if (!name) { alert('请输入旅伴姓名'); return; }
       const role = document.getElementById('member-input-role').value.trim();
       const paynow = document.getElementById('member-input-paynow').value.trim();
+      const avatar = state.tempMemberAvatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80';
 
       if (state.editingMemberId) {
         const m = state.members.find(x => x.id === state.editingMemberId);
-        if (m) { m.name = name; m.shortName = name.split(' ')[0]; m.role = role; m.paynow = paynow; }
+        if (m) { 
+          m.name = name; 
+          m.shortName = name.split(' ')[0]; 
+          m.role = role; 
+          m.paynow = paynow; 
+          m.avatar = avatar;
+          if (m.isMe) {
+            document.getElementById('my-header-avatar').src = avatar;
+          }
+        }
       } else {
         const newId = 'mem_' + Date.now();
-        state.members.push({ id: newId, name: name, shortName: name.split(' ')[0], role: role, paynow: paynow, isMe: false, avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80' });
+        state.members.push({ 
+          id: newId, 
+          name: name, 
+          shortName: name.split(' ')[0], 
+          role: role, 
+          paynow: paynow, 
+          isMe: false, 
+          avatar: avatar 
+        });
         state.addForm.splitMembers.push(newId);
       }
+      saveToLocalStorage();
       closeMemberModal();
       renderMembersList();
       renderPayerGrid();
@@ -1151,8 +1437,10 @@
 
     function deleteCurrentMember() {
       if (!state.editingMemberId) return;
+      if (!confirm('确认删除此旅伴吗？')) return;
       state.members = state.members.filter(m => m.id !== state.editingMemberId);
       state.addForm.splitMembers = state.addForm.splitMembers.filter(id => id !== state.editingMemberId);
+      saveToLocalStorage();
       closeMemberModal();
       renderMembersList();
       renderPayerGrid();
@@ -1160,6 +1448,7 @@
       refreshAllViews();
     }
 
+    // ==================== 行程管理与持久化 ====================
     function renderTripModalList() {
       const c = document.getElementById('trip-modal-list');
       if (!c) return;
@@ -1167,11 +1456,11 @@
         const active = t.id === state.currentTripId;
         return `
           <div class="p-2 rounded-xl border ${active ? 'border-teal-600 bg-teal-50' : 'border-slate-200 bg-white'} flex items-center justify-between">
-            <div class="cursor-pointer" onclick="selectTrip('${t.id}')">
+            <div class="cursor-pointer flex-1" onclick="selectTrip('${t.id}')">
               <div class="text-xs font-bold text-slate-800">${t.title}</div>
               <div class="text-[9px] text-slate-400">${t.date} · 房间: ${t.room}</div>
             </div>
-            ${state.trips.length > 1 ? `<button class="p-1 text-slate-400 hover:text-rose-600" onclick="deleteTrip('${t.id}')"><i class="w-3.5 h-3.5" data-lucide="trash-2"></i></button>` : ''}
+            ${state.trips.length > 1 ? `<button class="p-1.5 text-slate-400 hover:text-rose-600 active:scale-95" onclick="deleteTrip('${t.id}')"><i class="w-3.5 h-3.5" data-lucide="trash-2"></i></button>` : ''}
           </div>
         `;
       }).join('');
@@ -1187,6 +1476,7 @@
       if (confirm('确认删除该行程吗？')) {
         state.trips = state.trips.filter(t => t.id !== id);
         if (state.currentTripId === id) state.currentTripId = state.trips[0].id;
+        saveToLocalStorage();
         syncSelectors();
         renderTripModalList();
         refreshAllViews();
@@ -1203,6 +1493,7 @@
       const room = document.getElementById('input-new-trip-room').value.trim() || 'NEW-001';
       const newId = 'TRIP_' + Date.now();
       state.trips.push({ id: newId, title, date, room });
+      saveToLocalStorage();
       hideNewTripInput();
       syncSelectors();
       selectTrip(newId);
@@ -1219,6 +1510,7 @@
       const rate = parseFloat(document.getElementById('new-currency-rate').value);
       if (!code || !rate) return;
       state.currencies.push({ code, symbol, rate, flag: '🌐' });
+      saveToLocalStorage();
       closeCurrencyModal();
       selectCurrency(code);
     }
@@ -1231,6 +1523,7 @@
         state.roomCode = code;
         document.getElementById('global-room-tag').textContent = code;
         document.getElementById('members-room-code-badge').textContent = 'ROOM ' + code;
+        saveToLocalStorage();
         closeRoomModal();
       }
     }
@@ -1247,16 +1540,29 @@
       state.appTitle = document.getElementById('title-text-input').value;
       document.getElementById('app-logo-badge').textContent = state.appLogoText;
       document.getElementById('app-title-text').textContent = state.appTitle;
+      saveToLocalStorage();
       closeLogoModal();
     }
 
-    function openProfileModal() { document.getElementById('profile-modal').classList.remove('hidden'); }
+    function openProfileModal() { 
+      const myMem = state.members.find(m => m.isMe) || state.members[0];
+      if (myMem) {
+        document.getElementById('profile-input-name').value = myMem.name;
+        document.getElementById('profile-input-phone').value = myMem.paynow;
+        document.getElementById('my-profile-preview').src = myMem.avatar;
+      }
+      document.getElementById('profile-modal').classList.remove('hidden'); 
+    }
     function closeProfileModal() { document.getElementById('profile-modal').classList.add('hidden'); }
     function saveMyProfile() {
       const name = document.getElementById('profile-input-name').value;
       const phone = document.getElementById('profile-input-phone').value;
-      state.members[0].name = name;
-      state.members[0].paynow = phone;
+      const myMem = state.members.find(m => m.isMe) || state.members[0];
+      if (myMem) {
+        myMem.name = name;
+        myMem.paynow = phone;
+      }
+      saveToLocalStorage();
       renderMembersList();
       closeProfileModal();
     }
@@ -1288,5 +1594,4 @@
       a.click();
     }
   </script>
-</body>
-</html>
+</body></html>
