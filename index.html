@@ -1,16 +1,13 @@
-<!DOCTYPE html>
-
-<html lang="zh-CN">
-<head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<!DOCTYPE html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport">
 <title>Equator Journey - 旅行记账协同 App</title>
-<meta content="yes" name="apple-mobile-web-app-capable"/>
-<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
-<meta content="#00685f" name="theme-color"/>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Noto+Sans+SC:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style">
+<meta content="#00685f" name="theme-color">
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Noto+Sans+SC:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
 <script>
@@ -78,10 +75,10 @@
 <button class="flex items-center gap-1 px-2.5 py-1 bg-teal-50 hover:bg-teal-100 text-teal-800 rounded-full text-xs font-semibold border border-teal-200/80 active:scale-95 transition-all" onclick="openRoomModal()">
 <span class="text-[9px] text-teal-600 font-bold">ROOM</span>
 <span class="font-black tracking-wide" id="global-room-tag">TYO-882</span>
-<i class="w-3 h-3 text-teal-600" data-lucide="chevron-down"></i>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-down" aria-hidden="true" class="lucide lucide-chevron-down w-3 h-3 text-teal-600"><path d="m6 9 6 6 6-6"></path></svg>
 </button>
 <button class="w-8 h-8 rounded-full bg-slate-100 border-2 border-white shadow-sm overflow-hidden ring-1 ring-teal-500/20 active:scale-95 transition-transform" onclick="openProfileModal()" title="点击编辑个人资料与头像">
-<img alt="Avatar" class="w-full h-full object-cover" id="my-header-avatar" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"/>
+<img alt="Avatar" class="w-full h-full object-cover" id="my-header-avatar" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg">
 </button>
 </div>
 </header>
@@ -95,20 +92,32 @@
 <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/20 text-teal-50 flex items-center gap-1">
 <span class="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse"></span> 当前进行中
             </span>
-<span class="text-[10px] text-teal-100/90 font-medium">点击切换行程 <i class="inline w-3 h-3" data-lucide="chevron-down"></i></span>
+<button type="button" onclick="event.stopPropagation(); openTripModal()" class="text-[11px] bg-white/20 hover:bg-white/30 text-white px-2.5 py-1 rounded-full font-bold flex items-center gap-1 active:scale-95 transition-all shadow-xs"><i class="w-3 h-3" data-lucide="settings-2"></i> 管理 / 切换行程 <i class="w-3 h-3" data-lucide="chevron-down"></i></button>
 </div>
 <h2 class="text-lg font-black tracking-tight" id="timeline-trip-title">
             🇨🇳 中国15日深度游 · 成都-重庆-九寨沟
           </h2>
 <p class="text-xs text-teal-100/90 flex items-center gap-1.5 mt-1" id="timeline-trip-date">
-<i class="w-3.5 h-3.5" data-lucide="calendar"></i> 10月12日 - 10月26日 · Day 3
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="calendar" aria-hidden="true" class="lucide lucide-calendar w-3.5 h-3.5"><path d="M8 2v3"></path><path d="M16 2v3"></path><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18"></path></svg> 10月12日 - 10月26日 · Day 3
           </p>
 </div>
 </div>
 <div class="flex items-center justify-between pt-2.5 border-t border-white/15 text-xs">
-<div class="flex items-center -space-x-2" id="timeline-member-avatar-stack"></div>
+<div class="flex items-center -space-x-2" id="timeline-member-avatar-stack">
+        <div class="w-6 h-6 rounded-full border border-white bg-slate-200 overflow-hidden">
+          <img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&amp;fit=crop&amp;w=200&amp;q=80">
+        </div>
+      
+        <div class="w-6 h-6 rounded-full border border-white bg-slate-200 overflow-hidden">
+          <img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&amp;fit=crop&amp;w=200&amp;q=80">
+        </div>
+      
+        <div class="w-6 h-6 rounded-full border border-white bg-slate-200 overflow-hidden">
+          <img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&amp;fit=crop&amp;w=200&amp;q=80">
+        </div>
+      <span class="pl-3 text-[11px] text-teal-100 font-medium">3 位伙伴实时协同</span></div>
 <span class="flex items-center gap-1 text-[11px] text-emerald-200 bg-black/20 px-2 py-0.5 rounded-full font-medium">
-<i class="w-3 h-3 text-emerald-300" data-lucide="cloud-check"></i> 云端已同步
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="cloud-check" aria-hidden="true" class="lucide lucide-cloud-check w-3 h-3 text-emerald-300"><path d="m17 15-5.5 5.5L9 18"></path><path d="M5.516 16.07A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 3.501 7.327"></path></svg> 云端已同步
         </span>
 </div>
 </div>
@@ -124,7 +133,22 @@
 <span class="text-xs font-bold text-slate-400 ml-1">SGD</span>
 </div>
 <div class="text-xs text-slate-500 mb-3" id="timeline-approx-currency">约合 ¥13,111.78 CNY · 实时汇率计算</div>
-<div class="grid grid-cols-3 gap-2 pt-3 border-t border-slate-100 text-center" id="timeline-payer-stats-grid"></div>
+<div class="grid grid-cols-3 gap-2 pt-3 border-t border-slate-100 text-center" id="timeline-payer-stats-grid">
+          <div class="bg-slate-50 p-2 rounded-xl">
+            <div class="text-[10px] text-slate-400">我垫付 <span class="font-bold text-teal-700">73.0%</span></div>
+            <div class="text-xs font-black text-slate-800 mt-0.5">S$ 1190.32</div>
+          </div>
+        
+          <div class="bg-slate-50 p-2 rounded-xl">
+            <div class="text-[10px] text-slate-400">小林垫付 <span class="font-bold text-teal-700">9.8%</span></div>
+            <div class="text-xs font-black text-slate-800 mt-0.5">S$ 160.27</div>
+          </div>
+        
+          <div class="bg-slate-50 p-2 rounded-xl">
+            <div class="text-[10px] text-slate-400">阿伟垫付 <span class="font-bold text-teal-700">17.2%</span></div>
+            <div class="text-xs font-black text-slate-800 mt-0.5">S$ 281.01</div>
+          </div>
+        </div>
 </div>
 <!-- 分类筛选器 -->
 <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 mb-3">
@@ -135,7 +159,151 @@
 <button class="timeline-cat-btn px-3.5 py-1.5 bg-white text-slate-600 rounded-full text-xs font-medium border border-slate-200 whitespace-nowrap" onclick="filterTimeline('门票', this)">🎟️ 门票</button>
 </div>
 <!-- 明细列表 -->
-<div class="space-y-3" id="timeline-items-list"></div>
+<div class="space-y-3" id="timeline-items-list">
+        <div class="bg-white rounded-3xl p-4 shadow-sm border border-slate-100 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-2xl bg-slate-100 flex items-center justify-center text-xl flex-shrink-0">
+              🍲
+            </div>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-sm font-black text-slate-800">宽窄巷子川菜聚餐</span>
+                <span class="text-[9px] bg-teal-50 text-teal-800 px-1.5 py-0.2 rounded font-bold">3人AA</span>
+              </div>
+              <div class="text-[11px] text-slate-400 mt-0.5 flex items-center gap-1.5">
+                <span class="">我垫付</span>
+                <span class="">·</span>
+                <span class="">今天 19:40</span>
+                <span class="text-emerald-600 font-medium">· 发票已核验</span>
+              </div>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="text-sm font-black text-slate-900">S$ 295.75</div>
+            <div class="text-[10px] text-slate-400">¥1582.00 CNY</div>
+          </div>
+        </div>
+      
+        <div class="bg-white rounded-3xl p-4 shadow-sm border border-slate-100 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-2xl bg-slate-100 flex items-center justify-center text-xl flex-shrink-0">
+              🚕
+            </div>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-sm font-black text-slate-800">成都天府机场专车接机</span>
+                <span class="text-[9px] bg-teal-50 text-teal-800 px-1.5 py-0.2 rounded font-bold">3人AA</span>
+              </div>
+              <div class="text-[11px] text-slate-400 mt-0.5 flex items-center gap-1.5">
+                <span class="">小林垫付</span>
+                <span class="">·</span>
+                <span class="">今天 11:15</span>
+                
+              </div>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="text-sm font-black text-slate-900">S$ 54.77</div>
+            <div class="text-[10px] text-slate-400">¥293.00 CNY</div>
+          </div>
+        </div>
+      
+        <div class="bg-white rounded-3xl p-4 shadow-sm border border-slate-100 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-2xl bg-slate-100 flex items-center justify-center text-xl flex-shrink-0">
+              🏨
+            </div>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-sm font-black text-slate-800">成都博舍酒店 2晚豪华套房</span>
+                <span class="text-[9px] bg-teal-50 text-teal-800 px-1.5 py-0.2 rounded font-bold">3人AA</span>
+              </div>
+              <div class="text-[11px] text-slate-400 mt-0.5 flex items-center gap-1.5">
+                <span class="">我垫付</span>
+                <span class="">·</span>
+                <span class="">昨天 15:30</span>
+                <span class="text-emerald-600 font-medium">· 发票已核验</span>
+              </div>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="text-sm font-black text-slate-900">S$ 894.57</div>
+            <div class="text-[10px] text-slate-400">¥4786.00 CNY</div>
+          </div>
+        </div>
+      
+        <div class="bg-white rounded-3xl p-4 shadow-sm border border-slate-100 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-2xl bg-slate-100 flex items-center justify-center text-xl flex-shrink-0">
+              🎟️
+            </div>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-sm font-black text-slate-800">九寨沟景区门票+观光车套票</span>
+                <span class="text-[9px] bg-teal-50 text-teal-800 px-1.5 py-0.2 rounded font-bold">3人AA</span>
+              </div>
+              <div class="text-[11px] text-slate-400 mt-0.5 flex items-center gap-1.5">
+                <span class="">阿伟垫付</span>
+                <span class="">·</span>
+                <span class="">10月12日 09:10</span>
+                <span class="text-emerald-600 font-medium">· 发票已核验</span>
+              </div>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="text-sm font-black text-slate-900">S$ 195.03</div>
+            <div class="text-[10px] text-slate-400">¥1043.40 CNY</div>
+          </div>
+        </div>
+      
+        <div class="bg-white rounded-3xl p-4 shadow-sm border border-slate-100 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-2xl bg-slate-100 flex items-center justify-center text-xl flex-shrink-0">
+              🍲
+            </div>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-sm font-black text-slate-800">九寨沟藏家风味牦牛肉火锅</span>
+                <span class="text-[9px] bg-teal-50 text-teal-800 px-1.5 py-0.2 rounded font-bold">3人AA</span>
+              </div>
+              <div class="text-[11px] text-slate-400 mt-0.5 flex items-center gap-1.5">
+                <span class="">小林垫付</span>
+                <span class="">·</span>
+                <span class="">10月12日 20:00</span>
+                <span class="text-emerald-600 font-medium">· 发票已核验</span>
+              </div>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="text-sm font-black text-slate-900">S$ 105.50</div>
+            <div class="text-[10px] text-slate-400">¥564.45 CNY</div>
+          </div>
+        </div>
+      
+        <div class="bg-white rounded-3xl p-4 shadow-sm border border-slate-100 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-2xl bg-slate-100 flex items-center justify-center text-xl flex-shrink-0">
+              🚅
+            </div>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-sm font-black text-slate-800">高铁一等座 成都东-镇江关</span>
+                <span class="text-[9px] bg-teal-50 text-teal-800 px-1.5 py-0.2 rounded font-bold">3人AA</span>
+              </div>
+              <div class="text-[11px] text-slate-400 mt-0.5 flex items-center gap-1.5">
+                <span class="">阿伟垫付</span>
+                <span class="">·</span>
+                <span class="">10月12日 07:30</span>
+                <span class="text-emerald-600 font-medium">· 发票已核验</span>
+              </div>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="text-sm font-black text-slate-900">S$ 85.98</div>
+            <div class="text-[10px] text-slate-400">¥460.00 CNY</div>
+          </div>
+        </div>
+      </div>
 </main>
 <!-- ==================== 视图 2：智能清账结算 (Tab 2) ==================== -->
 <main class="view-content flex-1 px-4 pt-3 pb-4 hidden" id="view-settlement">
@@ -143,7 +311,7 @@
 <div class="bg-white rounded-2xl p-3 shadow-xs border border-slate-100 mb-3 space-y-2">
 <div class="flex items-center justify-between">
 <span class="text-[11px] font-bold text-slate-600 flex items-center gap-1">
-<i class="w-3.5 h-3.5 text-teal-700" data-lucide="sliders-horizontal"></i> 智能清账多维联动筛选
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="sliders-horizontal" aria-hidden="true" class="lucide lucide-sliders-horizontal w-3.5 h-3.5 text-teal-700"><path d="M10 5H3"></path><path d="M12 19H3"></path><path d="M14 3v4"></path><path d="M16 17v4"></path><path d="M21 12h-9"></path><path d="M21 19h-5"></path><path d="M21 5h-7"></path><path d="M8 10v4"></path><path d="M8 12H3"></path></svg> 智能清账多维联动筛选
         </span>
 <button class="text-[10px] text-teal-700 font-semibold hover:underline" onclick="resetSettlementFilters()">重置筛选</button>
 </div>
@@ -174,16 +342,16 @@
 <div class="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 mb-4">
 <div class="flex justify-between items-center mb-1">
 <span class="text-xs font-semibold text-slate-500 flex items-center gap-1">
-<i class="w-3.5 h-3.5 text-teal-600" data-lucide="file-check-2"></i> 实时对账结算中心
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="file-check-2" aria-hidden="true" class="lucide lucide-file-check-2 w-3.5 h-3.5 text-teal-600"><path d="M10.5 22H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.706.706l3.588 3.588A2.4 2.4 0 0 1 20 8v6"></path><path d="M14 2v5a1 1 0 0 0 1 1h5"></path><path d="m14 20 2 2 4-4"></path></svg> 实时对账结算中心
         </span>
 <span class="text-[11px] bg-teal-50 text-teal-800 px-2 py-0.5 rounded-full font-bold" id="settle-member-count-badge">3 位旅伴已入群</span>
 </div>
 <div class="text-xs text-slate-400">当前筛选累计结算总额 (SGD)</div>
-<div class="text-3xl font-black text-slate-900 mt-1 mb-3" id="settle-total-display">S$ 2,450.80</div>
+<div class="text-3xl font-black text-slate-900 mt-1 mb-3" id="settle-total-display">S$ 1631.60</div>
 <div class="grid grid-cols-2 gap-3 pt-3 border-t border-slate-100">
 <div class="bg-slate-50 p-2.5 rounded-xl">
 <div class="text-[10px] text-slate-400">均摊基准线</div>
-<div class="text-sm font-bold text-slate-800" id="settle-average-display">S$ 816.93 <span class="text-[10px] font-normal text-slate-500">/人</span></div>
+<div class="text-sm font-bold text-slate-800" id="settle-average-display">S$ 543.87 <span class="text-[10px] font-normal text-slate-500">/人</span></div>
 </div>
 <div class="bg-teal-50/70 p-2.5 rounded-xl border border-teal-100">
 <div class="text-[10px] text-teal-700">算法最优化模型</div>
@@ -197,28 +365,134 @@
 <span class="text-xs font-bold text-slate-700">成员应收应付净额 (Net Balance)</span>
 <span class="text-[11px] text-teal-700 font-semibold">云端自动平账</span>
 </div>
-<div class="space-y-2" id="settle-balances-container"></div>
+<div class="space-y-2" id="settle-balances-container">
+        <div class="bg-white rounded-2xl p-3 border border-slate-100 shadow-sm flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-full bg-slate-200 overflow-hidden ring-1 ring-teal-500/20">
+              <img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&amp;fit=crop&amp;w=200&amp;q=80">
+            </div>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-sm font-bold text-slate-800">Alex Tan (我)</span>
+              </div>
+              <div class="text-[11px] text-slate-400">已垫付 S$ 1190.32</div>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="text-sm font-black text-emerald-600">+ S$ 646.45</span>
+            <div><span class="text-[9px] text-emerald-700 bg-emerald-50 font-bold px-1.5 rounded inline-block">应收回</span></div>
+          </div>
+        </div>
+      
+        <div class="bg-white rounded-2xl p-3 border border-slate-100 shadow-sm flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-full bg-slate-200 overflow-hidden ring-1 ring-teal-500/20">
+              <img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&amp;fit=crop&amp;w=200&amp;q=80">
+            </div>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-sm font-bold text-slate-800">小林 (Lin)</span>
+              </div>
+              <div class="text-[11px] text-slate-400">已垫付 S$ 160.27</div>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="text-sm font-black text-rose-600">- S$ 383.60</span>
+            <div><span class="text-[9px] text-rose-700 bg-rose-50 font-bold px-1.5 rounded inline-block">需支付给伙伴</span></div>
+          </div>
+        </div>
+      
+        <div class="bg-white rounded-2xl p-3 border border-slate-100 shadow-sm flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-full bg-slate-200 overflow-hidden ring-1 ring-teal-500/20">
+              <img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&amp;fit=crop&amp;w=200&amp;q=80">
+            </div>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-sm font-bold text-slate-800">阿伟 (David)</span>
+              </div>
+              <div class="text-[11px] text-slate-400">已垫付 S$ 281.01</div>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="text-sm font-black text-rose-600">- S$ 262.86</span>
+            <div><span class="text-[9px] text-rose-700 bg-rose-50 font-bold px-1.5 rounded inline-block">需支付给伙伴</span></div>
+          </div>
+        </div>
+      </div>
 </div>
 <!-- 最优清账推荐路线 -->
 <div class="bg-white rounded-3xl p-4 border border-slate-100 shadow-sm mb-4">
 <div class="flex justify-between items-center mb-3">
 <div class="flex items-center gap-2">
 <div class="w-6 h-6 rounded-lg bg-teal-700 text-white flex items-center justify-center text-xs">
-<i class="w-3.5 h-3.5" data-lucide="sparkles"></i>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="sparkles" aria-hidden="true" class="lucide lucide-sparkles w-3.5 h-3.5"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"></path><path d="M20 2v4"></path><path d="M22 4h-4"></path><circle cx="4" cy="20" r="2"></circle></svg>
 </div>
 <span class="text-sm font-bold text-slate-800">最优清账推荐方案</span>
 </div>
 <span class="text-[10px] text-teal-800 bg-teal-50 px-2 py-0.5 rounded-full font-bold">极简路径</span>
 </div>
-<div class="space-y-3" id="settle-steps-container"></div>
+<div class="space-y-3" id="settle-steps-container">
+        <div class="p-3 bg-teal-50/50 rounded-2xl border border-teal-100">
+          <div class="flex justify-between items-center text-xs mb-2">
+            <span class="font-bold text-teal-900 flex items-center gap-1.5">
+              <span class="w-4 h-4 rounded-full bg-teal-700 text-white text-[10px] flex items-center justify-center font-bold">1</span>
+              第 1 步转账
+            </span>
+            <span class="text-[10px] bg-amber-100 text-amber-800 font-bold px-1.5 py-0.2 rounded">待结清</span>
+          </div>
+          <div class="flex items-center justify-between py-1.5 px-3 bg-white rounded-xl mb-2 shadow-xs">
+            <span class="text-xs font-bold text-slate-700">小林 (Lin)</span>
+            <div class="flex flex-col items-center">
+              <span class="text-xs font-black text-teal-800">S$ 383.60</span>
+              <span class="text-[9px] text-slate-400">→ 转账给 →</span>
+            </div>
+            <span class="text-xs font-bold text-slate-700">Alex Tan (我)</span>
+          </div>
+          <div class="flex gap-2">
+            <button class="flex-1 py-1.5 bg-teal-700 hover:bg-teal-800 active:scale-95 text-white text-xs font-bold rounded-lg flex items-center justify-center gap-1" onclick="alert('触发 PayNow 转账: S$ 383.60 至 Alex Tan (我)')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="zap" aria-hidden="true" class="lucide lucide-zap w-3 h-3"><path d="M15.914 4a1.5 1.5 0 00-2.474-1.561l-9 9A1.5 1.5 0 005.5 14h4.002a.5.5 0 01.471.666L8.086 20a1.5 1.5 0 002.475 1.56l9-9A1.5 1.5 0 0018.5 10h-3.997a.5.5 0 01-.472-.667z"></path></svg> PayNow 一键转账
+            </button>
+            <button class="px-3 py-1.5 bg-white border border-slate-200 text-slate-700 text-xs font-medium rounded-lg" onclick="navigator.clipboard.writeText('+65 8890 2311'); alert('已复制收款账号：+65 8890 2311')">
+              复制账号
+            </button>
+          </div>
+        </div>
+      
+        <div class="p-3 bg-teal-50/50 rounded-2xl border border-teal-100">
+          <div class="flex justify-between items-center text-xs mb-2">
+            <span class="font-bold text-teal-900 flex items-center gap-1.5">
+              <span class="w-4 h-4 rounded-full bg-teal-700 text-white text-[10px] flex items-center justify-center font-bold">2</span>
+              第 2 步转账
+            </span>
+            <span class="text-[10px] bg-amber-100 text-amber-800 font-bold px-1.5 py-0.2 rounded">待结清</span>
+          </div>
+          <div class="flex items-center justify-between py-1.5 px-3 bg-white rounded-xl mb-2 shadow-xs">
+            <span class="text-xs font-bold text-slate-700">阿伟 (David)</span>
+            <div class="flex flex-col items-center">
+              <span class="text-xs font-black text-teal-800">S$ 262.86</span>
+              <span class="text-[9px] text-slate-400">→ 转账给 →</span>
+            </div>
+            <span class="text-xs font-bold text-slate-700">Alex Tan (我)</span>
+          </div>
+          <div class="flex gap-2">
+            <button class="flex-1 py-1.5 bg-teal-700 hover:bg-teal-800 active:scale-95 text-white text-xs font-bold rounded-lg flex items-center justify-center gap-1" onclick="alert('触发 PayNow 转账: S$ 262.86 至 Alex Tan (我)')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="zap" aria-hidden="true" class="lucide lucide-zap w-3 h-3"><path d="M15.914 4a1.5 1.5 0 00-2.474-1.561l-9 9A1.5 1.5 0 005.5 14h4.002a.5.5 0 01.471.666L8.086 20a1.5 1.5 0 002.475 1.56l9-9A1.5 1.5 0 0018.5 10h-3.997a.5.5 0 01-.472-.667z"></path></svg> PayNow 一键转账
+            </button>
+            <button class="px-3 py-1.5 bg-white border border-slate-200 text-slate-700 text-xs font-medium rounded-lg" onclick="navigator.clipboard.writeText('+65 8890 2311'); alert('已复制收款账号：+65 8890 2311')">
+              复制账号
+            </button>
+          </div>
+        </div>
+      </div>
 </div>
 <!-- 操作按钮 -->
 <div class="space-y-2">
 <button class="w-full py-3.5 bg-teal-800 hover:bg-teal-900 active:scale-95 text-white font-bold text-sm rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-teal-900/20 transition-all" onclick="markAllSettled()">
-<i class="w-4 h-4" data-lucide="check-circle-2"></i> 标记全部已结清 (Mark All Settled)
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check-circle-2" aria-hidden="true" class="lucide lucide-check-circle-2 w-4 h-4"><circle cx="12" cy="12" r="10"></circle><path d="m16 9-5.5 5.5L8 12"></path></svg> 标记全部已结清 (Mark All Settled)
       </button>
 <button class="w-full py-2.5 bg-white hover:bg-slate-50 active:scale-95 text-teal-800 font-bold text-xs rounded-2xl flex items-center justify-center gap-1.5 border border-teal-200 transition-all" onclick="copySettlementSummary()">
-<i class="w-3.5 h-3.5" data-lucide="share-2"></i> 复制当前筛选清账清单到微信/群聊
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="share-2" aria-hidden="true" class="lucide lucide-share-2 w-3.5 h-3.5"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg> 复制当前筛选清账清单到微信/群聊
       </button>
 </div>
 </main>
@@ -226,7 +500,7 @@
 <main class="view-content flex-1 px-4 pt-3 pb-6 hidden" id="view-add-expense">
 <div class="flex items-center justify-between mb-3">
 <button class="p-2 -ml-2 text-slate-600 hover:text-slate-900 active:scale-90" onclick="switchTab('timeline')">
-<i class="w-6 h-6" data-lucide="arrow-left"></i>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-left" aria-hidden="true" class="lucide lucide-arrow-left w-6 h-6"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
 </button>
 <span class="font-bold text-base text-slate-900">记一笔旅行消费</span>
 <button class="text-xs text-slate-400 hover:text-slate-600" onclick="switchTab('timeline')">取消</button>
@@ -235,7 +509,7 @@
 <div class="cursor-pointer bg-white rounded-2xl p-3.5 shadow-sm border border-slate-200/80 mb-3.5 flex items-center justify-between active:bg-slate-50" onclick="openTripModal()">
 <div class="flex items-center gap-2.5">
 <div class="w-9 h-9 rounded-xl bg-teal-50 text-teal-800 flex items-center justify-center font-bold">
-<i class="w-4 h-4" data-lucide="map-pin"></i>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="map-pin" aria-hidden="true" class="lucide lucide-map-pin w-4 h-4"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
 </div>
 <div>
 <div class="text-[10px] text-teal-700 font-bold tracking-wide">当前记账归属行程</div>
@@ -245,8 +519,8 @@
 </div>
 </div>
 <div class="flex items-center gap-1 text-slate-400 text-xs font-semibold">
-<span>切换</span>
-<i class="w-3.5 h-3.5" data-lucide="chevron-right"></i>
+<span class="">切换</span>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-right" aria-hidden="true" class="lucide lucide-chevron-right w-3.5 h-3.5"><path d="m9 18 6-6-6-6"></path></svg>
 </div>
 </div>
 <!-- 货币选择与输入 (支持自由添加货币) -->
@@ -254,26 +528,24 @@
 <div class="flex justify-between items-center mb-3">
 <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">选择货币 (基准: SGD)</span>
 <button class="text-[10px] text-teal-700 font-bold bg-teal-50 hover:bg-teal-100 px-2.5 py-1 rounded-full flex items-center gap-1 border border-teal-200/60 active:scale-95 transition-all" onclick="openAddCurrencyModal()">
-<i class="w-3 h-3" data-lucide="plus"></i> + 自由添加新币种
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="plus" aria-hidden="true" class="lucide lucide-plus w-3 h-3"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg> + 自由添加新币种
         </button>
 </div>
-<div class="flex items-center gap-1.5 p-1 bg-slate-100 rounded-2xl mb-4 overflow-x-auto no-scrollbar" id="currency-selector"></div>
+<div class="flex items-center gap-1.5 p-1 bg-slate-100 rounded-2xl mb-4 overflow-x-auto no-scrollbar" id="currency-selector"><button type="button" class="py-2 px-3 text-xs font-black rounded-xl bg-white text-teal-800 shadow-xs flex-shrink-0" onclick="selectCurrency('CNY')">🇨🇳 CNY</button><button type="button" class="py-2 px-3 text-xs font-bold text-slate-600 rounded-xl hover:bg-white/60 flex-shrink-0" onclick="selectCurrency('JPY')">🇯🇵 JPY</button><button type="button" class="py-2 px-3 text-xs font-bold text-slate-600 rounded-xl hover:bg-white/60 flex-shrink-0" onclick="selectCurrency('EUR')">🇪🇺 EUR</button><button type="button" class="py-2 px-3 text-xs font-bold text-slate-600 rounded-xl hover:bg-white/60 flex-shrink-0" onclick="selectCurrency('USD')">🇺🇸 USD</button><button type="button" class="py-2 px-3 text-xs font-bold text-slate-600 rounded-xl hover:bg-white/60 flex-shrink-0" onclick="selectCurrency('THB')">🇹🇭 THB</button></div>
 <div class="flex items-baseline gap-2 mb-2 pb-1 border-b border-slate-100 focus-within:border-teal-600 transition-colors">
 <span class="text-3xl font-bold text-slate-400" id="currency-symbol">¥</span>
-<input class="w-full text-4xl font-black text-slate-900 tracking-tight outline-none bg-transparent" id="input-amount" oninput="calculateExchange()" placeholder="0.00" type="number" value="380.00"/>
+<input class="w-full text-4xl font-black text-slate-900 tracking-tight outline-none bg-transparent" id="input-amount" oninput="calculateExchange()" placeholder="0.00" type="number" value="380.00">
 </div>
 <div class="p-3 bg-teal-50/70 rounded-2xl flex items-center justify-between">
 <div>
 <div class="text-xs font-extrabold text-teal-900 flex items-center gap-1.5">
-<span id="calculated-sgd-text">≈ S$ 71.03 SGD</span>
+<span id="calculated-sgd-text" class="">≈ S$ 71.03 SGD</span>
 <span class="text-[9px] font-bold text-teal-700 bg-white px-1.5 py-0.5 rounded shadow-xs">折合入账</span>
 </div>
-<div class="text-[10px] text-teal-700/80 mt-0.5" id="exchange-rate-hint">
-            1 SGD ≈ 5.35 CNY · 实时汇率计算
-          </div>
+<div class="text-[10px] text-teal-700/80 mt-0.5" id="exchange-rate-hint">1 SGD ≈ 5.35 CNY · 实时汇率计算</div>
 </div>
 <button class="p-2 text-teal-700 hover:bg-teal-100/60 rounded-xl" onclick="rotateRate()" title="刷新汇率" type="button">
-<i class="w-4 h-4" data-lucide="refresh-cw"></i>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="refresh-cw" aria-hidden="true" class="lucide lucide-refresh-cw w-4 h-4"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M8 16H3v5"></path></svg>
 </button>
 </div>
 </div>
@@ -281,7 +553,7 @@
 <div class="bg-white rounded-3xl p-4 shadow-sm border border-slate-100 mb-4">
 <div class="flex justify-between items-center mb-2.5">
 <label class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-<i class="w-4 h-4 text-teal-600" data-lucide="shapes"></i> 旅行分类 (12项精细体系)
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="shapes" aria-hidden="true" class="lucide lucide-shapes w-4 h-4 text-teal-600"><path d="M8.3 10a.7.7 0 0 1-.626-1.079L11.4 3a.7.7 0 0 1 1.198-.043L16.3 8.9a.7.7 0 0 1-.572 1.1Z"></path><rect x="3" y="14" width="7" height="7" rx="1"></rect><circle cx="17.5" cy="17.5" r="3.5"></circle></svg> 旅行分类 (12项精细体系)
         </label>
 <span class="text-[10px] text-teal-800 font-bold" id="selected-category-name">已选：晚餐</span>
 </div>
@@ -328,16 +600,16 @@
 <div class="bg-white rounded-3xl p-4 shadow-sm border border-slate-100 mb-4 space-y-3">
 <div>
 <label class="text-[11px] font-bold text-slate-500 block mb-1">支出项目名称</label>
-<input class="w-full px-3.5 py-2.5 bg-slate-50 rounded-xl text-sm font-bold text-slate-800 outline-none border border-slate-200/80 focus:border-teal-600 focus:bg-white" id="input-title" type="text" value="九寨沟藏家风味牦牛肉火锅"/>
+<input class="w-full px-3.5 py-2.5 bg-slate-50 rounded-xl text-sm font-bold text-slate-800 outline-none border border-slate-200/80 focus:border-teal-600 focus:bg-white" id="input-title" type="text" value="九寨沟藏家风味牦牛肉火锅">
 </div>
 <div class="grid grid-cols-2 gap-2">
 <div>
 <label class="text-[11px] font-bold text-slate-500 block mb-1">消费时间</label>
-<input class="w-full px-3 py-2 bg-slate-50 rounded-xl text-xs font-semibold text-slate-700 outline-none border border-slate-200" id="input-datetime" type="datetime-local" value="2023-10-14T19:30"/>
+<input class="w-full px-3 py-2 bg-slate-50 rounded-xl text-xs font-semibold text-slate-700 outline-none border border-slate-200" id="input-datetime" type="datetime-local" value="2023-10-14T19:30">
 </div>
 <div>
 <label class="text-[11px] font-bold text-slate-500 block mb-1">地点/备注</label>
-<input class="w-full px-3 py-2 bg-slate-50 rounded-xl text-xs font-semibold text-slate-700 outline-none border border-slate-200" id="input-notes" placeholder="选填，如：漳扎镇附院" type="text" value="九寨沟漳扎镇"/>
+<input class="w-full px-3 py-2 bg-slate-50 rounded-xl text-xs font-semibold text-slate-700 outline-none border border-slate-200" id="input-notes" placeholder="选填，如：漳扎镇附院" type="text" value="九寨沟漳扎镇">
 </div>
 </div>
 </div>
@@ -348,7 +620,7 @@
 <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">经手录入人 (Recorded by)</div>
 <div class="text-xs font-bold text-slate-800 flex items-center gap-1.5 mt-0.5">
 <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-<span id="current-recorder-name">我 (Alex Tan)</span>
+<span id="current-recorder-name" class="">我 (Alex Tan)</span>
 </div>
 </div>
 <button class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg active:scale-95" onclick="cycleRecorder()" type="button">
@@ -360,7 +632,31 @@
 <label class="text-xs font-bold text-slate-700">谁先行垫付？(Paid by)</label>
 <span class="text-[10px] text-teal-700 font-semibold" id="payer-tag">我 先行垫付 100%</span>
 </div>
-<div class="grid grid-cols-4 gap-2" id="payer-grid"></div>
+<div class="grid grid-cols-4 gap-2" id="payer-grid">
+        <button class="active p-2.5 bg-teal-50 border-2 border-teal-600 rounded-2xl flex flex-col items-center text-center" onclick="selectPayer('mem_1')" type="button">
+          <div class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden mb-1 ring-2 ring-teal-500/40">
+            <img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&amp;fit=crop&amp;w=200&amp;q=80">
+          </div>
+          <span class="text-xs font-bold text-teal-900 truncate w-full">我</span>
+          <span class="text-[9px] text-teal-700 font-bold">100%垫付</span>
+        </button>
+      
+        <button class="p-2.5 bg-slate-50 border border-slate-200 rounded-2xl flex flex-col items-center text-center opacity-70 hover:opacity-100" onclick="selectPayer('mem_2')" type="button">
+          <div class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden mb-1 ring-2 ring-transparent">
+            <img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&amp;fit=crop&amp;w=200&amp;q=80">
+          </div>
+          <span class="text-xs font-bold text-slate-700 truncate w-full">小林</span>
+          <span class="text-[9px] text-slate-400">0%</span>
+        </button>
+      
+        <button class="p-2.5 bg-slate-50 border border-slate-200 rounded-2xl flex flex-col items-center text-center opacity-70 hover:opacity-100" onclick="selectPayer('mem_3')" type="button">
+          <div class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden mb-1 ring-2 ring-transparent">
+            <img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&amp;fit=crop&amp;w=200&amp;q=80">
+          </div>
+          <span class="text-xs font-bold text-slate-700 truncate w-full">阿伟</span>
+          <span class="text-[9px] text-slate-400">0%</span>
+        </button>
+      </div>
 </div>
 </div>
 <!-- 分摊方式 -->
@@ -377,7 +673,7 @@
 <div class="p-3 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between">
 <div>
 <div class="text-xs font-bold text-slate-800" id="split-status-title">全员均摊结果</div>
-<div class="text-[11px] text-slate-500 mt-0.5" id="split-subtext">每人应付: <span class="font-extrabold text-teal-800 text-xs" id="split-per-person">S$ 23.68</span> (¥126.67 CNY)</div>
+<div class="text-[11px] text-slate-500 mt-0.5" id="split-subtext">每人应付: <span class="font-extrabold text-teal-800 text-xs">S$ 23.68</span> (¥126.67 CNY)</div>
 </div>
 <span class="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100">自动平账</span>
 </div>
@@ -385,10 +681,10 @@
 <!-- 保存按钮 -->
 <div class="space-y-2.5">
 <button class="w-full py-4 bg-teal-800 hover:bg-teal-900 active:scale-[0.98] text-white font-bold text-sm rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-teal-900/25 transition-all" onclick="saveExpenseAndSync(false)">
-<i class="w-4 h-4" data-lucide="cloud-upload"></i> 保存并同步至行程账本 (Save &amp; Sync)
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="cloud-upload" aria-hidden="true" class="lucide lucide-cloud-upload w-4 h-4"><path d="M12 13v8"></path><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="m8 17 4-4 4 4"></path></svg> 保存并同步至行程账本 (Save &amp; Sync)
       </button>
 <button class="w-full py-3 bg-white hover:bg-slate-50 active:scale-[0.98] text-slate-700 font-bold text-xs rounded-2xl flex items-center justify-center gap-1.5 border border-slate-200 shadow-xs" onclick="saveExpenseAndSync(true)">
-<i class="w-3.5 h-3.5 text-teal-600" data-lucide="plus-circle"></i> 保存并再记一笔
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="plus-circle" aria-hidden="true" class="lucide lucide-plus-circle w-3.5 h-3.5 text-teal-600"><circle cx="12" cy="12" r="10"></circle><path d="M8 12h8"></path><path d="M12 8v8"></path></svg> 保存并再记一笔
       </button>
 </div>
 </main>
@@ -398,7 +694,7 @@
 <div class="bg-white rounded-2xl p-3 shadow-xs border border-slate-100 mb-3 space-y-2">
 <div class="flex items-center justify-between">
 <span class="text-[11px] font-bold text-slate-600 flex items-center gap-1">
-<i class="w-3.5 h-3.5 text-teal-700" data-lucide="filter"></i> 统计图表多维联动筛选
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="filter" aria-hidden="true" class="lucide lucide-filter w-3.5 h-3.5 text-teal-700"><path d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"></path></svg> 统计图表多维联动筛选
         </span>
 <span class="text-[10px] text-slate-400">实时计算</span>
 </div>
@@ -428,7 +724,7 @@
 <!-- 看板 -->
 <div class="bg-gradient-to-tr from-teal-800 to-emerald-800 text-white rounded-3xl p-5 shadow-lg shadow-teal-900/15 mb-4">
 <div class="text-xs font-semibold text-teal-100/90 mb-1">团队筛选支出 (Total Spent)</div>
-<div class="text-3xl font-black tracking-tight mb-3" id="analytics-total-amount">S$ 2,450.80</div>
+<div class="text-3xl font-black tracking-tight mb-3" id="analytics-total-amount">S$ 1631.60</div>
 <div class="grid grid-cols-3 gap-2 pt-3 border-t border-white/15 text-center">
 <div>
 <div class="text-[10px] text-teal-100 font-medium">笔数</div>
@@ -436,11 +732,11 @@
 </div>
 <div>
 <div class="text-[10px] text-teal-100 font-medium">日均花费</div>
-<div class="text-sm font-extrabold" id="analytics-avg-daily">S$ 490.16</div>
+<div class="text-sm font-extrabold" id="analytics-avg-daily">S$ 326.32</div>
 </div>
 <div>
 <div class="text-[10px] text-teal-100 font-medium">人均承担</div>
-<div class="text-sm font-extrabold" id="analytics-per-person">S$ 816.93</div>
+<div class="text-sm font-extrabold" id="analytics-per-person">S$ 543.87</div>
 </div>
 </div>
 </div>
@@ -448,16 +744,56 @@
 <div class="bg-white rounded-3xl p-4 shadow-sm border border-slate-100 mb-4">
 <div class="flex justify-between items-center mb-3">
 <span class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-<i class="w-4 h-4 text-teal-600" data-lucide="pie-chart"></i> 各分类消费分布
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="pie-chart" aria-hidden="true" class="lucide lucide-pie-chart w-4 h-4 text-teal-600"><path d="M21 12c.552 0 1.005-.449.95-.998a10 10 0 0 0-8.953-8.951c-.55-.055-.998.398-.998.95v8a1 1 0 0 0 1 1z"></path><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path></svg> 各分类消费分布
         </span>
 <span class="text-[10px] text-slate-400 font-medium">基准币折算</span>
 </div>
-<div class="space-y-3" id="analytics-cat-breakdown"></div>
+<div class="space-y-3" id="analytics-cat-breakdown">
+          <div>
+            <div class="flex justify-between text-xs mb-1">
+              <span class="font-bold text-slate-700">餐饮</span>
+              <span class="font-bold text-slate-900">S$ 401.25 (24.6%)</span>
+            </div>
+            <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+              <div class="h-full bg-teal-600 rounded-full" style="width: 24.6%"></div>
+            </div>
+          </div>
+        
+          <div>
+            <div class="flex justify-between text-xs mb-1">
+              <span class="font-bold text-slate-700">交通</span>
+              <span class="font-bold text-slate-900">S$ 140.75 (8.6%)</span>
+            </div>
+            <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+              <div class="h-full bg-teal-600 rounded-full" style="width: 8.6%"></div>
+            </div>
+          </div>
+        
+          <div>
+            <div class="flex justify-between text-xs mb-1">
+              <span class="font-bold text-slate-700">住宿</span>
+              <span class="font-bold text-slate-900">S$ 894.57 (54.8%)</span>
+            </div>
+            <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+              <div class="h-full bg-teal-600 rounded-full" style="width: 54.8%"></div>
+            </div>
+          </div>
+        
+          <div>
+            <div class="flex justify-between text-xs mb-1">
+              <span class="font-bold text-slate-700">门票</span>
+              <span class="font-bold text-slate-900">S$ 195.03 (12.0%)</span>
+            </div>
+            <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+              <div class="h-full bg-teal-600 rounded-full" style="width: 12.0%"></div>
+            </div>
+          </div>
+        </div>
 </div>
 <!-- 报表导出 -->
 <div class="bg-white rounded-3xl p-4 shadow-sm border border-slate-100 mb-4">
 <div class="text-xs font-bold text-slate-800 mb-3 flex items-center gap-1.5">
-<i class="w-4 h-4 text-teal-600" data-lucide="download-cloud"></i> 数据报表导出中心
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="download-cloud" aria-hidden="true" class="lucide lucide-download-cloud w-4 h-4 text-teal-600"><path d="M12 13v8l-4-4"></path><path d="m12 21 4-4"></path><path d="M4.393 15.269A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.436 8.284"></path></svg> 数据报表导出中心
       </div>
 <div class="space-y-2">
 <button class="w-full p-3 bg-slate-50 hover:bg-slate-100 rounded-2xl flex items-center justify-between text-left border border-slate-100 active:scale-99 transition-all" onclick="downloadCSV()">
@@ -468,7 +804,7 @@
 <div class="text-[10px] text-slate-400">含原币、SGD 折算、垫付人及 OCR 凭据</div>
 </div>
 </div>
-<i class="w-4 h-4 text-slate-400" data-lucide="download"></i>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="download" aria-hidden="true" class="lucide lucide-download w-4 h-4 text-slate-400"><path d="M12 15V3"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path></svg>
 </button>
 </div>
 </div>
@@ -483,20 +819,77 @@
 </div>
 <button class="text-right" onclick="openRoomModal()">
 <span class="text-xs font-black bg-teal-50 text-teal-800 px-2.5 py-1 rounded-full border border-teal-200/80 flex items-center gap-1">
-<span id="members-room-code-badge">ROOM TYO-882</span>
-<i class="w-3 h-3" data-lucide="external-link"></i>
+<span id="members-room-code-badge" class="">ROOM TYO-882</span>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="external-link" aria-hidden="true" class="lucide lucide-external-link w-3 h-3"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg>
 </span>
 </button>
 </div>
 <p class="text-xs text-slate-400 mb-4">加入房间的旅伴可记账分摊，点击每位伙伴可直接编辑资料或删除，也可随时添加新成员。</p>
 <!-- 明显的「+ 添加新旅伴」按钮 -->
 <button class="w-full mb-4 py-3 bg-teal-800 hover:bg-teal-900 active:scale-98 text-white rounded-2xl font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-teal-800/20 transition-all" onclick="openAddMemberModal()">
-<i class="w-4 h-4" data-lucide="user-plus"></i> + 添加新旅伴成员
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="user-plus" aria-hidden="true" class="lucide lucide-user-plus w-4 h-4"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" x2="19" y1="8" y2="14"></line><line x1="22" x2="16" y1="11" y2="11"></line></svg> + 添加新旅伴成员
       </button>
 <!-- 成员列表容器 -->
-<div class="space-y-3" id="members-list-container"></div>
+<div class="space-y-3" id="members-list-container">
+      <div class="flex items-center justify-between p-3 bg-slate-50 hover:bg-teal-50/40 rounded-2xl border border-slate-100 transition-colors">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full overflow-hidden ring-2 ring-teal-600/30 flex-shrink-0 bg-slate-200">
+            <img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&amp;fit=crop&amp;w=200&amp;q=80" alt="Alex Tan (我)">
+          </div>
+          <div>
+            <div class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+              Alex Tan (我)
+              <span class="text-[9px] bg-teal-700 text-white px-1.5 py-0.2 rounded font-bold">我</span>
+              <span class="text-[9px] bg-slate-200 text-slate-700 px-1.5 py-0.2 rounded font-medium">房主 · 财务</span>
+            </div>
+            <div class="text-[10px] text-slate-400 font-mono mt-0.5">PayNow: +65 8890 2311</div>
+          </div>
+        </div>
+        <button onclick="openEditMemberModal('mem_1')" class="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-bold rounded-xl active:scale-95 flex items-center gap-1">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="edit-2" aria-hidden="true" class="lucide lucide-edit-2 w-3 h-3 text-teal-700"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"></path></svg> 编辑
+        </button>
+      </div>
+    
+      <div class="flex items-center justify-between p-3 bg-slate-50 hover:bg-teal-50/40 rounded-2xl border border-slate-100 transition-colors">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full overflow-hidden ring-2 ring-teal-600/30 flex-shrink-0 bg-slate-200">
+            <img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&amp;fit=crop&amp;w=200&amp;q=80" alt="小林 (Lin)">
+          </div>
+          <div>
+            <div class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+              小林 (Lin)
+              
+              <span class="text-[9px] bg-slate-200 text-slate-700 px-1.5 py-0.2 rounded font-medium">美食达人</span>
+            </div>
+            <div class="text-[10px] text-slate-400 font-mono mt-0.5">PayNow: +65 9123 4567</div>
+          </div>
+        </div>
+        <button onclick="openEditMemberModal('mem_2')" class="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-bold rounded-xl active:scale-95 flex items-center gap-1">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="edit-2" aria-hidden="true" class="lucide lucide-edit-2 w-3 h-3 text-teal-700"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"></path></svg> 编辑
+        </button>
+      </div>
+    
+      <div class="flex items-center justify-between p-3 bg-slate-50 hover:bg-teal-50/40 rounded-2xl border border-slate-100 transition-colors">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full overflow-hidden ring-2 ring-teal-600/30 flex-shrink-0 bg-slate-200">
+            <img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&amp;fit=crop&amp;w=200&amp;q=80" alt="阿伟 (David)">
+          </div>
+          <div>
+            <div class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+              阿伟 (David)
+              
+              <span class="text-[9px] bg-slate-200 text-slate-700 px-1.5 py-0.2 rounded font-medium">自驾向导</span>
+            </div>
+            <div class="text-[10px] text-slate-400 font-mono mt-0.5">PayNow: +65 9876 5432</div>
+          </div>
+        </div>
+        <button onclick="openEditMemberModal('mem_3')" class="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-bold rounded-xl active:scale-95 flex items-center gap-1">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="edit-2" aria-hidden="true" class="lucide lucide-edit-2 w-3 h-3 text-teal-700"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"></path></svg> 编辑
+        </button>
+      </div>
+    </div>
 <button class="w-full mt-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-colors" onclick="copyRoomInviteLink()">
-<i class="w-3.5 h-3.5 text-teal-700" data-lucide="share-2"></i> 分享房间专属邀请链接
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="share-2" aria-hidden="true" class="lucide lucide-share-2 w-3.5 h-3.5 text-teal-700"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg> 分享房间专属邀请链接
       </button>
 </div>
 </main>
@@ -504,25 +897,25 @@
 <nav class="fixed bottom-0 left-0 right-0 z-40 flex justify-center pointer-events-none pb-safe">
 <div class="w-full max-w-[430px] bg-white/95 backdrop-blur-md border-t border-slate-200/80 px-2 py-1.5 flex items-center justify-between pointer-events-auto shadow-xl">
 <button class="flex flex-col items-center gap-0.5 text-teal-800 flex-1 py-1" id="nav-timeline" onclick="switchTab('timeline')">
-<i class="w-5 h-5" data-lucide="receipt-text"></i>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="receipt-text" aria-hidden="true" class="lucide lucide-receipt-text w-5 h-5"><path d="M13 16H8"></path><path d="M14 8H8"></path><path d="M16 12H8"></path><path d="M4 3a1 1 0 0 1 1-1 1.3 1.3 0 0 1 .7.2l.933.6a1.3 1.3 0 0 0 1.4 0l.934-.6a1.3 1.3 0 0 1 1.4 0l.933.6a1.3 1.3 0 0 0 1.4 0l.933-.6a1.3 1.3 0 0 1 1.4 0l.934.6a1.3 1.3 0 0 0 1.4 0l.933-.6A1.3 1.3 0 0 1 19 2a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1 1.3 1.3 0 0 1-.7-.2l-.933-.6a1.3 1.3 0 0 0-1.4 0l-.934.6a1.3 1.3 0 0 1-1.4 0l-.933-.6a1.3 1.3 0 0 0-1.4 0l-.933.6a1.3 1.3 0 0 1-1.4 0l-.934-.6a1.3 1.3 0 0 0-1.4 0l-.933.6a1.3 1.3 0 0 1-.7.2 1 1 0 0 1-1-1z"></path></svg>
 <span class="text-[10px] font-bold">账本明细</span>
 </button>
 <button class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-slate-600 flex-1 py-1" id="nav-settlement" onclick="switchTab('settlement')">
-<i class="w-5 h-5" data-lucide="arrow-left-right"></i>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-left-right" aria-hidden="true" class="lucide lucide-arrow-left-right w-5 h-5"><path d="M8 3 4 7l4 4"></path><path d="M4 7h16"></path><path d="m16 21 4-4-4-4"></path><path d="M20 17H4"></path></svg>
 <span class="text-[10px] font-medium">智能清账</span>
 </button>
 <!-- 居中高亮「+」记账 FAB -->
 <div class="flex-1 flex justify-center -mt-6">
 <button class="w-14 h-14 bg-gradient-to-tr from-teal-800 via-teal-700 to-teal-500 hover:from-teal-900 text-white rounded-full shadow-lg shadow-teal-800/40 flex items-center justify-center active:scale-95 transition-all border-4 border-white" onclick="switchTab('add-expense')" title="记一笔">
-<i class="w-7 h-7 stroke-[2.5]" data-lucide="plus"></i>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="plus" aria-hidden="true" class="lucide lucide-plus w-7 h-7 stroke-[2.5]"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
 </button>
 </div>
 <button class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-slate-600 flex-1 py-1" id="nav-analytics" onclick="switchTab('analytics')">
-<i class="w-5 h-5" data-lucide="pie-chart"></i>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="pie-chart" aria-hidden="true" class="lucide lucide-pie-chart w-5 h-5"><path d="M21 12c.552 0 1.005-.449.95-.998a10 10 0 0 0-8.953-8.951c-.55-.055-.998.398-.998.95v8a1 1 0 0 0 1 1z"></path><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path></svg>
 <span class="text-[10px] font-medium">统计报表</span>
 </button>
 <button class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-slate-600 flex-1 py-1" id="nav-members" onclick="switchTab('members')">
-<i class="w-5 h-5" data-lucide="users"></i>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="users" aria-hidden="true" class="lucide lucide-users w-5 h-5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><path d="M16 3.128a4 4 0 0 1 0 7.744"></path><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><circle cx="9" cy="7" r="4"></circle></svg>
 <span class="text-[10px] font-medium">旅伴成员</span>
 </button>
 </div>
@@ -536,34 +929,34 @@
 <p class="text-xs text-slate-400">修改后将即时联动垫付人与智能清账</p>
 </div>
 <button class="p-1 text-slate-400 hover:text-slate-600" onclick="closeMemberModal()">
-<i class="w-5 h-5" data-lucide="x"></i>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" aria-hidden="true" class="lucide lucide-x w-5 h-5"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
 </button>
 </div>
 <!-- 头像上传与预览 -->
 <div class="flex items-center gap-4 mb-4 p-3 bg-slate-50 rounded-2xl border border-slate-100">
 <div class="w-14 h-14 rounded-full overflow-hidden border-2 border-white shadow ring-2 ring-teal-500/30 flex-shrink-0 bg-slate-200">
-<img alt="Avatar" class="w-full h-full object-cover" id="member-modal-avatar-preview" src=""/>
+<img alt="Avatar" class="w-full h-full object-cover" id="member-modal-avatar-preview" src="">
 </div>
 <div class="flex-1">
 <div class="text-xs font-bold text-slate-800 mb-1">旅伴专属头像</div>
 <label class="cursor-pointer inline-flex items-center gap-1 px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-100 text-teal-800 text-[11px] font-bold rounded-xl active:scale-95 transition-all">
-<i class="w-3 h-3" data-lucide="upload"></i> 选择本地照片
-            <input accept="image/*" class="hidden" onchange="handleMemberAvatarUpload(event)" type="file"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="upload" aria-hidden="true" class="lucide lucide-upload w-3 h-3"><path d="M12 3v12"></path><path d="m17 8-5-5-5 5"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path></svg> 选择本地照片
+            <input accept="image/*" class="hidden" onchange="handleMemberAvatarUpload(event)" type="file">
 </label>
 </div>
 </div>
 <div class="space-y-3 mb-5">
 <div>
 <label class="text-[11px] font-bold text-slate-500 block mb-1">姓名 / 昵称 <span class="text-rose-500">*</span></label>
-<input class="w-full px-3.5 py-2.5 bg-slate-50 rounded-xl text-xs font-bold text-slate-800 border border-slate-200 outline-none focus:border-teal-600 focus:bg-white" id="member-input-name" placeholder="例如：小林 (Lin)" type="text"/>
+<input class="w-full px-3.5 py-2.5 bg-slate-50 rounded-xl text-xs font-bold text-slate-800 border border-slate-200 outline-none focus:border-teal-600 focus:bg-white" id="member-input-name" placeholder="例如：小林 (Lin)" type="text">
 </div>
 <div>
 <label class="text-[11px] font-bold text-slate-500 block mb-1">角色分工 (如：财务管家、向导、摄影师)</label>
-<input class="w-full px-3.5 py-2.5 bg-slate-50 rounded-xl text-xs font-medium text-slate-800 border border-slate-200 outline-none focus:border-teal-600 focus:bg-white" id="member-input-role" placeholder="例如：美食向导" type="text"/>
+<input class="w-full px-3.5 py-2.5 bg-slate-50 rounded-xl text-xs font-medium text-slate-800 border border-slate-200 outline-none focus:border-teal-600 focus:bg-white" id="member-input-role" placeholder="例如：美食向导" type="text">
 </div>
 <div>
 <label class="text-[11px] font-bold text-slate-500 block mb-1">PayNow / 微信 / 支付宝收款账号</label>
-<input class="w-full px-3.5 py-2.5 bg-slate-50 rounded-xl text-xs font-mono font-bold text-slate-800 border border-slate-200 outline-none focus:border-teal-600 focus:bg-white" id="member-input-paynow" placeholder="+65 8890 2311 或 微信号" type="text"/>
+<input class="w-full px-3.5 py-2.5 bg-slate-50 rounded-xl text-xs font-mono font-bold text-slate-800 border border-slate-200 outline-none focus:border-teal-600 focus:bg-white" id="member-input-paynow" placeholder="+65 8890 2311 或 微信号" type="text">
 </div>
 </div>
 <div class="flex gap-2">
@@ -571,7 +964,7 @@
           删除
         </button>
 <button class="flex-1 py-3 bg-teal-800 hover:bg-teal-900 active:scale-95 text-white text-xs font-bold rounded-2xl shadow-md shadow-teal-900/20 flex items-center justify-center gap-1.5" onclick="saveMemberData()" type="button">
-<i class="w-4 h-4" data-lucide="check"></i> 保存旅伴信息
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" aria-hidden="true" class="lucide lucide-check w-4 h-4"><path d="M20 6 9 17l-5-5"></path></svg> 保存旅伴信息
         </button>
 </div>
 </div>
@@ -585,7 +978,7 @@
 <p class="text-xs text-slate-400">支持全球旅行货币并设定对 SGD 基准汇率</p>
 </div>
 <button class="p-1 text-slate-400 hover:text-slate-600" onclick="closeCurrencyModal()">
-<i class="w-5 h-5" data-lucide="x"></i>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" aria-hidden="true" class="lucide lucide-x w-5 h-5"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
 </button>
 </div>
 <div class="mb-3">
@@ -601,70 +994,26 @@
 <div class="grid grid-cols-2 gap-2">
 <div>
 <label class="text-[11px] font-bold text-slate-500 block mb-1">币种代码 (3位字母)</label>
-<input class="w-full px-3 py-2 bg-slate-50 rounded-xl text-xs font-black uppercase text-slate-800 border border-slate-200 outline-none focus:border-teal-600" id="new-currency-code" placeholder="如 THB" type="text"/>
+<input class="w-full px-3 py-2 bg-slate-50 rounded-xl text-xs font-black uppercase text-slate-800 border border-slate-200 outline-none focus:border-teal-600" id="new-currency-code" placeholder="如 THB" type="text">
 </div>
 <div>
 <label class="text-[11px] font-bold text-slate-500 block mb-1">货币符号 (Symbol)</label>
-<input class="w-full px-3 py-2 bg-slate-50 rounded-xl text-xs font-bold text-slate-800 border border-slate-200 outline-none focus:border-teal-600" id="new-currency-symbol" placeholder="如 ฿" type="text"/>
+<input class="w-full px-3 py-2 bg-slate-50 rounded-xl text-xs font-bold text-slate-800 border border-slate-200 outline-none focus:border-teal-600" id="new-currency-symbol" placeholder="如 ฿" type="text">
 </div>
 </div>
 <div>
 <label class="text-[11px] font-bold text-slate-500 block mb-1">汇率换算: 1 SGD = 多少该货币？</label>
-<input class="w-full px-3 py-2 bg-slate-50 rounded-xl text-xs font-bold text-slate-800 border border-slate-200 outline-none focus:border-teal-600" id="new-currency-rate" placeholder="如 26.50" step="0.01" type="number"/>
+<input class="w-full px-3 py-2 bg-slate-50 rounded-xl text-xs font-bold text-slate-800 border border-slate-200 outline-none focus:border-teal-600" id="new-currency-rate" placeholder="如 26.50" step="0.01" type="number">
 </div>
 </div>
 <button class="w-full py-3 bg-teal-800 hover:bg-teal-900 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1 shadow-md active:scale-95 transition-all" onclick="confirmAddNewCurrency()">
-<i class="w-4 h-4" data-lucide="check"></i> 确认添加并立即选用此币种
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" aria-hidden="true" class="lucide lucide-check w-4 h-4"><path d="M20 6 9 17l-5-5"></path></svg> 确认添加并立即选用此币种
       </button>
 </div>
 </div>
 <!-- ==================== 模态弹窗 3：房间号码 (Room ID) 管理与新建/加入 ==================== -->
 <div class="fixed inset-0 z-50 modal-backdrop flex items-end sm:items-center justify-center p-0 sm:p-4 hidden" id="room-modal">
-<div class="w-full max-w-[420px] bg-white rounded-t-3xl sm:rounded-3xl p-5 shadow-2xl">
-<div class="flex justify-between items-center mb-3">
-<div>
-<h3 class="text-base font-extrabold text-slate-900">协同房间 (Room ID) 管理</h3>
-<p class="text-xs text-slate-400">同房间旅伴可实时云端对账</p>
-</div>
-<button class="p-1 text-slate-400 hover:text-slate-600" onclick="closeRoomModal()">
-<i class="w-5 h-5" data-lucide="x"></i>
-</button>
-</div>
-<!-- 当前房间号修改 -->
-<div class="p-3.5 bg-teal-50/70 border border-teal-200/80 rounded-2xl mb-4">
-<div class="flex justify-between items-center mb-1">
-<span class="text-[10px] font-bold text-teal-700 uppercase tracking-wide">当前活动协同房间</span>
-<span class="text-[10px] bg-teal-600 text-white px-2 py-0.5 rounded-full font-bold">在线同步中</span>
-</div>
-<div class="flex items-center gap-2 mt-2">
-<input class="text-base font-black text-teal-950 bg-white border border-teal-200 rounded-xl px-3 py-1.5 w-full uppercase" id="room-code-input" type="text" value="TYO-882"/>
-<button class="px-3 py-1.5 bg-teal-800 hover:bg-teal-900 text-white text-xs font-bold rounded-xl whitespace-nowrap active:scale-95" onclick="updateCurrentRoomCode()">
-            保存修改
-          </button>
-</div>
-<div class="flex items-center gap-2 mt-2.5 pt-2 border-t border-teal-200/50">
-<button class="flex-1 py-1.5 bg-white border border-teal-200 hover:bg-teal-100/50 text-teal-800 text-xs font-semibold rounded-xl flex items-center justify-center gap-1" onclick="copyRoomCodeDirect()">
-<i class="w-3.5 h-3.5" data-lucide="copy"></i> 复制房间号
-          </button>
-<button class="flex-1 py-1.5 bg-white border border-teal-200 hover:bg-teal-100/50 text-teal-800 text-xs font-semibold rounded-xl flex items-center justify-center gap-1" onclick="copyRoomInviteLink()">
-<i class="w-3.5 h-3.5" data-lucide="share-2"></i> 复制邀请链接
-          </button>
-</div>
-</div>
-<!-- 加入其他房间 -->
-<div class="space-y-2 mb-3">
-<div class="text-[11px] font-bold text-slate-600">加入已有房间 / 切换房间</div>
-<div class="flex gap-2">
-<input class="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold uppercase outline-none focus:border-teal-600" id="join-room-input" placeholder="输入如 EUR-902" type="text"/>
-<button class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl active:scale-95" onclick="joinOtherRoom()">
-            立即加入
-          </button>
-</div>
-</div>
-<button class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl flex items-center justify-center gap-1" onclick="createNewRandomRoom()">
-<i class="w-3.5 h-3.5 text-teal-700" data-lucide="sparkles"></i> 随机生成并创建全新旅行房间
-      </button>
-</div>
+<div class="w-full max-w-[420px] bg-white rounded-t-3xl sm:rounded-3xl p-5 shadow-2xl"><div class="flex justify-between items-center mb-3"><div><h3 class="text-base font-extrabold text-slate-900">协同房间 (Room ID) 管理中心</h3><p class="text-xs text-slate-400">管理当前协同房间，支持编辑、新建与删除历史房间</p></div><button class="p-1 text-slate-400 hover:text-slate-600" onclick="closeRoomModal()"><i class="w-5 h-5" data-lucide="x"></i></button></div><div class="p-3.5 bg-teal-50/70 border border-teal-200/80 rounded-2xl mb-4"><div class="flex justify-between items-center mb-1"><span class="text-[10px] font-bold text-teal-700 uppercase tracking-wide">当前活动协同房间</span><span class="text-[10px] bg-teal-600 text-white px-2 py-0.5 rounded-full font-bold">在线同步中</span></div><div class="flex items-center gap-2 mt-2"><input class="text-base font-black text-teal-950 bg-white border border-teal-200 rounded-xl px-3 py-1.5 w-full uppercase" id="room-code-input" type="text" value="TYO-882"><button class="px-3 py-1.5 bg-teal-800 hover:bg-teal-900 text-white text-xs font-bold rounded-xl whitespace-nowrap active:scale-95" onclick="updateCurrentRoomCode()">保存修改</button></div><div class="flex items-center gap-2 mt-2.5 pt-2 border-t border-teal-200/50"><button class="flex-1 py-1.5 bg-white border border-teal-200 hover:bg-teal-100/50 text-teal-800 text-xs font-semibold rounded-xl flex items-center justify-center gap-1" onclick="copyRoomCodeDirect()"><i class="w-3.5 h-3.5" data-lucide="copy"></i> 复制房间号</button><button class="flex-1 py-1.5 bg-white border border-teal-200 hover:bg-teal-100/50 text-teal-800 text-xs font-semibold rounded-xl flex items-center justify-center gap-1" onclick="copyRoomInviteLink()"><i class="w-3.5 h-3.5" data-lucide="share-2"></i> 复制邀请链接</button></div></div><div class="mb-4"><div class="text-[11px] font-bold text-slate-600 mb-1.5 flex items-center justify-between"><span class="">我加入的协同房间列表</span><span class="text-[10px] text-slate-400">点击可快速切换</span></div><div class="space-y-1.5 max-h-36 overflow-y-auto" id="room-history-list"></div></div><div class="space-y-2 mb-3"><div class="text-[11px] font-bold text-slate-600">加入已有房间 / 切换房间</div><div class="flex gap-2"><input class="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold uppercase outline-none focus:border-teal-600" id="join-room-input" placeholder="输入如 EUR-902" type="text"><button class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl active:scale-95" onclick="joinOtherRoom()">立即加入</button></div></div><button class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl flex items-center justify-center gap-1 active:scale-98 transition-colors" onclick="createNewRandomRoom()"><i class="w-3.5 h-3.5 text-teal-700" data-lucide="sparkles"></i> 随机生成并创建全新旅行房间</button></div>
 </div>
 <!-- ==================== 模态弹窗 4：App Logo & 标题自定义修改 ==================== -->
 <div class="fixed inset-0 z-50 modal-backdrop flex items-end sm:items-center justify-center p-0 sm:p-4 hidden" id="logo-modal">
@@ -675,7 +1024,7 @@
 <p class="text-xs text-slate-400">打造团队专属记账品牌</p>
 </div>
 <button class="p-1 text-slate-400 hover:text-slate-600" onclick="closeLogoModal()">
-<i class="w-5 h-5" data-lucide="x"></i>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" aria-hidden="true" class="lucide lucide-x w-5 h-5"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
 </button>
 </div>
 <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl mb-4 border border-slate-100">
@@ -690,19 +1039,19 @@
 <div class="space-y-3 mb-5">
 <div>
 <label class="text-[11px] font-bold text-slate-500 block mb-1">Logo 徽标文字 (1-3个字符)</label>
-<input class="w-full px-3 py-2 bg-slate-50 rounded-xl text-xs font-black text-slate-800 border border-slate-200 outline-none focus:border-teal-600" id="logo-text-input" maxlength="3" oninput="previewLogoChange()" type="text" value="EJ"/>
+<input class="w-full px-3 py-2 bg-slate-50 rounded-xl text-xs font-black text-slate-800 border border-slate-200 outline-none focus:border-teal-600" id="logo-text-input" maxlength="3" oninput="previewLogoChange()" type="text" value="EJ">
 </div>
 <div>
 <label class="text-[11px] font-bold text-slate-500 block mb-1">应用名称标题</label>
-<input class="w-full px-3 py-2 bg-slate-50 rounded-xl text-xs font-bold text-slate-800 border border-slate-200 outline-none focus:border-teal-600" id="title-text-input" oninput="previewLogoChange()" type="text" value="Equator"/>
+<input class="w-full px-3 py-2 bg-slate-50 rounded-xl text-xs font-bold text-slate-800 border border-slate-200 outline-none focus:border-teal-600" id="title-text-input" oninput="previewLogoChange()" type="text" value="Equator">
 </div>
 <div>
 <label class="text-[11px] font-bold text-slate-500 block mb-1">或上传图片作为 Logo 图标</label>
-<input accept="image/*" class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-teal-50 file:text-teal-800 hover:file:bg-teal-100" onchange="handleLogoImgUpload(event)" type="file"/>
+<input accept="image/*" class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-teal-50 file:text-teal-800 hover:file:bg-teal-100" onchange="handleLogoImgUpload(event)" type="file">
 </div>
 </div>
 <button class="w-full py-3 bg-teal-800 hover:bg-teal-900 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1 shadow-md active:scale-95 transition-all" onclick="saveLogoSettings()">
-<i class="w-4 h-4" data-lucide="check"></i> 应用并保存 Logo 修改
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" aria-hidden="true" class="lucide lucide-check w-4 h-4"><path d="M20 6 9 17l-5-5"></path></svg> 应用并保存 Logo 修改
       </button>
 </div>
 </div>
@@ -715,85 +1064,40 @@
 <p class="text-xs text-slate-400">修改本人姓名、头像及收款账号</p>
 </div>
 <button class="p-1 text-slate-400 hover:text-slate-600" onclick="closeProfileModal()">
-<i class="w-5 h-5" data-lucide="x"></i>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" aria-hidden="true" class="lucide lucide-x w-5 h-5"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
 </button>
 </div>
 <!-- 本人头像上传修改 -->
 <div class="flex items-center gap-4 mb-4 p-3 bg-slate-50 rounded-2xl border border-slate-100">
 <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-white shadow ring-2 ring-teal-500/30 flex-shrink-0 bg-slate-200">
-<img alt="Profile Preview" class="w-full h-full object-cover" id="profile-modal-avatar-preview" src=""/>
+<img alt="Profile Preview" class="w-full h-full object-cover" id="profile-modal-avatar-preview" src="">
 </div>
 <div class="flex-1">
 <div class="text-xs font-bold text-slate-800 mb-1">本人专属头像</div>
 <label class="cursor-pointer inline-flex items-center gap-1 px-3 py-1.5 bg-teal-800 hover:bg-teal-900 text-white text-[11px] font-bold rounded-xl active:scale-95 transition-all shadow-xs">
-<i class="w-3 h-3" data-lucide="camera"></i> 从相册选择照片
-            <input accept="image/*" class="hidden" onchange="handleMyAvatarUpload(event)" type="file"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="camera" aria-hidden="true" class="lucide lucide-camera w-3 h-3"><path d="M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z"></path><circle cx="12" cy="13" r="3"></circle></svg> 从相册选择照片
+            <input accept="image/*" class="hidden" onchange="handleMyAvatarUpload(event)" type="file">
 </label>
 </div>
 </div>
 <div class="space-y-3 mb-5">
 <div>
 <label class="text-[11px] font-bold text-slate-500 block mb-1">我的名字</label>
-<input class="w-full px-3 py-2 bg-slate-50 rounded-xl text-xs font-bold text-slate-800 border border-slate-200 outline-none focus:border-teal-600" id="profile-input-name" type="text" value="Alex Tan"/>
+<input class="w-full px-3 py-2 bg-slate-50 rounded-xl text-xs font-bold text-slate-800 border border-slate-200 outline-none focus:border-teal-600" id="profile-input-name" type="text" value="Alex Tan">
 </div>
 <div>
 <label class="text-[11px] font-bold text-slate-500 block mb-1">我的 PayNow / 手机收款账号</label>
-<input class="w-full px-3 py-2 bg-slate-50 rounded-xl text-xs font-mono font-bold text-slate-800 border border-slate-200 outline-none focus:border-teal-600" id="profile-input-phone" type="text" value="+65 8890 2311"/>
+<input class="w-full px-3 py-2 bg-slate-50 rounded-xl text-xs font-mono font-bold text-slate-800 border border-slate-200 outline-none focus:border-teal-600" id="profile-input-phone" type="text" value="+65 8890 2311">
 </div>
 </div>
 <button class="w-full py-3 bg-teal-800 hover:bg-teal-900 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1 shadow-md active:scale-95 transition-all" onclick="saveMyProfile()">
-<i class="w-4 h-4" data-lucide="check"></i> 保存个人信息与头像
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" aria-hidden="true" class="lucide lucide-check w-4 h-4"><path d="M20 6 9 17l-5-5"></path></svg> 保存个人信息与头像
       </button>
 </div>
 </div>
 <!-- ==================== 模态弹窗 6：行程账本切换模态弹窗 (Trip Modal) ==================== -->
 <div class="fixed inset-0 z-50 modal-backdrop flex items-end sm:items-center justify-center p-0 sm:p-4 hidden" id="trip-modal">
-<div class="w-full max-w-[430px] bg-white rounded-t-3xl sm:rounded-3xl p-5 shadow-2xl">
-<div class="flex justify-between items-center mb-4">
-<div>
-<h3 class="text-base font-extrabold text-slate-900">选择或切换旅行账本</h3>
-<p class="text-xs text-slate-400">切换后金额与统计将自动同步更新</p>
-</div>
-<button class="p-1 text-slate-400 hover:text-slate-600" onclick="closeTripModal()">
-<i class="w-5 h-5" data-lucide="x"></i>
-</button>
-</div>
-<div class="space-y-2.5 mb-4">
-<div class="cursor-pointer p-3.5 rounded-2xl border-2 border-teal-600 bg-teal-50/70 flex items-center justify-between" onclick="selectTrip('TRIP_1', '🇨🇳 中国15日深度游 · 成都-重庆-九寨沟', '10月12日 - 10月26日 · Day 3', 'TYO-882')">
-<div class="flex items-center gap-3">
-<span class="text-2xl">🇨🇳</span>
-<div>
-<div class="text-xs font-black text-teal-950">中国15日深度游 · 成都-重庆-九寨沟</div>
-<div class="text-[10px] text-teal-700">10月12日 - 10月26日 · 3人同行</div>
-</div>
-</div>
-<span class="text-[10px] font-bold bg-teal-700 text-white px-2 py-0.5 rounded-full">进行中</span>
-</div>
-<div class="cursor-pointer p-3.5 rounded-2xl border border-slate-200 hover:bg-slate-50 flex items-center justify-between" onclick="selectTrip('TRIP_2', '🇪🇺 欧洲35日畅游 · 法意德瑞', '已计划 12月1日出发', 'EUR-902')">
-<div class="flex items-center gap-3">
-<span class="text-2xl">🇪🇺</span>
-<div>
-<div class="text-xs font-bold text-slate-800">欧洲35日畅游 · 法意德瑞</div>
-<div class="text-[10px] text-slate-400">已计划 12月1日出发 · 4人同行</div>
-</div>
-</div>
-<span class="text-[10px] text-slate-400 font-semibold">筹备中</span>
-</div>
-<div class="cursor-pointer p-3.5 rounded-2xl border border-slate-200 hover:bg-slate-50 flex items-center justify-between" onclick="selectTrip('TRIP_3', '🇯🇵 东京5日美食之行', '已归档 · 9月完结', 'TYO-101')">
-<div class="flex items-center gap-3">
-<span class="text-2xl">🇯🇵</span>
-<div>
-<div class="text-xs font-bold text-slate-800">东京5日美食之行</div>
-<div class="text-[10px] text-slate-400">已归档 · 9月完结 · 全员结清</div>
-</div>
-</div>
-<span class="text-[10px] text-slate-400 font-semibold">已结清</span>
-</div>
-</div>
-<button class="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-2xl flex items-center justify-center gap-1.5" onclick="createNewTripPrompt()">
-<i class="w-4 h-4 text-teal-700" data-lucide="plus"></i> + 创建新的旅行记账房间
-      </button>
-</div>
+<div class="w-full max-w-[430px] bg-white rounded-t-3xl sm:rounded-3xl p-5 shadow-2xl"><div class="flex justify-between items-center mb-3"><div><h3 class="text-base font-extrabold text-slate-900">旅行行程管理中心</h3><p class="text-xs text-slate-400">支持自由切换、新增、修改与删除行程</p></div><button class="p-1 text-slate-400 hover:text-slate-600" onclick="closeTripModal()"><i class="w-5 h-5" data-lucide="x"></i></button></div><div class="space-y-2 mb-4 max-h-[48vh] overflow-y-auto pr-1" id="trip-modal-list"></div><div class="border-t border-slate-100 pt-3 space-y-2"><button class="w-full py-3 bg-teal-800 hover:bg-teal-900 text-white text-xs font-bold rounded-2xl flex items-center justify-center gap-1.5 shadow-md active:scale-98 transition-all" onclick="showNewTripInput()" id="btn-show-add-trip"><i class="w-4 h-4" data-lucide="plus-circle"></i> + 创建新旅行账本行程</button><div class="hidden p-3 bg-slate-50 border border-teal-200/80 rounded-2xl space-y-2.5" id="new-trip-input-container"><div><label class="text-[10px] font-bold text-slate-500 block mb-1">行程名称 (如：🇯🇵 京都大阪枫叶季)</label><input type="text" id="input-new-trip-title" placeholder="输入行程名称" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:border-teal-600"></div><div class="grid grid-cols-2 gap-2"><div><label class="text-[10px] font-bold text-slate-500 block mb-1">时间周期</label><input type="text" id="input-new-trip-date" placeholder="如: 11月1日 - 11月8日" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs text-slate-700 outline-none focus:border-teal-600"></div><div><label class="text-[10px] font-bold text-slate-500 block mb-1">协同房间号</label><input type="text" id="input-new-trip-room" placeholder="如: KIX-203" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs uppercase font-bold text-slate-700 outline-none focus:border-teal-600"></div></div><div class="flex gap-2 pt-1"><button type="button" onclick="hideNewTripInput()" class="w-1/3 py-2 bg-white border border-slate-200 hover:bg-slate-100 text-slate-600 text-xs font-bold rounded-xl active:scale-95">取消</button><button type="button" onclick="confirmCreateNewTrip()" class="flex-1 py-2 bg-teal-800 hover:bg-teal-900 text-white text-xs font-bold rounded-xl active:scale-95 shadow-sm">确认创建</button></div></div></div></div>
 </div>
 </div>
 <!-- 原生轻量 JavaScript 完整应用数据驱动逻辑 -->
@@ -1781,5 +2085,186 @@
     a.click();
   }
 </script>
-</body>
-</html>
+
+
+
+<script>
+  store.trips = [
+    {
+      id: 'TRIP_1',
+      title: '🇨🇳 中国15日深度游 · 成都-重庆-九寨沟',
+      date: '10月12日 - 10月26日 · Day 3',
+      room: 'TYO-882',
+      status: '进行中'
+    },
+    {
+      id: 'TRIP_2',
+      title: '🇪🇺 欧洲35日畅游 · 法意德瑞',
+      date: '已计划 12月1日出发 · 4人同行',
+      room: 'EUR-902',
+      status: '筹备中'
+    },
+    {
+      id: 'TRIP_3',
+      title: '🇯🇵 东京5日美食之行',
+      date: '已归档 · 9月完结 · 全员结清',
+      room: 'TYO-101',
+      status: '已结清'
+    }
+  ];
+  store.roomHistory = ['TYO-882', 'EUR-902', 'TYO-101'];
+
+  function renderTripModalList() {
+    const container = document.getElementById('trip-modal-list');
+    if (!container) return;
+    container.innerHTML = store.trips.map(trip => {
+      const isActive = trip.id === store.currentTripId;
+      return `
+        <div class="p-3 rounded-2xl border ${isActive ? 'border-2 border-teal-600 bg-teal-50/70' : 'border-slate-200 bg-white hover:bg-slate-50'} flex items-center justify-between transition-colors">
+          <div class="flex-1 cursor-pointer pr-2" onclick="selectTrip('${trip.id}', '${trip.title}', '${trip.date}', '${trip.room}')">
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs font-black ${isActive ? 'text-teal-950' : 'text-slate-800'}">${trip.title}</span>
+              <span class="text-[9px] font-bold px-1.5 py-0.2 rounded-full ${isActive ? 'bg-teal-700 text-white' : 'bg-slate-100 text-slate-500'}">${trip.status}</span>
+            </div>
+            <div class="text-[10px] text-slate-400 mt-0.5">${trip.date} · 房间: ${trip.room}</div>
+          </div>
+          <div class="flex items-center gap-1 flex-shrink-0">
+            <button type="button" class="p-1 text-slate-400 hover:text-teal-700 rounded-lg hover:bg-teal-50" onclick="editTripTitlePrompt('${trip.id}')" title="重命名行程">
+              <i class="w-3.5 h-3.5" data-lucide="pencil"></i>
+            </button>
+            ${store.trips.length > 1 ? `
+            <button type="button" class="p-1 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50" onclick="deleteTrip('${trip.id}')" title="删除行程">
+              <i class="w-3.5 h-3.5" data-lucide="trash-2"></i>
+            </button>` : ''}
+          </div>
+        </div>
+      `;
+    }).join('');
+    lucide.createIcons();
+  }
+
+  function showNewTripInput() {
+    document.getElementById('new-trip-input-container').classList.remove('hidden');
+    document.getElementById('btn-show-add-trip').classList.add('hidden');
+  }
+  function hideNewTripInput() {
+    document.getElementById('new-trip-input-container').classList.add('hidden');
+    document.getElementById('btn-show-add-trip').classList.remove('hidden');
+  }
+
+  function confirmCreateNewTrip() {
+    const title = document.getElementById('input-new-trip-title').value.trim();
+    const date = document.getElementById('input-new-trip-date').value.trim() || '规划中';
+    const room = (document.getElementById('input-new-trip-room').value.trim() || 'ROOM-' + Math.floor(100+Math.random()*900)).toUpperCase();
+    if (!title) {
+      alert('请输入行程名称！');
+      return;
+    }
+    const newTrip = {
+      id: 'TRIP_' + Date.now(),
+      title,
+      date,
+      room,
+      status: '进行中'
+    };
+    store.trips.unshift(newTrip);
+    if (!store.roomHistory.includes(room)) store.roomHistory.push(room);
+    selectTrip(newTrip.id, newTrip.title, newTrip.date, newTrip.room);
+    hideNewTripInput();
+    renderTripModalList();
+    renderRoomHistoryList();
+    alert(`🎉 行程【${title}】创建成功并已自动切换！`);
+  }
+
+  function editTripTitlePrompt(tripId) {
+    const trip = store.trips.find(t => t.id === tripId);
+    if (!trip) return;
+    const newTitle = prompt('修改行程名称：', trip.title);
+    if (newTitle && newTitle.trim()) {
+      trip.title = newTitle.trim();
+      if (store.currentTripId === tripId) {
+        store.currentTripTitle = trip.title;
+        document.getElementById('timeline-trip-title').textContent = trip.title;
+        document.getElementById('add-selected-trip-name').textContent = trip.title;
+        document.getElementById('members-trip-name').textContent = trip.title.split(' · ')[0];
+      }
+      renderTripModalList();
+    }
+  }
+
+  function deleteTrip(tripId) {
+    if (store.trips.length <= 1) {
+      alert('至少需保留一个行程！');
+      return;
+    }
+    const trip = store.trips.find(t => t.id === tripId);
+    if (!confirm(`确认删除行程【${trip ? trip.title : ''}】吗？`)) return;
+    store.trips = store.trips.filter(t => t.id !== tripId);
+    store.expenses = store.expenses.filter(e => e.tripId !== tripId);
+    if (store.currentTripId === tripId) {
+      const first = store.trips[0];
+      selectTrip(first.id, first.title, first.date, first.room);
+    } else {
+      renderTripModalList();
+    }
+  }
+
+  function renderRoomHistoryList() {
+    const container = document.getElementById('room-history-list');
+    if (!container) return;
+    container.innerHTML = store.roomHistory.map(code => {
+      const isCurrent = code === store.roomCode;
+      return `
+        <div class="flex items-center justify-between px-3 py-1.5 bg-slate-50 hover:bg-teal-50/60 rounded-xl border border-slate-100 text-xs">
+          <button type="button" onclick="switchRoomCodeDirect('${code}')" class="flex items-center gap-2 font-black ${isCurrent ? 'text-teal-800' : 'text-slate-700'}">
+            <span class="font-mono">${code}</span>
+            ${isCurrent ? '<span class="text-[9px] bg-teal-100 text-teal-800 px-1.5 py-0.2 rounded">当前</span>' : ''}
+          </button>
+          ${store.roomHistory.length > 1 ? `
+          <button type="button" onclick="deleteRoomHistory('${code}')" class="text-slate-400 hover:text-rose-600 p-1" title="移除房间记录">
+            <i class="w-3 h-3" data-lucide="trash"></i>
+          </button>` : ''}
+        </div>
+      `;
+    }).join('');
+    lucide.createIcons();
+  }
+
+  function switchRoomCodeDirect(code) {
+    store.roomCode = code;
+    document.getElementById('global-room-tag').textContent = code;
+    document.getElementById('members-room-code-badge').textContent = 'ROOM ' + code;
+    document.getElementById('room-code-input').value = code;
+    closeRoomModal();
+    alert(`已切换至协同房间：${code}`);
+  }
+
+  function deleteRoomHistory(code) {
+    if (store.roomHistory.length <= 1) {
+      alert('至少需保留一个协同房间！');
+      return;
+    }
+    store.roomHistory = store.roomHistory.filter(c => c !== code);
+    if (store.roomCode === code) {
+      switchRoomCodeDirect(store.roomHistory[0]);
+    } else {
+      renderRoomHistoryList();
+    }
+  }
+
+  const originalOpenTripModal = openTripModal;
+  openTripModal = function() {
+    renderTripModalList();
+    originalOpenTripModal();
+  };
+
+  const originalOpenRoomModal = openRoomModal;
+  openRoomModal = function() {
+    renderRoomHistoryList();
+    originalOpenRoomModal();
+  };
+
+  renderTripModalList();
+  renderRoomHistoryList();
+  lucide.createIcons();
+</script></body></html>
