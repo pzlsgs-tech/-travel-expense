@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Equator Journey - 私人旅行记账 (全端云协同版)</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Equator Journey - 私人旅行记账 (账户隔离与图标版)</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
@@ -17,108 +17,82 @@
             mono: ['"JetBrains Mono"', 'monospace']
           },
           colors: {
-            brand: {
-              50: '#f0fdf9',
-              100: '#ccfbf1',
-              500: '#14b8a6',
-              600: '#0d9488',
-              700: '#0f766e',
-              800: '#115e59'
-            },
-            surface: {
-              ground: '#f8fafc',
-              card: '#ffffff',
-              subtle: '#f1f5f9'
-            }
+            brand: { 50: '#f0fdf9', 100: '#ccfbf1', 500: '#14b8a6', 600: '#0d9488', 700: '#0f766e', 800: '#115e59' }
           }
         }
       }
     }
   </script>
   <style>
-    body {
-      background-color: #f1f5f9;
-      color: #0f172a;
-      -webkit-font-smoothing: antialiased;
-    }
-    .custom-scroll::-webkit-scrollbar {
-      width: 4px;
-      height: 4px;
-    }
-    .custom-scroll::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 4px;
-    }
-    .tap-active:active {
-      transform: scale(0.98);
-    }
-    .modal-backdrop {
-      background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(4px);
-    }
+    body { background-color: #f1f5f9; color: #0f172a; -webkit-font-smoothing: antialiased; }
+    .custom-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .tap-active:active { transform: scale(0.97); }
+    .modal-backdrop { background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(4px); }
   </style>
 </head>
 <body class="flex justify-center min-h-screen">
 
-  <!-- Mobile Simulator Container (390px Max Width Centered) -->
   <div id="appContainer" class="w-full max-w-[430px] bg-slate-50 min-h-screen flex flex-col shadow-2xl relative pb-28 border-x border-slate-200 selection:bg-teal-500 selection:text-white">
 
-    <!-- Top App Header -->
+    <!-- Top Header with Account Info -->
     <header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-slate-100 px-4 py-3">
       <div class="flex items-center justify-between gap-2">
         <div class="flex items-center gap-2.5">
-          <div id="appLogoBadge" onclick="openSystemSettingsModal()" class="cursor-pointer relative group tap-active">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center text-white font-bold shadow-md shadow-teal-500/20 text-lg">
-              EJ
-            </div>
-            <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-slate-800 text-white text-[9px] rounded-full flex items-center justify-center border border-white">
-              ⚙
-            </div>
+          <div onclick="openSystemSettingsModal()" class="w-10 h-10 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center text-white font-bold shadow-md shadow-teal-500/20 text-base cursor-pointer tap-active" title="系统与数据设置">
+            EJ
           </div>
           <div>
             <div class="flex items-center gap-1.5">
-              <h1 class="font-bold text-slate-900 text-base leading-tight tracking-tight">Equator Journey</h1>
+              <h1 class="font-bold text-slate-900 text-base leading-tight">Equator Journey</h1>
               <span class="text-[10px] font-semibold bg-teal-50 text-teal-700 px-1.5 py-0.5 rounded border border-teal-200/60 font-mono">SGD基准</span>
             </div>
-            <p class="text-[11px] text-slate-400">小团队旅行费用 · 云协同</p>
+            <div class="flex items-center gap-1.5 text-[11px] text-slate-400">
+              <span id="headerUserRoleBadge" class="text-[9px] bg-slate-100 text-slate-600 font-semibold px-1 rounded">普通旅伴</span>
+              <span id="headerUserPhoneMask">138****0000</span>
+            </div>
           </div>
         </div>
 
-        <!-- Room & Cloud Sync Status Badge -->
-        <div class="flex items-center gap-1.5">
-          <button onclick="openSyncConfigModal()" class="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1.5 rounded-full text-xs font-mono font-medium transition tap-active border border-slate-200">
-            <span id="syncIndicatorDot" class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+        <div class="flex items-center gap-2">
+          <!-- Room Sync Button -->
+          <button onclick="openSyncConfigModal()" class="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1.5 rounded-full text-xs font-mono font-medium transition tap-active border border-slate-200" title="房间云同步设置">
+            <span id="syncIndicatorDot" class="w-2 h-2 rounded-full bg-amber-400"></span>
             <span id="headerRoomCode">TYO-882</span>
             <span id="cloudIcon">☁️</span>
           </button>
           
-          <button onclick="openSystemSettingsModal()" class="w-8 h-8 rounded-full border border-slate-200 overflow-hidden bg-slate-100 flex items-center justify-center shadow-sm">
-            <img id="myAvatarImg" src="https://lh3.googleusercontent.com/aida/AEtjO1VHXv2k76EO9LvatFn5Cs46G06JXBx3DpRCtyY_13sTFYRM8nbRcvBswCtNTTKNoqkshE3N6aprC3A3UUX7J6tIAci19bYjyrWyEmdL62U7UJzfyw8AgfEmHGJhXoW1p3aY9OW3SjUcNVL6pZWqkDi8KKGwaxwNxyeDeYJydooxDmPzQ-GT_R_Hm7DJIXbZbtxdiFF2TbP6WCpQy07M7ywvMtDptpPsLk0bpitdE4KGLcvWFVtqrMW8mQo" alt="Avatar" class="w-full h-full object-cover">
+          <!-- Current User Icon & Switch Account Button -->
+          <button onclick="openLoginModal()" class="relative group tap-active focus:outline-none" title="点击切换旅伴账号 / 输入PIN码登录">
+            <div id="headerUserAvatarSlot" class="w-9 h-9 rounded-xl shadow-sm flex items-center justify-center border-2 border-teal-500 bg-teal-600 text-white text-lg">
+              🎒
+            </div>
+            <span class="absolute -bottom-1 -right-1 bg-teal-800 text-white text-[8px] font-bold px-1 rounded-full border border-white">登入</span>
           </button>
         </div>
       </div>
 
-      <!-- Sync Alert Bar if not connected or error -->
-      <div id="syncStatusBar" onclick="openSyncConfigModal()" class="mt-2 text-xs py-1.5 px-3 rounded-lg flex items-center justify-between cursor-pointer transition bg-amber-50 text-amber-800 border border-amber-200">
+      <!-- Sync Alert Bar -->
+      <div id="syncStatusBar" onclick="openSyncConfigModal()" class="mt-2 text-xs py-1.5 px-3 rounded-xl flex items-center justify-between cursor-pointer transition bg-amber-50 text-amber-800 border border-amber-200">
         <div class="flex items-center gap-2 truncate">
           <span id="syncBarIcon" class="text-sm">⚠️</span>
-          <span id="syncBarText" class="truncate">云端尚未配置，数据仅保存在当前设备</span>
+          <span id="syncBarText" class="truncate">云端尚未配置，数据保存在本地</span>
         </div>
         <span class="text-[11px] font-semibold text-teal-700 underline shrink-0 ml-1">设置/排查</span>
       </div>
     </header>
 
-    <!-- Main Content Area with Views -->
+    <!-- Main Content -->
     <main class="flex-1 px-4 py-3 space-y-4">
 
-      <!-- Global Trip & Category Filter Bar -->
-      <section class="bg-white rounded-2xl p-3 shadow-sm border border-slate-200/80 space-y-2.5">
+      <!-- Trip Selector (Filtered strictly by User Permission) -->
+      <section class="bg-white rounded-2xl p-3.5 shadow-sm border border-slate-200/80 space-y-3">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-1.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
             <span>当前行程账本</span>
-            <span id="tripCountBadge" class="bg-slate-100 text-slate-600 px-1.5 py-0.2 rounded-full text-[10px]">3个</span>
+            <span id="tripCountBadge" class="bg-slate-100 text-slate-600 px-1.5 py-0.2 rounded-full text-[10px]">1个授权</span>
           </div>
-          <button onclick="openManageTripsModal()" class="text-xs text-teal-600 hover:text-teal-700 font-medium flex items-center gap-1 tap-active">
+          <button onclick="openManageTripsModal()" class="text-xs text-teal-600 hover:text-teal-700 font-semibold flex items-center gap-1 tap-active">
             <span>管理/切换行程</span>
             <span>▸</span>
           </button>
@@ -127,23 +101,23 @@
         <div class="flex items-center gap-2">
           <div class="relative flex-1">
             <select id="tripSelectFilter" onchange="handleTripFilterChange(this.value)" class="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-800 text-sm font-semibold rounded-xl pl-3 pr-8 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white transition cursor-pointer">
-              <!-- Rendered dynamically -->
+              <!-- Dynamically rendered -->
             </select>
             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-slate-400">
               ▼
             </div>
           </div>
-          <button onclick="openCreateTripModal()" class="bg-teal-50 text-teal-700 hover:bg-teal-100 border border-teal-200 px-3 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-1 shrink-0 tap-active">
+          <button id="addTripHeaderBtn" onclick="openCreateTripModal()" class="bg-teal-50 text-teal-700 hover:bg-teal-100 border border-teal-200 px-3 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-1 shrink-0 tap-active">
             <span>+ 新增行程</span>
           </button>
         </div>
 
-        <!-- Trip Summary Pill -->
-        <div id="tripInfoBanner" class="bg-gradient-to-r from-teal-700 to-emerald-800 text-white p-3 rounded-xl shadow-sm relative overflow-hidden">
+        <!-- Trip Summary Pill Banner -->
+        <div id="tripInfoBanner" class="bg-gradient-to-r from-teal-700 to-emerald-800 text-white p-3.5 rounded-2xl shadow-sm relative overflow-hidden">
           <div class="relative z-10 flex items-start justify-between">
             <div>
               <div class="flex items-center gap-1.5">
-                <span id="tripFlagEmoji" class="text-lg">🇨🇳</span>
+                <span id="tripFlagEmoji" class="text-xl">🇨🇳</span>
                 <span id="tripNameDisplay" class="font-bold text-sm tracking-tight">中国15日深度游 · 成都-重庆</span>
               </div>
               <p id="tripDateDisplay" class="text-[11px] text-teal-100/90 mt-0.5 font-mono">2023-10-12 ~ 2023-10-26</p>
@@ -153,26 +127,24 @@
               <div class="text-base font-extrabold font-mono text-white" id="tripTotalSgdDisplay">S$ 1,631.56</div>
             </div>
           </div>
-          <!-- Members avatars in this trip -->
-          <div class="mt-2 pt-2 border-t border-teal-600/50 flex items-center justify-between text-xs">
+          <div class="mt-2.5 pt-2.5 border-t border-teal-600/50 flex items-center justify-between text-xs">
             <div class="flex items-center -space-x-1.5" id="tripMembersAvatarsList">
-              <!-- Rendered dynamically -->
+              <!-- Rendered with colorful icon badges -->
             </div>
-            <button onclick="openManageMembersModal()" class="text-[11px] text-teal-100 hover:text-white flex items-center gap-1 tap-active bg-teal-800/60 px-2 py-0.5 rounded-md">
-              <span>👥 旅伴管理 (<span id="memberCountText">3人</span>)</span>
+            <button onclick="switchTab('members')" class="text-[11px] text-teal-100 hover:text-white flex items-center gap-1 tap-active bg-teal-800/60 px-2 py-0.5 rounded-md">
+              <span>👥 授权旅伴 (<span id="memberCountText">3人</span>)</span>
             </button>
           </div>
         </div>
       </section>
 
-      <!-- View 1: 账本明细 (Transactions Tab) -->
+      <!-- View 1: 账本明细 (Transactions) -->
       <section id="viewTabExpenses" class="space-y-3">
-        <!-- Filter and Summary Card -->
         <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80">
           <div class="flex items-center justify-between mb-3">
             <div class="text-xs text-slate-500 font-medium">
               筛选分类: 
-              <select id="categoryFilter" onchange="handleCategoryFilterChange(this.value)" class="ml-1 bg-slate-100 border border-slate-200 text-slate-700 text-xs rounded-lg px-2 py-1 focus:outline-none focus:ring-1 focus:ring-teal-500 font-medium">
+              <select id="categoryFilter" onchange="handleCategoryFilterChange(this.value)" class="ml-1 bg-slate-100 border border-slate-200 text-slate-700 text-xs rounded-lg px-2 py-1 font-medium">
                 <option value="ALL">全部支出分类</option>
                 <option value="餐饮美食">🍜 餐饮美食</option>
                 <option value="交通出行">🚕 交通出行</option>
@@ -189,7 +161,6 @@
             </div>
           </div>
 
-          <!-- Total Stat -->
           <div class="bg-slate-50 rounded-xl p-3 border border-slate-100 flex items-baseline justify-between">
             <div>
               <span class="text-xs text-slate-500">当前筛选总支出 (SGD 结算)</span>
@@ -201,131 +172,110 @@
             </div>
           </div>
 
-          <!-- Payer breakdown pills -->
-          <div class="mt-3 pt-3 border-t border-slate-100 flex gap-2 overflow-x-auto custom-scroll pb-1" id="payerBreakdownPills">
-            <!-- Rendered dynamically -->
-          </div>
+          <div class="mt-3 pt-3 border-t border-slate-100 flex gap-2 overflow-x-auto custom-scroll pb-1" id="payerBreakdownPills"></div>
         </div>
 
-        <!-- Expenses List Header -->
         <div class="flex items-center justify-between px-1">
           <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">流水明细 (按时间倒序)</h2>
-          <span class="text-[11px] text-teal-600 cursor-pointer" onclick="openExpenseModal()">+ 记一笔</span>
+          <span class="text-[11px] text-teal-600 font-bold cursor-pointer tap-active" onclick="openExpenseModal()">+ 记一笔</span>
         </div>
 
-        <!-- Expenses List Container -->
-        <div id="expenseListContainer" class="space-y-2.5">
-          <!-- Rendered dynamically -->
-        </div>
+        <div id="expenseListContainer" class="space-y-2.5"></div>
       </section>
 
-      <!-- View 2: 智能清账 (Settlement Tab) -->
+      <!-- View 2: 智能清账 (Settlement) -->
       <section id="viewTabSettlement" class="space-y-3 hidden">
         <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80">
           <div class="flex items-center justify-between border-b border-slate-100 pb-3">
             <div>
               <h2 class="text-base font-bold text-slate-900">智能清账结算方案</h2>
-              <p class="text-xs text-slate-400">按所选行程自动计算：垫付 - 应摊 = 净余额</p>
+              <p class="text-xs text-slate-400">按当前行程计算：垫付 - 应摊 = 净余额</p>
             </div>
             <span class="text-[11px] bg-teal-50 text-teal-700 font-bold px-2 py-1 rounded-md border border-teal-200">
-              最小转账次数算法
+              最小转账算法
             </span>
           </div>
 
-          <!-- Member Balances List -->
-          <div class="mt-4 space-y-2.5" id="settlementBalancesList">
-            <!-- Dynamic balances -->
-          </div>
+          <div class="mt-4 space-y-2.5" id="settlementBalancesList"></div>
 
-          <!-- Optimized Transfer Proposals -->
           <div class="mt-5 pt-4 border-t border-slate-100">
             <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
               <span>💳 最简转账结清步骤</span>
               <span class="text-[10px] font-normal text-slate-400">(直接转账即可平账)</span>
             </h3>
-            <div id="settlementStepsList" class="space-y-2">
-              <!-- Dynamic transfer cards -->
-            </div>
+            <div id="settlementStepsList" class="space-y-2"></div>
           </div>
 
-          <!-- Copy text settlement for WhatsApp/WeChat -->
           <button onclick="copySettlementSummaryText()" class="w-full mt-4 bg-slate-100 hover:bg-slate-200 text-slate-700 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition tap-active border border-slate-200">
             <span>📋 复制结算清单至微信/WhatsApp</span>
           </button>
         </div>
       </section>
 
-      <!-- View 3: 统计报表 (Reports Tab) -->
+      <!-- View 3: 统计报表 & CSV导出发票直链 (Reports) -->
       <section id="viewTabReports" class="space-y-3 hidden">
         <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80 space-y-4">
           <div class="flex items-center justify-between">
             <div>
-              <h2 class="text-base font-bold text-slate-900">消费统计报表</h2>
-              <p class="text-xs text-slate-400">当前行程各分类与各成员开销占比</p>
+              <h2 class="text-base font-bold text-slate-900">消费统计与发票导出</h2>
+              <p class="text-xs text-slate-400">导出表格含发票凭证直链与参与人明细</p>
             </div>
-            <button onclick="exportExpensesCSV()" class="text-xs bg-teal-50 hover:bg-teal-100 text-teal-700 font-semibold px-2.5 py-1.5 rounded-lg border border-teal-200 tap-active">
-              📥 导出 CSV
+            <button onclick="exportExpensesCSV()" class="text-xs bg-teal-600 hover:bg-teal-700 text-white font-bold px-3 py-1.5 rounded-lg shadow-sm shadow-teal-600/20 tap-active flex items-center gap-1">
+              <span>📥 导出完整 CSV (含发票链接)</span>
             </button>
           </div>
 
-          <!-- Category Progress Breakdown -->
-          <div>
-            <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">支出分类占比</h3>
-            <div id="categoryStatsBars" class="space-y-2.5">
-              <!-- Dynamically populated -->
-            </div>
+          <div class="p-2.5 rounded-xl bg-teal-50/70 border border-teal-100 text-xs text-teal-800 flex items-center gap-2">
+            <span class="text-base">🧾</span>
+            <span>导出的 CSV 表格已自动增加「发票凭证链接」列，点击链接或直接在应用中均可查看发票详情。</span>
           </div>
 
-          <!-- Member Spending Comparison -->
+          <div>
+            <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">支出分类占比</h3>
+            <div id="categoryStatsBars" class="space-y-2.5"></div>
+          </div>
+
           <div class="pt-4 border-t border-slate-100">
             <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">成员垫付贡献比</h3>
-            <div id="memberStatsBars" class="space-y-2.5">
-              <!-- Dynamically populated -->
-            </div>
+            <div id="memberStatsBars" class="space-y-2.5"></div>
           </div>
         </div>
       </section>
 
-      <!-- View 4: 旅伴与币种管理 (Settings/Members Tab) -->
+      <!-- View 4: 旅伴人员登记与多币种 (Members) -->
       <section id="viewTabMembers" class="space-y-3 hidden">
-        <!-- Members Management Box -->
         <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80 space-y-3">
           <div class="flex items-center justify-between">
             <div>
-              <h2 class="text-base font-bold text-slate-900">旅伴成员管理</h2>
-              <p class="text-xs text-slate-400">支持更改姓名、头像照片及收款账号</p>
+              <h2 class="text-base font-bold text-slate-900">旅伴人员登记与账号</h2>
+              <p class="text-xs text-slate-400">姓名、手机号、行程授权与4-6位数字密码</p>
             </div>
             <button onclick="openAddMemberModal()" class="bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg tap-active shadow-sm shadow-teal-500/20">
-              + 添加旅伴
+              + 登记新旅伴
             </button>
           </div>
 
-          <div id="membersManagementList" class="space-y-2.5 divide-y divide-slate-100">
-            <!-- Dynamic Member Cards -->
-          </div>
+          <div id="membersManagementList" class="space-y-2.5 divide-y divide-slate-100"></div>
         </div>
 
-        <!-- Currencies Management Box -->
         <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80 space-y-3">
           <div class="flex items-center justify-between">
             <div>
               <h2 class="text-base font-bold text-slate-900">多币种汇率管理</h2>
-              <p class="text-xs text-slate-400">所有币种均设定对 SGD (新币) 汇率</p>
+              <p class="text-xs text-slate-400">所有币种均统一设定对 SGD (新币) 汇率</p>
             </div>
             <button onclick="openAddCurrencyModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-lg tap-active border border-slate-200">
               + 自定义币种
             </button>
           </div>
 
-          <div id="currenciesManagementList" class="grid grid-cols-2 gap-2">
-            <!-- Dynamic Currencies -->
-          </div>
+          <div id="currenciesManagementList" class="grid grid-cols-2 gap-2"></div>
         </div>
       </section>
 
     </main>
 
-    <!-- Floating Action Button for quick Add Expense -->
+    <!-- Floating Add Expense Button -->
     <div class="fixed bottom-20 left-0 right-0 max-w-[430px] mx-auto pointer-events-none px-6 flex justify-center z-20">
       <button onclick="openExpenseModal()" class="pointer-events-auto bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white font-bold px-5 py-3 rounded-full shadow-lg shadow-teal-600/30 flex items-center gap-2 text-sm transform transition active:scale-95">
         <span class="text-lg leading-none">+</span>
@@ -355,30 +305,68 @@
 
     <!-- ==================== MODALS ==================== -->
 
-    <!-- Modal 1: 记一笔消费 (Add/Edit Expense) -->
+    <!-- Modal 0: 旅伴登录与密码验证 (PIN Login Modal) -->
+    <div id="loginModal" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
+      <div class="bg-white w-full max-w-[370px] rounded-3xl shadow-2xl p-5 space-y-4 animate-in fade-in">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-xl bg-teal-600 text-white flex items-center justify-center text-sm font-bold">🔐</div>
+            <div>
+              <h3 class="font-bold text-slate-900 text-sm">旅伴安全登录</h3>
+              <p class="text-[10px] text-slate-400">输入密码后仅能查看授权行程</p>
+            </div>
+          </div>
+          <button onclick="closeLoginModal()" class="text-slate-400 hover:text-slate-600 text-base">✕</button>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-2">快捷点选登录身份</label>
+          <div id="loginQuickSelectGrid" class="grid grid-cols-3 gap-2"></div>
+        </div>
+
+        <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="space-y-3 text-xs">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">手机号或旅伴姓名</label>
+            <input type="text" id="loginInputAccount" required placeholder="如 13800000000 或 小林" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-semibold text-slate-800">
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="font-semibold text-slate-700">4-6 位数字密码 (PIN)</label>
+              <span class="text-[10px] text-teal-600">默认PIN：1234 / 8888 / 6666</span>
+            </div>
+            <input type="password" id="loginInputPin" required maxlength="6" pattern="[0-9]{4,6}" placeholder="输入 4-6 位数字" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-center font-mono text-sm tracking-widest text-slate-900 font-bold focus:ring-2 focus:ring-teal-500">
+          </div>
+
+          <div id="loginErrorMsg" class="hidden text-[11px] text-rose-600 font-semibold bg-rose-50 p-2 rounded-lg border border-rose-200">
+            密码或账号错误，请重新输入。
+          </div>
+
+          <button type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 rounded-xl text-xs shadow-md shadow-teal-600/20 tap-active">
+            验证登录并查看授权行程
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal 1: 记一笔消费 (Add Expense) -->
     <div id="expenseModal" class="fixed inset-0 z-50 modal-backdrop hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
       <div class="bg-white w-full max-w-[430px] rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-200">
         <div class="p-4 border-b border-slate-100 flex items-center justify-between">
-          <h3 id="expenseModalTitle" class="font-bold text-slate-900 text-base">记一笔旅行消费</h3>
+          <h3 class="font-bold text-slate-900 text-base">记一笔旅行消费</h3>
           <button onclick="closeExpenseModal()" class="text-slate-400 hover:text-slate-600 text-lg px-2">✕</button>
         </div>
 
-        <form id="expenseForm" onsubmit="handleSaveExpense(event)" class="p-4 space-y-4 overflow-y-auto custom-scroll flex-1">
-          <input type="hidden" id="formExpenseId" value="">
-
-          <!-- Trip Selection for Expense -->
+        <form id="expenseForm" onsubmit="handleSaveExpense(event)" class="p-4 space-y-3.5 overflow-y-auto custom-scroll flex-1">
           <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">所属行程</label>
-            <select id="formExpenseTrip" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold text-slate-800">
-              <!-- Dynamically populated -->
-            </select>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">所属行程账本</label>
+            <select id="formExpenseTrip" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold text-slate-800"></select>
           </div>
 
-          <!-- Title & Category -->
           <div class="grid grid-cols-3 gap-2">
             <div class="col-span-2">
               <label class="block text-xs font-semibold text-slate-600 mb-1">消费描述</label>
-              <input type="text" id="formExpenseTitle" required placeholder="如：宽窄巷子火锅聚餐" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-800 focus:bg-white focus:ring-2 focus:ring-teal-500">
+              <input type="text" id="formExpenseTitle" required placeholder="如：宽窄巷子火锅聚餐" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-800">
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-600 mb-1">支出分类</label>
@@ -395,7 +383,6 @@
             </div>
           </div>
 
-          <!-- Currency and Amount -->
           <div class="bg-teal-50/70 p-3 rounded-2xl border border-teal-100 space-y-2">
             <div class="flex items-center justify-between text-xs text-teal-800 font-semibold">
               <span>原始花费金额</span>
@@ -403,218 +390,219 @@
             </div>
             <div class="flex gap-2">
               <div class="w-1/3">
-                <select id="formExpenseCurrency" onchange="updateExpenseConversionCalc()" class="w-full bg-white border border-teal-200 rounded-xl px-2.5 py-2.5 text-sm font-bold text-teal-950">
-                  <!-- Dynamically populated -->
-                </select>
+                <select id="formExpenseCurrency" onchange="updateExpenseConversionCalc()" class="w-full bg-white border border-teal-200 rounded-xl px-2 py-2.5 text-sm font-bold text-teal-950"></select>
               </div>
               <div class="flex-1">
                 <input type="number" step="0.01" min="0.01" id="formExpenseAmount" oninput="updateExpenseConversionCalc()" required placeholder="0.00" class="w-full bg-white border border-teal-200 rounded-xl px-3 py-2.5 text-lg font-black font-mono text-slate-900 focus:ring-2 focus:ring-teal-500 text-right">
               </div>
             </div>
-            <!-- Auto calculated SGD result -->
             <div class="flex items-center justify-between text-xs pt-1 border-t border-teal-200/50">
               <span class="text-teal-700">折合基准新币 (SGD):</span>
               <span id="formConvertedSGD" class="font-mono font-extrabold text-teal-900 text-sm">S$ 0.00</span>
             </div>
           </div>
 
-          <!-- Payer and Split Members -->
           <div class="space-y-3">
             <div>
               <label class="block text-xs font-semibold text-slate-600 mb-1">谁垫付的此笔款项？</label>
-              <select id="formExpensePayer" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold text-slate-800">
-                <!-- Dynamically populated -->
-              </select>
+              <select id="formExpensePayer" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold text-slate-800"></select>
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1.5">分摊成员 (默认全员平摊)</label>
-              <div id="formSplitMembersCheckboxes" class="grid grid-cols-3 gap-2">
-                <!-- Dynamically populated -->
-              </div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1.5">分摊成员 (默认平摊)</label>
+              <div id="formSplitMembersCheckboxes" class="grid grid-cols-2 gap-2"></div>
             </div>
           </div>
 
-          <!-- Date & Receipt Photo Upload -->
           <div class="grid grid-cols-2 gap-2">
             <div>
               <label class="block text-xs font-semibold text-slate-600 mb-1">消费日期</label>
               <input type="date" id="formExpenseDate" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono text-slate-800">
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">上传发票/收据 (可选)</label>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">发票/收据凭证</label>
               <label class="flex items-center justify-center gap-1.5 w-full bg-slate-50 hover:bg-slate-100 border border-dashed border-slate-300 rounded-xl px-2 py-2 text-xs text-slate-600 cursor-pointer">
-                <span>📷</span>
-                <span id="receiptFileName">选择照片</span>
+                <span>🧾</span>
+                <span id="receiptFileName" class="truncate">拍照或选凭证</span>
                 <input type="file" accept="image/*" id="formExpenseReceipt" onchange="handleReceiptFileSelect(event)" class="hidden">
               </label>
             </div>
           </div>
 
-          <div class="pt-2">
-            <button type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-teal-600/30 text-sm transition tap-active">
-              💾 保存并自动同步
-            </button>
+          <div id="receiptPreviewBox" class="hidden p-2 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
+            <span class="text-teal-700 font-medium">已添加发票凭证 (支持生成导出直链)</span>
+            <button type="button" onclick="clearReceiptUpload()" class="text-rose-500 font-bold hover:underline">移除</button>
           </div>
+
+          <button type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-teal-600/30 text-sm transition tap-active">
+            💾 保存并自动同步
+          </button>
         </form>
       </div>
     </div>
 
-    <!-- Modal 2: Supabase 云端同步配置与排查窗口 (Core Issue Solution) -->
-    <div id="syncConfigModal" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
-      <div class="bg-white w-full max-w-[420px] rounded-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in duration-150">
-        <div class="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
-          <div class="flex items-center gap-2">
-            <span class="text-xl">☁️</span>
-            <div>
-              <h3 class="font-bold text-slate-900 text-sm">Supabase 云端跨设备协同</h3>
-              <p class="text-[10px] text-slate-400">支持新版 2025 Publishable Key 与 Anon Key</p>
-            </div>
-          </div>
-          <button onclick="closeSyncConfigModal()" class="text-slate-400 hover:text-slate-600 text-lg px-2">✕</button>
-        </div>
-
-        <div class="p-4 space-y-3.5 overflow-y-auto custom-scroll text-xs">
-          <!-- Room Code Setting -->
-          <div class="bg-teal-50/60 p-3 rounded-2xl border border-teal-100">
-            <div class="flex items-center justify-between mb-1.5">
-              <span class="font-bold text-teal-900">协同房间号 (Room Code)</span>
-              <button onclick="generateNewRoomCode()" class="text-[11px] text-teal-700 hover:underline">🎲 随机新房间</button>
-            </div>
-            <div class="flex gap-2">
-              <input type="text" id="syncInputRoomCode" placeholder="如 TYO-882" class="flex-1 bg-white border border-teal-200 rounded-xl px-3 py-2 font-mono font-bold text-slate-800 uppercase">
-              <button onclick="copyInviteLink()" class="bg-teal-700 hover:bg-teal-800 text-white px-3 py-2 rounded-xl text-xs font-bold shrink-0 tap-active">
-                🔗 复制入房链接
-              </button>
-            </div>
-            <p class="text-[11px] text-teal-700/80 mt-1">电脑和其他手机只需打开相同的房间号，数据即刻互相同步。</p>
-          </div>
-
-          <!-- Supabase Credentials -->
-          <div class="space-y-2.5">
-            <div>
-              <div class="flex items-center justify-between mb-1">
-                <label class="font-bold text-slate-700">Project URL (项目地址)</label>
-                <span class="text-[10px] text-slate-400">格式: https://xxx.supabase.co</span>
-              </div>
-              <input type="text" id="syncInputUrl" placeholder="https://pzlsgs-techs-project.supabase.co" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono text-slate-800 focus:bg-white focus:ring-2 focus:ring-teal-500">
-            </div>
-
-            <div>
-              <div class="flex items-center justify-between mb-1">
-                <label class="font-bold text-slate-700">API Key (Publishable key 或 anon key)</label>
-                <span class="text-[10px] text-teal-600 font-semibold">支持新版 sb_publishable_...</span>
-              </div>
-              <input type="password" id="syncInputKey" placeholder="eyJhbGci... 或 sb_publishable_..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono text-slate-800 focus:bg-white focus:ring-2 focus:ring-teal-500">
-              <p class="text-[10px] text-slate-400 mt-1">直接粘贴您在 Supabase API Keys 页面复制的 key 即可，系统已自动兼容新版请求头。</p>
-            </div>
-          </div>
-
-          <!-- Cloud Connection Diagnostic Box -->
-          <div id="syncTestResultBox" class="p-3 rounded-xl text-xs hidden">
-            <!-- Populated on test -->
-          </div>
-
-          <!-- 1-Click Table Setup Helper -->
-          <details class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 text-slate-600 cursor-pointer">
-            <summary class="font-bold text-[11px] text-slate-700 select-none">
-              🛠️ 常见同步失败排查：为什么会上传失败？(点击展开)
-            </summary>
-            <div class="mt-2 space-y-2 text-[11px] leading-relaxed text-slate-500 pt-2 border-t border-slate-200">
-              <p><strong class="text-slate-700">1. 数据表是否存在？</strong> 必须在 Supabase 的 <span class="font-mono text-teal-700">SQL Editor</span> 运行过建表语句：</p>
-              <div class="bg-slate-800 text-teal-300 p-2 rounded-lg font-mono text-[10px] select-all">
-                create table if not exists trip_rooms (
-                  room_code text primary key,
-                  data jsonb not null,
-                  updated_at timestamp with time zone default timezone('utc'::text, now())
-                );
-                alter table trip_rooms enable row level security;
-                create policy "Allow public all" on trip_rooms for all using (true) with check (true);
-              </div>
-              <button onclick="copySQLCode()" class="text-teal-600 underline text-[10px] font-bold">点击一键复制 SQL</button>
-              <p><strong class="text-slate-700">2. RLS 权限是否开启写入？</strong> 若 policy 未配置，Supabase 将拒绝所有更新请求。上述 SQL 已包含全权限安全策略。</p>
-              <p><strong class="text-slate-700">3. 图片压缩：</strong> 旅伴头像已内置自动压缩（最大60KB），确保瞬间秒级上传，不再卡死请求。</p>
-            </div>
-          </details>
-
-          <!-- Buttons -->
-          <div class="flex gap-2 pt-2">
-            <button onclick="testAndSaveCloudSync()" class="flex-1 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 rounded-xl text-xs shadow-md shadow-teal-600/20 tap-active">
-              ⚡ 保存并测试上传
-            </button>
-            <button onclick="forcePullFromCloud()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-2.5 rounded-xl text-xs tap-active border border-slate-200">
-              🔄 强制云端覆盖本地
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Modal 3: 旅伴成员编辑/增加 (Member Modal) -->
+    <!-- Modal 2: 旅伴人员登记/编辑 + 图标选择器 (Member Modal) -->
     <div id="memberModal" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
-      <div class="bg-white w-full max-w-[380px] rounded-3xl shadow-2xl p-4 space-y-3.5 animate-in fade-in">
+      <div class="bg-white w-full max-w-[390px] rounded-3xl shadow-2xl p-4 space-y-3.5 max-h-[90vh] overflow-y-auto custom-scroll animate-in fade-in">
         <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-          <h3 id="memberModalTitle" class="font-bold text-slate-900 text-sm">编辑旅伴资料</h3>
+          <h3 id="memberModalTitle" class="font-bold text-slate-900 text-sm">登记旅伴账号资料</h3>
           <button onclick="closeMemberModal()" class="text-slate-400 hover:text-slate-600 text-base">✕</button>
         </div>
 
         <form onsubmit="handleSaveMember(event)" class="space-y-3 text-xs">
           <input type="hidden" id="formMemberId" value="">
 
-          <div class="flex items-center gap-3">
-            <div class="relative">
-              <div class="w-14 h-14 rounded-full border-2 border-teal-500 overflow-hidden bg-slate-100 flex items-center justify-center">
-                <img id="formMemberAvatarPreview" src="https://lh3.googleusercontent.com/aida/AEtjO1VHXv2k76EO9LvatFn5Cs46G06JXBx3DpRCtyY_13sTFYRM8nbRcvBswCtNTTKNoqkshE3N6aprC3A3UUX7J6tIAci19bYjyrWyEmdL62U7UJzfyw8AgfEmHGJhXoW1p3aY9OW3SjUcNVL6pZWqkDi8KKGwaxwNxyeDeYJydooxDmPzQ-GT_R_Hm7DJIXbZbtxdiFF2TbP6WCpQy07M7ywvMtDptpPsLk0bpitdE4KGLcvWFVtqrMW8mQo" class="w-full h-full object-cover">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1.5">选择代表图标 (点击更换，轻量无损)</label>
+            <div class="flex items-center gap-3 p-2 bg-slate-50 rounded-2xl border border-slate-200">
+              <div id="selectedAvatarIconPreview" class="w-12 h-12 rounded-2xl bg-teal-600 text-white text-2xl flex items-center justify-center shadow-sm">
+                🎒
               </div>
-              <label class="absolute -bottom-1 -right-1 bg-slate-800 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center cursor-pointer shadow">
-                📷
-                <input type="file" accept="image/*" onchange="handleMemberAvatarUpload(event)" class="hidden">
-              </label>
+              <div class="flex-1">
+                <div class="font-bold text-slate-800 text-xs" id="selectedAvatarIconLabel">背包客 (🎒)</div>
+                <div class="text-[10px] text-slate-400">内置图标，云同步零延迟不丢图</div>
+              </div>
             </div>
-            <div class="flex-1">
-              <label class="block font-semibold text-slate-700 mb-1">旅伴姓名/昵称</label>
-              <input type="text" id="formMemberName" required placeholder="如：我、小林、阿伟" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-800">
+
+            <div id="avatarIconPalette" class="grid grid-cols-7 gap-1.5 mt-2 max-h-32 overflow-y-auto custom-scroll p-1.5 bg-slate-100 rounded-xl"></div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">真实姓名/昵称</label>
+              <input type="text" id="formMemberName" required placeholder="如：小明、阿伟" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold text-slate-800">
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">手机电话 (登录账号)</label>
+              <input type="tel" id="formMemberPhone" required placeholder="如 13800000000" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-mono text-slate-800">
             </div>
           </div>
 
           <div>
-            <label class="block font-semibold text-slate-700 mb-1">收款账号/方式说明 (用于清账转账)</label>
-            <input type="text" id="formMemberPaymentInfo" placeholder="如 PayNow: 91234567 / 微信: xiaolin" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800">
+            <div class="flex items-center justify-between mb-1">
+              <label class="font-semibold text-slate-700">4-6 位数字登录密码 (PIN)</label>
+              <span class="text-[10px] text-slate-400">仅限纯数字</span>
+            </div>
+            <input type="password" id="formMemberPin" required maxlength="6" pattern="[0-9]{4,6}" placeholder="如 8888 或 1234" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-mono text-center tracking-widest text-xs font-bold text-slate-800">
           </div>
 
-          <div class="flex items-center gap-2">
-            <input type="checkbox" id="formMemberIsCurrentMe" class="rounded text-teal-600 focus:ring-teal-500">
-            <label for="formMemberIsCurrentMe" class="text-slate-600">设为我自己的身份 (用于快速高亮)</label>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">收款账号说明 (清账显示)</label>
+            <input type="text" id="formMemberPaymentInfo" placeholder="如 PayNow: +65 91234567 / 微信: lin_traveler" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800">
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">分配授权行程 (该旅伴仅能查看勾选的行程)</label>
+            <div id="formMemberAllowedTripsBox" class="space-y-1.5 p-2 bg-slate-50 rounded-xl border border-slate-200 max-h-28 overflow-y-auto custom-scroll"></div>
+          </div>
+
+          <div class="flex items-center gap-2 p-2 bg-amber-50/60 rounded-xl border border-amber-200/70">
+            <input type="checkbox" id="formMemberIsAdmin" class="rounded text-amber-600 focus:ring-amber-500">
+            <label for="formMemberIsAdmin" class="text-amber-900 text-[11px] font-medium">超级管理员 (有权查看与管理所有行程)</label>
           </div>
 
           <div class="flex gap-2 pt-2">
             <button type="button" id="deleteMemberBtn" onclick="handleDeleteMember()" class="hidden bg-rose-50 text-rose-600 px-3 py-2 rounded-xl text-xs font-bold tap-active">
               删除
             </button>
-            <button type="submit" class="flex-1 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 rounded-xl text-xs tap-active">
-              保存并云同步
+            <button type="submit" class="flex-1 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 rounded-xl text-xs tap-active shadow-md shadow-teal-600/20">
+              保存旅伴并云同步
             </button>
           </div>
         </form>
       </div>
     </div>
 
-    <!-- Modal 4: 自定义货币编辑 (Currency Modal) -->
+    <!-- Modal 3: 查看发票凭证 (Receipt Viewer Modal) -->
+    <div id="receiptViewerModal" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
+      <div class="bg-white w-full max-w-[390px] rounded-3xl shadow-2xl p-4 space-y-3 animate-in fade-in">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+          <h3 id="receiptViewerTitle" class="font-bold text-slate-900 text-sm">发票凭证详情</h3>
+          <button onclick="closeReceiptViewerModal()" class="text-slate-400 hover:text-slate-600 text-base">✕</button>
+        </div>
+
+        <div class="space-y-2 text-xs">
+          <div class="w-full max-h-64 bg-slate-100 rounded-xl overflow-hidden flex items-center justify-center border border-slate-200">
+            <img id="receiptViewerImage" src="" alt="发票凭证" class="max-h-64 object-contain">
+          </div>
+          <div class="flex items-center justify-between text-[11px] text-slate-500 pt-1">
+            <span id="receiptViewerDate">日期: -</span>
+            <a id="receiptViewerDownloadLink" href="#" download="receipt.jpg" target="_blank" class="text-teal-600 font-bold hover:underline">在新窗口查看大图 ↗</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 4: Supabase 云端同步配置窗口 -->
+    <div id="syncConfigModal" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
+      <div class="bg-white w-full max-w-[420px] rounded-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in">
+        <div class="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+          <div class="flex items-center gap-2">
+            <span class="text-xl">☁️</span>
+            <div>
+              <h3 class="font-bold text-slate-900 text-sm">Supabase 云端跨设备协同</h3>
+              <p class="text-[10px] text-slate-400">支持 2025 Publishable Key 与 Anon Key</p>
+            </div>
+          </div>
+          <button onclick="closeSyncConfigModal()" class="text-slate-400 hover:text-slate-600 text-lg px-2">✕</button>
+        </div>
+
+        <div class="p-4 space-y-3.5 overflow-y-auto custom-scroll text-xs">
+          <div class="bg-teal-50/60 p-3 rounded-2xl border border-teal-100">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="font-bold text-teal-900">协同房间号 (Room Code)</span>
+              <button onclick="generateNewRoomCode()" class="text-[11px] text-teal-700 hover:underline">🎲 换新房间</button>
+            </div>
+            <div class="flex gap-2">
+              <input type="text" id="syncInputRoomCode" placeholder="TYO-882" class="flex-1 bg-white border border-teal-200 rounded-xl px-3 py-2 font-mono font-bold text-slate-800 uppercase">
+              <button onclick="copyInviteLink()" class="bg-teal-700 hover:bg-teal-800 text-white px-3 py-2 rounded-xl text-xs font-bold shrink-0 tap-active">
+                🔗 复制链接
+              </button>
+            </div>
+          </div>
+
+          <div class="space-y-2.5">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Project URL</label>
+              <input type="text" id="syncInputUrl" placeholder="https://xxx.supabase.co" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-mono text-slate-800">
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">API Key (Publishable / Anon)</label>
+              <input type="password" id="syncInputKey" placeholder="sb_publishable_... 或 eyJhbGci..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-mono text-slate-800">
+            </div>
+          </div>
+
+          <div id="syncTestResultBox" class="p-3 rounded-xl text-xs hidden"></div>
+
+          <div class="flex gap-2 pt-2">
+            <button onclick="testAndSaveCloudSync()" class="flex-1 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 rounded-xl text-xs shadow-md shadow-teal-600/20 tap-active">
+              ⚡ 保存并测试上传
+            </button>
+            <button onclick="forcePullFromCloud()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-2.5 rounded-xl text-xs tap-active border border-slate-200">
+              🔄 覆盖本地
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 5: 自定义货币 (Currency Modal) -->
     <div id="currencyModal" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
       <div class="bg-white w-full max-w-[360px] rounded-3xl shadow-2xl p-4 space-y-3.5 animate-in fade-in">
         <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-          <h3 id="currencyModalTitle" class="font-bold text-slate-900 text-sm">自定义/添加货币</h3>
+          <h3 class="font-bold text-slate-900 text-sm">自定义/修改货币</h3>
           <button onclick="closeCurrencyModal()" class="text-slate-400 hover:text-slate-600 text-base">✕</button>
         </div>
 
         <form onsubmit="handleSaveCurrency(event)" class="space-y-3 text-xs">
           <div class="grid grid-cols-2 gap-2">
             <div>
-              <label class="block font-semibold text-slate-700 mb-1">货币代码 (如 JPY)</label>
+              <label class="block font-semibold text-slate-700 mb-1">代码 (如 THB)</label>
               <input type="text" id="formCurrencyCode" required maxlength="5" placeholder="THB" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-mono uppercase font-bold text-slate-800">
             </div>
             <div>
-              <label class="block font-semibold text-slate-700 mb-1">符号 (如 ¥, $)</label>
+              <label class="block font-semibold text-slate-700 mb-1">符号 (如 ฿)</label>
               <input type="text" id="formCurrencySymbol" required placeholder="฿" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold text-slate-800">
             </div>
           </div>
@@ -628,28 +616,27 @@
             </div>
           </div>
 
-          <div class="flex gap-2 pt-2">
-            <button type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 rounded-xl text-xs tap-active">
-              保存货币并云同步
-            </button>
-          </div>
+          <button type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 rounded-xl text-xs tap-active">
+            保存货币并云同步
+          </button>
         </form>
       </div>
     </div>
 
-    <!-- Modal 5: 管理行程列表 / 新增行程 (Trips Modal) -->
+    <!-- Modal 6: 管理行程列表 (Trips Modal) -->
     <div id="tripsModal" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
       <div class="bg-white w-full max-w-[400px] rounded-3xl shadow-2xl p-4 space-y-3.5 animate-in fade-in">
         <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-          <h3 class="font-bold text-slate-900 text-sm">所有旅行行程账本</h3>
+          <div>
+            <h3 class="font-bold text-slate-900 text-sm">授权的旅行行程账本</h3>
+            <p class="text-[10px] text-slate-400">仅展示当前登录旅伴允许访问的行程</p>
+          </div>
           <button onclick="closeTripsModal()" class="text-slate-400 hover:text-slate-600 text-base">✕</button>
         </div>
 
-        <div id="tripsFullList" class="space-y-2 max-h-[50vh] overflow-y-auto custom-scroll">
-          <!-- Dynamically populated trips -->
-        </div>
+        <div id="tripsFullList" class="space-y-2 max-h-[50vh] overflow-y-auto custom-scroll"></div>
 
-        <div class="pt-2 border-t border-slate-100">
+        <div id="tripCreateFooterBtnArea" class="pt-2 border-t border-slate-100">
           <button onclick="openCreateTripModal()" class="w-full bg-teal-50 hover:bg-teal-100 text-teal-700 border border-teal-200 font-bold py-2.5 rounded-xl text-xs tap-active">
             + 创建全新行程账本
           </button>
@@ -657,20 +644,18 @@
       </div>
     </div>
 
-    <!-- Modal 6: 新增/编辑单个行程 -->
+    <!-- Modal 7: 新增行程 -->
     <div id="createTripModal" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
       <div class="bg-white w-full max-w-[360px] rounded-3xl shadow-2xl p-4 space-y-3 animate-in fade-in">
         <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-          <h3 id="createTripModalTitle" class="font-bold text-slate-900 text-sm">新增行程账本</h3>
+          <h3 class="font-bold text-slate-900 text-sm">新增行程账本</h3>
           <button onclick="closeCreateTripModal()" class="text-slate-400 hover:text-slate-600 text-base">✕</button>
         </div>
 
         <form onsubmit="handleSaveTrip(event)" class="space-y-2.5 text-xs">
-          <input type="hidden" id="formTripId" value="">
-
           <div>
             <label class="block font-semibold text-slate-700 mb-1">行程名称</label>
-            <input type="text" id="formTripName" required placeholder="如：欧洲35日夏日探索之旅" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-800">
+            <input type="text" id="formTripName" required placeholder="如：欧洲35日夏日探索之旅" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold text-slate-800">
           </div>
 
           <div class="grid grid-cols-2 gap-2">
@@ -685,48 +670,51 @@
           </div>
 
           <div>
-            <label class="block font-semibold text-slate-700 mb-1">标志图标 / 国旗 Emoji</label>
+            <label class="block font-semibold text-slate-700 mb-1">国旗/标志 Emoji</label>
             <input type="text" id="formTripFlag" maxlength="4" placeholder="🇨🇳 或 🇪🇺" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-base text-center">
           </div>
 
-          <div class="flex gap-2 pt-2">
-            <button type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 rounded-xl text-xs tap-active">
-              创建行程并云同步
-            </button>
-          </div>
+          <button type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 rounded-xl text-xs tap-active mt-2">
+            创建行程并自动授权
+          </button>
         </form>
       </div>
     </div>
 
-    <!-- Modal 7: 个人与系统 Logo 设置 (System Settings) -->
+    <!-- Modal 8: 系统设置 -->
     <div id="systemSettingsModal" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
       <div class="bg-white w-full max-w-[360px] rounded-3xl shadow-2xl p-4 space-y-3.5 animate-in fade-in">
         <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-          <h3 class="font-bold text-slate-900 text-sm">个人头像与 App 图标自定义</h3>
+          <h3 class="font-bold text-slate-900 text-sm">系统与数据管理</h3>
           <button onclick="closeSystemSettingsModal()" class="text-slate-400 hover:text-slate-600 text-base">✕</button>
         </div>
 
-        <div class="space-y-4 text-xs">
-          <!-- Avatar setting -->
-          <div class="flex items-center justify-between p-2.5 bg-slate-50 rounded-xl border border-slate-200">
+        <div class="space-y-3 text-xs">
+          <div class="flex items-center justify-between p-3 bg-slate-50 rounded-2xl border border-slate-200">
             <div class="flex items-center gap-2.5">
-              <img id="settingsAvatarPreview" src="https://lh3.googleusercontent.com/aida/AEtjO1VHXv2k76EO9LvatFn5Cs46G06JXBx3DpRCtyY_13sTFYRM8nbRcvBswCtNTTKNoqkshE3N6aprC3A3UUX7J6tIAci19bYjyrWyEmdL62U7UJzfyw8AgfEmHGJhXoW1p3aY9OW3SjUcNVL6pZWqkDi8KKGwaxwNxyeDeYJydooxDmPzQ-GT_R_Hm7DJIXbZbtxdiFF2TbP6WCpQy07M7ywvMtDptpPsLk0bpitdE4KGLcvWFVtqrMW8mQo" class="w-10 h-10 rounded-full object-cover border border-slate-300">
+              <div id="sysCurrentUserAvatar" class="w-10 h-10 rounded-2xl bg-teal-600 text-white text-xl flex items-center justify-center shadow">🎒</div>
               <div>
-                <div class="font-bold text-slate-800">我的个人头像</div>
-                <div class="text-[10px] text-slate-400">将作为当前用户的默认身份</div>
+                <div class="font-bold text-slate-800 flex items-center gap-1.5">
+                  <span id="sysCurrentUserName">小明</span>
+                  <span id="sysCurrentUserRole" class="text-[9px] bg-teal-100 text-teal-800 px-1 rounded">超级管理员</span>
+                </div>
+                <div id="sysCurrentUserPhone" class="text-[10px] text-slate-400 font-mono">13800000000</div>
               </div>
             </div>
-            <label class="bg-teal-600 hover:bg-teal-700 text-white font-bold px-2.5 py-1.5 rounded-lg text-xs cursor-pointer tap-active">
-              更换
-              <input type="file" accept="image/*" onchange="handleUserAvatarChange(event)" class="hidden">
-            </label>
+            <button onclick="closeSystemSettingsModal(); openLoginModal();" class="text-teal-700 font-bold bg-white border border-teal-200 px-2.5 py-1 rounded-lg hover:bg-teal-50 tap-active">
+              切换身份
+            </button>
           </div>
 
-          <!-- Reset demo data -->
+          <button onclick="closeSystemSettingsModal(); openSyncConfigModal();" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 py-2.5 rounded-xl font-semibold flex items-center justify-center gap-2 border border-slate-200 tap-active">
+            <span>☁️</span>
+            <span>配置 Supabase 房间与多端协同</span>
+          </button>
+
           <div class="pt-2 border-t border-slate-100 flex justify-between items-center text-[11px]">
-            <span class="text-slate-400">若数据混乱，可一键还原</span>
+            <span class="text-slate-400">如需重新体验纯净数据</span>
             <button onclick="resetDefaultDemoData()" class="text-rose-600 hover:underline font-semibold">
-              恢复初始默认数据
+              恢复初始演示数据
             </button>
           </div>
         </div>
@@ -735,248 +723,131 @@
 
   </div>
 
-  <!-- Javascript Application State & Cloud Sync Engine -->
+  <!-- Application Logic -->
   <script>
-    // ==========================================
-    // 1. DEFAULT DATA & INITIALIZATION
-    // ==========================================
+    // 1. BUILT-IN AVATAR ICONS (LIGHTWEIGHT & RELIABLE)
+    const AVATAR_ICONS = [
+      { id: "ico_backpack", emoji: "🎒", label: "背包客", bg: "bg-teal-600" },
+      { id: "ico_compass", emoji: "🧭", label: "探险家", bg: "bg-emerald-600" },
+      { id: "ico_plane", emoji: "✈️", label: "飞行人", bg: "bg-sky-600" },
+      { id: "ico_camera", emoji: "📷", label: "摄影师", bg: "bg-indigo-600" },
+      { id: "ico_coffee", emoji: "☕", label: "悠闲派", bg: "bg-amber-600" },
+      { id: "ico_tent", emoji: "⛺", label: "露营家", bg: "bg-lime-700" },
+      { id: "ico_crown", emoji: "👑", label: "领队队长", bg: "bg-yellow-500" },
+      { id: "ico_fox", emoji: "🦊", label: "灵巧狐狸", bg: "bg-orange-500" },
+      { id: "ico_panda", emoji: "🐼", label: "功夫熊猫", bg: "bg-slate-800" },
+      { id: "ico_lion", emoji: "🦁", label: "自信狮子", bg: "bg-amber-700" },
+      { id: "ico_cat", emoji: "🐱", label: "好奇猫咪", bg: "bg-rose-500" },
+      { id: "ico_dog", emoji: "🐶", label: "元气小狗", bg: "bg-amber-800" },
+      { id: "ico_surf", emoji: "🏄", label: "冲浪客", bg: "bg-cyan-600" },
+      { id: "ico_car", emoji: "🚗", label: "自驾达人", bg: "bg-blue-600" }
+    ];
+
+    function getAvatarIconObj(iconIdOrEmoji) {
+      if (!iconIdOrEmoji) return AVATAR_ICONS[0];
+      const match = AVATAR_ICONS.find(item => item.id === iconIdOrEmoji || item.emoji === iconIdOrEmoji);
+      return match || { id: "custom", emoji: iconIdOrEmoji, label: "旅伴", bg: "bg-teal-600" };
+    }
+
+    // 2. DEFAULT STATE
     const DEFAULT_APP_STATE = {
       roomCode: "TYO-882",
+      currentLoggedInUserId: "user_admin",
       currentTripId: "trip_1",
       currentCategoryFilter: "ALL",
-      myAvatar: "https://lh3.googleusercontent.com/aida/AEtjO1VHXv2k76EO9LvatFn5Cs46G06JXBx3DpRCtyY_13sTFYRM8nbRcvBswCtNTTKNoqkshE3N6aprC3A3UUX7J6tIAci19bYjyrWyEmdL62U7UJzfyw8AgfEmHGJhXoW1p3aY9OW3SjUcNVL6pZWqkDi8KKGwaxwNxyeDeYJydooxDmPzQ-GT_R_Hm7DJIXbZbtxdiFF2TbP6WCpQy07M7ywvMtDptpPsLk0bpitdE4KGLcvWFVtqrMW8mQo",
-      myUserId: "user_1",
-      supabase: {
-        url: "",
-        key: "",
-        connected: false
-      },
+      supabase: { url: "", key: "", connected: false },
       trips: [
-        {
-          id: "trip_1",
-          name: "中国15日深度游 · 成都-重庆",
-          flag: "🇨🇳",
-          startDate: "2023-10-12",
-          endDate: "2023-10-26"
-        },
-        {
-          id: "trip_2",
-          name: "日本关东红叶季 · 东京-箱根",
-          flag: "🇯🇵",
-          startDate: "2023-11-15",
-          endDate: "2023-11-23"
-        },
-        {
-          id: "trip_3",
-          name: "瑞士阿尔卑斯山徒步",
-          flag: "🇨🇭",
-          startDate: "2024-06-01",
-          endDate: "2024-06-10"
-        }
+        { id: "trip_1", name: "中国15日深度游 · 成都-重庆", flag: "🇨🇳", startDate: "2023-10-12", endDate: "2023-10-26" },
+        { id: "trip_2", name: "日本关东红叶季 · 东京-箱根", flag: "🇯🇵", startDate: "2023-11-15", endDate: "2023-11-23" },
+        { id: "trip_3", name: "瑞士阿尔卑斯山徒步", flag: "🇨🇭", startDate: "2024-06-01", endDate: "2024-06-10" }
       ],
       members: [
-        {
-          id: "user_1",
-          name: "我",
-          avatar: "https://lh3.googleusercontent.com/aida/AEtjO1VHXv2k76EO9LvatFn5Cs46G06JXBx3DpRCtyY_13sTFYRM8nbRcvBswCtNTTKNoqkshE3N6aprC3A3UUX7J6tIAci19bYjyrWyEmdL62U7UJzfyw8AgfEmHGJhXoW1p3aY9OW3SjUcNVL6pZWqkDi8KKGwaxwNxyeDeYJydooxDmPzQ-GT_R_Hm7DJIXbZbtxdiFF2TbP6WCpQy07M7ywvMtDptpPsLk0bpitdE4KGLcvWFVtqrMW8mQo",
-          paymentInfo: "PayNow: +65 9876 5432",
-          isMe: true
-        },
-        {
-          id: "user_2",
-          name: "小林",
-          avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
-          paymentInfo: "微信: lin_traveler",
-          isMe: false
-        },
-        {
-          id: "user_3",
-          name: "阿伟",
-          avatar: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150&auto=format&fit=crop&q=80",
-          paymentInfo: "支付宝: 13800000000",
-          isMe: false
-        }
+        { id: "user_admin", name: "小明 (我)", phone: "13800000000", pin: "1234", avatarIcon: "ico_backpack", paymentInfo: "PayNow: +65 9876 5432 / 微信: xiaoming_sg", isAdmin: true, allowedTrips: ["trip_1", "trip_2", "trip_3"] },
+        { id: "user_2", name: "小林", phone: "13911112222", pin: "8888", avatarIcon: "ico_camera", paymentInfo: "微信: lin_traveler", isAdmin: false, allowedTrips: ["trip_1"] },
+        { id: "user_3", name: "阿伟", phone: "13633334444", pin: "6666", avatarIcon: "ico_compass", paymentInfo: "支付宝: 13633334444", isAdmin: false, allowedTrips: ["trip_1"] }
       ],
       currencies: [
         { code: "SGD", symbol: "S$", rateToSGD: 1.0, isBase: true },
         { code: "CNY", symbol: "¥", rateToSGD: 5.35, isBase: false },
         { code: "JPY", symbol: "¥", rateToSGD: 112.5, isBase: false },
         { code: "EUR", symbol: "€", rateToSGD: 0.69, isBase: false },
-        { code: "USD", symbol: "$", rateToSGD: 0.74, isBase: false },
-        { code: "MYR", symbol: "RM", rateToSGD: 3.48, isBase: false }
+        { code: "USD", symbol: "$", rateToSGD: 0.74, isBase: false }
       ],
       expenses: [
-        {
-          id: "exp_1",
-          tripId: "trip_1",
-          title: "宽窄巷子川菜聚餐",
-          category: "餐饮美食",
-          currency: "CNY",
-          originalAmount: 1582.00,
-          rateToSGD: 5.35,
-          amountSGD: 295.70,
-          payerId: "user_1",
-          splitMemberIds: ["user_1", "user_2", "user_3"],
-          date: "2023-10-14",
-          receiptUrl: ""
-        },
-        {
-          id: "exp_2",
-          tripId: "trip_1",
-          title: "天府机场商务专车接机",
-          category: "交通出行",
-          currency: "CNY",
-          originalAmount: 293.00,
-          rateToSGD: 5.35,
-          amountSGD: 54.77,
-          payerId: "user_2",
-          splitMemberIds: ["user_1", "user_2", "user_3"],
-          date: "2023-10-14",
-          receiptUrl: ""
-        },
-        {
-          id: "exp_3",
-          tripId: "trip_1",
-          title: "成都博舍酒店套房2晚",
-          category: "酒店住宿",
-          currency: "CNY",
-          originalAmount: 4786.00,
-          rateToSGD: 5.35,
-          amountSGD: 894.58,
-          payerId: "user_1",
-          splitMemberIds: ["user_1", "user_2", "user_3"],
-          date: "2023-10-13",
-          receiptUrl: ""
-        },
-        {
-          id: "exp_4",
-          tripId: "trip_1",
-          title: "九寨沟门票与观光车套票",
-          category: "门票娱乐",
-          currency: "CNY",
-          originalAmount: 1043.40,
-          rateToSGD: 5.35,
-          amountSGD: 195.03,
-          payerId: "user_3",
-          splitMemberIds: ["user_1", "user_2", "user_3"],
-          date: "2023-10-12",
-          receiptUrl: ""
-        },
-        {
-          id: "exp_5",
-          tripId: "trip_1",
-          title: "九寨沟藏家牦牛肉火锅",
-          category: "餐饮美食",
-          currency: "CNY",
-          originalAmount: 564.45,
-          rateToSGD: 5.35,
-          amountSGD: 105.50,
-          payerId: "user_2",
-          splitMemberIds: ["user_1", "user_2", "user_3"],
-          date: "2023-10-12",
-          receiptUrl: ""
-        },
-        {
-          id: "exp_6",
-          tripId: "trip_1",
-          title: "高铁一等座成都东-镇江关",
-          category: "交通出行",
-          currency: "CNY",
-          originalAmount: 460.00,
-          rateToSGD: 5.35,
-          amountSGD: 85.98,
-          payerId: "user_3",
-          splitMemberIds: ["user_1", "user_2", "user_3"],
-          date: "2023-10-12",
-          receiptUrl: ""
-        }
+        { id: "exp_1", tripId: "trip_1", title: "宽窄巷子川菜聚餐", category: "餐饮美食", currency: "CNY", originalAmount: 1582.00, rateToSGD: 5.35, amountSGD: 295.70, payerId: "user_admin", recordedBy: "user_admin", splitMemberIds: ["user_admin", "user_2", "user_3"], date: "2023-10-14", receiptUrl: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&auto=format&fit=crop&q=80", remark: "水煮牛肉聚餐" },
+        { id: "exp_2", tripId: "trip_1", title: "天府机场商务专车接机", category: "交通出行", currency: "CNY", originalAmount: 293.00, rateToSGD: 5.35, amountSGD: 54.77, payerId: "user_2", recordedBy: "user_2", splitMemberIds: ["user_admin", "user_2", "user_3"], date: "2023-10-14", receiptUrl: "", remark: "专车至酒店" },
+        { id: "exp_3", tripId: "trip_1", title: "成都博舍酒店套房2晚", category: "酒店住宿", currency: "CNY", originalAmount: 4786.00, rateToSGD: 5.35, amountSGD: 894.58, payerId: "user_admin", recordedBy: "user_admin", splitMemberIds: ["user_admin", "user_2", "user_3"], date: "2023-10-13", receiptUrl: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&auto=format&fit=crop&q=80", remark: "豪华套房" },
+        { id: "exp_4", tripId: "trip_1", title: "九寨沟门票与观光车套票", category: "门票娱乐", currency: "CNY", originalAmount: 1043.40, rateToSGD: 5.35, amountSGD: 195.03, payerId: "user_3", recordedBy: "user_3", splitMemberIds: ["user_admin", "user_2", "user_3"], date: "2023-10-12", receiptUrl: "", remark: "预订门票" },
+        { id: "exp_5", tripId: "trip_1", title: "九寨沟藏家牦牛肉火锅", category: "餐饮美食", currency: "CNY", originalAmount: 564.45, rateToSGD: 5.35, amountSGD: 105.50, payerId: "user_2", recordedBy: "user_2", splitMemberIds: ["user_admin", "user_2", "user_3"], date: "2023-10-12", receiptUrl: "", remark: "火锅晚餐" },
+        { id: "exp_6", tripId: "trip_1", title: "高铁一等座成都东-镇江关", category: "交通出行", currency: "CNY", originalAmount: 460.00, rateToSGD: 5.35, amountSGD: 85.98, payerId: "user_3", recordedBy: "user_3", splitMemberIds: ["user_admin", "user_2", "user_3"], date: "2023-10-12", receiptUrl: "", remark: "往返高铁" },
+        { id: "exp_7", tripId: "trip_2", title: "东京涩谷SHIBUYA SKY门票", category: "门票娱乐", currency: "JPY", originalAmount: 6600.00, rateToSGD: 112.5, amountSGD: 58.67, payerId: "user_admin", recordedBy: "user_admin", splitMemberIds: ["user_admin"], date: "2023-11-16", receiptUrl: "", remark: "东京行程" }
       ]
     };
 
-    // Active in-memory state
     let state = JSON.parse(JSON.stringify(DEFAULT_APP_STATE));
+    const STORAGE_KEY = "EJ_APP_STORE_V6";
+    let activeEditingAvatarIcon = "ico_backpack";
+    let activeUploadedReceiptDataUrl = "";
 
-    // Storage Key
-    const STORAGE_KEY = "EJ_TRAVEL_EXPENSE_STORE_V4";
+    function getCurrentUser() {
+      return state.members.find(m => m.id === state.currentLoggedInUserId) || state.members[0];
+    }
 
-    // Load Local Storage or URL Room Code
-    function initApp() {
-      // 1. Check URL parameters for room code
-      const urlParams = new URLSearchParams(window.location.search);
-      const roomParam = urlParams.get('room');
-      
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          state = Object.assign({}, DEFAULT_APP_STATE, parsed);
-        } catch (e) {
-          console.error("Failed to parse local storage", e);
-        }
+    // STRICT TRIP ISOLATION
+    function getAccessibleTrips() {
+      const user = getCurrentUser();
+      if (!user) return [];
+      if (user.isAdmin) return state.trips;
+      const allowedSet = new Set(user.allowedTrips || []);
+      return state.trips.filter(t => allowedSet.has(t.id));
+    }
+
+    function isTripAccessible(tripId) {
+      const user = getCurrentUser();
+      if (!user) return false;
+      if (user.isAdmin) return true;
+      return (user.allowedTrips || []).includes(tripId);
+    }
+
+    function ensureValidCurrentTrip() {
+      const accessible = getAccessibleTrips();
+      if (accessible.length === 0) {
+        state.currentTripId = "";
+        return;
       }
-
-      if (roomParam) {
-        state.roomCode = roomParam.trim().toUpperCase();
-      }
-
-      // Sync form inputs with loaded state
-      document.getElementById('syncInputRoomCode').value = state.roomCode || "TYO-882";
-      document.getElementById('headerRoomCode').textContent = state.roomCode || "TYO-882";
-      if (state.supabase && state.supabase.url) {
-        document.getElementById('syncInputUrl').value = state.supabase.url;
-      }
-      if (state.supabase && state.supabase.key) {
-        document.getElementById('syncInputKey').value = state.supabase.key;
-      }
-
-      // Update UI components
-      updateSyncStatusUI();
-      renderAll();
-
-      // If Supabase credentials exist, attempt initial auto-pull
-      if (state.supabase && state.supabase.url && state.supabase.key) {
-        syncWithCloud(true);
+      if (!accessible.some(t => t.id === state.currentTripId)) {
+        state.currentTripId = accessible[0].id;
       }
     }
 
-    // Save locally and trigger background push if configured
+    function initApp() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try { state = Object.assign({}, DEFAULT_APP_STATE, JSON.parse(saved)); } catch (e) {}
+      }
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('room')) state.roomCode = urlParams.get('room').toUpperCase();
+
+      document.getElementById('syncInputRoomCode').value = state.roomCode || "TYO-882";
+      document.getElementById('headerRoomCode').textContent = state.roomCode || "TYO-882";
+      if (state.supabase?.url) document.getElementById('syncInputUrl').value = state.supabase.url;
+      if (state.supabase?.key) document.getElementById('syncInputKey').value = state.supabase.key;
+
+      ensureValidCurrentTrip();
+      updateSyncStatusUI();
+      renderAvatarIconPalette();
+      renderAll();
+
+      if (state.supabase?.url && state.supabase?.key) syncWithCloud(true);
+    }
+
     function persistState(skipCloud = false) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       renderAll();
-      if (!skipCloud && state.supabase && state.supabase.url && state.supabase.key) {
-        syncWithCloud(false);
-      }
+      if (!skipCloud && state.supabase?.url && state.supabase?.key) syncWithCloud(false);
     }
 
-    // ==========================================
-    // 2. SUPABASE CLOUD SYNC ENGINE (COMPATIBLE & ROBUST)
-    // ==========================================
-
-    // Helper: Normalize project URL (strip trailing slashes, ensure https)
-    function sanitizeSupabaseUrl(url) {
-      if (!url) return "";
-      let clean = url.trim();
-      clean = clean.replace(/\/+$/, ''); // remove trailing slash
-      // remove trailing /rest/v1 if user accidentally typed it
-      clean = clean.replace(/\/rest\/v1\/?$/, '');
-      if (!clean.startsWith('http://') && !clean.startsWith('https://')) {
-        clean = 'https://' + clean;
-      }
-      return clean;
-    }
-
-    // Helper: Build headers compatible with both legacy 'anon' and 2025 'sb_publishable_' keys
-    function getSupabaseHeaders(apiKey) {
-      const cleanKey = (apiKey || '').trim();
-      return {
-        'apikey': cleanKey,
-        'Authorization': `Bearer ${cleanKey}`,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=representation,resolution=merge-duplicates'
-      };
-    }
-
-    // Update Status Indicators across UI
+    // CLOUD SYNC
     function updateSyncStatusUI(status, message) {
       const dot = document.getElementById('syncIndicatorDot');
       const bar = document.getElementById('syncStatusBar');
@@ -985,189 +856,95 @@
       const cloudIcon = document.getElementById('cloudIcon');
 
       if (status === 'connected') {
-        dot.className = "w-2 h-2 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500";
-        bar.className = "mt-2 text-xs py-1.5 px-3 rounded-lg flex items-center justify-between cursor-pointer transition bg-emerald-50 text-emerald-800 border border-emerald-200";
+        dot.className = "w-2 h-2 rounded-full bg-emerald-500 shadow-sm";
+        bar.className = "mt-2 text-xs py-1.5 px-3 rounded-xl flex items-center justify-between cursor-pointer transition bg-emerald-50 text-emerald-800 border border-emerald-200";
         barIcon.textContent = "🟢";
-        barText.textContent = message || `云端实时同步正常 (房间: ${state.roomCode})`;
+        barText.textContent = message || `云端协同正常 (房间: ${state.roomCode})`;
         cloudIcon.textContent = "☁️✅";
       } else if (status === 'syncing') {
         dot.className = "w-2 h-2 rounded-full bg-sky-500 animate-ping";
         barIcon.textContent = "🔄";
-        barText.textContent = "正在与 Supabase 云端同步数据...";
+        barText.textContent = "正在同步云端数据...";
       } else if (status === 'error') {
         dot.className = "w-2 h-2 rounded-full bg-rose-500";
-        bar.className = "mt-2 text-xs py-1.5 px-3 rounded-lg flex items-center justify-between cursor-pointer transition bg-rose-50 text-rose-800 border border-rose-200";
+        bar.className = "mt-2 text-xs py-1.5 px-3 rounded-xl flex items-center justify-between cursor-pointer transition bg-rose-50 text-rose-800 border border-rose-200";
         barIcon.textContent = "⚠️";
-        barText.textContent = message || "云端上传失败，请点击排查配置与数据表";
+        barText.textContent = message || "云端同步失败，点击排查";
         cloudIcon.textContent = "☁️❌";
       } else {
-        // Not configured
         dot.className = "w-2 h-2 rounded-full bg-amber-400";
-        bar.className = "mt-2 text-xs py-1.5 px-3 rounded-lg flex items-center justify-between cursor-pointer transition bg-amber-50 text-amber-800 border border-amber-200";
+        bar.className = "mt-2 text-xs py-1.5 px-3 rounded-xl flex items-center justify-between cursor-pointer transition bg-amber-50 text-amber-800 border border-amber-200";
         barIcon.textContent = "⚠️";
-        barText.textContent = "云端尚未配置，数据仅保存在本地";
+        barText.textContent = "云端尚未配置，数据保存在本地";
         cloudIcon.textContent = "☁️";
       }
     }
 
-    // Core Sync Function: Pull or Push
     async function syncWithCloud(isInitialPull = false) {
-      const url = sanitizeSupabaseUrl(state.supabase.url);
+      const url = (state.supabase.url || '').trim().replace(/\/+$/, '');
       const key = (state.supabase.key || '').trim();
       const room = (state.roomCode || 'DEFAULT').trim();
-
-      if (!url || !key) {
-        updateSyncStatusUI('unconfigured');
-        return;
-      }
+      if (!url || !key) return;
 
       updateSyncStatusUI('syncing');
-
       const endpoint = `${url}/rest/v1/trip_rooms?room_code=eq.${encodeURIComponent(room)}`;
-      const headers = getSupabaseHeaders(key);
+      const headers = { 'apikey': key, 'Authorization': `Bearer ${key}`, 'Content-Type': 'application/json' };
 
       try {
         if (isInitialPull) {
-          // PULL from cloud
-          const res = await fetch(endpoint, {
-            method: 'GET',
-            headers: headers
-          });
-
-          if (!res.ok) {
-            const errText = await res.text();
-            throw new Error(`HTTP ${res.status}: ${errText}`);
+          const res = await fetch(endpoint, { headers });
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.length > 0 && data[0].data) {
+              const r = data[0].data;
+              state.trips = r.trips || state.trips;
+              state.members = r.members || state.members;
+              state.currencies = r.currencies || state.currencies;
+              state.expenses = r.expenses || state.expenses;
+              ensureValidCurrentTrip();
+              persistState(true);
+              updateSyncStatusUI('connected', `已拉取云端 (${state.expenses.length} 笔账目)`);
+              return;
+            }
           }
-
-          const records = await res.json();
-          if (records && records.length > 0 && records[0].data) {
-            const remote = records[0].data;
-            // Merge remote with local gracefully
-            state.trips = remote.trips || state.trips;
-            state.members = remote.members || state.members;
-            state.currencies = remote.currencies || state.currencies;
-            state.expenses = remote.expenses || state.expenses;
-            if (remote.currentTripId) state.currentTripId = remote.currentTripId;
-            persistState(true);
-            updateSyncStatusUI('connected', `已拉取云端数据 (最新 ${state.expenses.length} 笔账目)`);
-          } else {
-            // Room does not exist yet on cloud -> perform first push
-            await pushToCloud();
-          }
-        } else {
-          // PUSH to cloud
-          await pushToCloud();
         }
+        // Push
+        const pushRes = await fetch(`${url}/rest/v1/trip_rooms`, {
+          method: 'POST',
+          headers: Object.assign({}, headers, { 'Prefer': 'resolution=merge-duplicates' }),
+          body: JSON.stringify([{ room_code: room, data: state, updated_at: new Date().toISOString() }])
+        });
+        if (pushRes.ok) updateSyncStatusUI('connected');
+        else throw new Error("云端拒绝写入");
       } catch (err) {
-        console.error("Supabase Cloud Sync Error:", err);
-        updateSyncStatusUI('error', `同步失败: ${err.message}`);
+        updateSyncStatusUI('error', err.message);
       }
     }
 
-    // Helper: Push payload using PostgREST Upsert (ON CONFLICT DO UPDATE)
-    async function pushToCloud() {
-      const url = sanitizeSupabaseUrl(state.supabase.url);
-      const key = (state.supabase.key || '').trim();
-      const room = (state.roomCode || 'DEFAULT').trim();
-
-      const endpoint = `${url}/rest/v1/trip_rooms`;
-      const headers = Object.assign({}, getSupabaseHeaders(key), {
-        'Prefer': 'resolution=merge-duplicates'
-      });
-
-      // Prepare payload to save
-      const payloadData = {
-        trips: state.trips,
-        members: state.members,
-        currencies: state.currencies,
-        expenses: state.expenses,
-        currentTripId: state.currentTripId,
-        updatedAt: new Date().toISOString()
-      };
-
-      const body = JSON.stringify([{
-        room_code: room,
-        data: payloadData,
-        updated_at: new Date().toISOString()
-      }]);
-
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: headers,
-        body: body
-      });
-
-      if (!res.ok) {
-        const errDetails = await res.text();
-        throw new Error(`POST 状态 ${res.status}: ${errDetails}`);
-      }
-
-      updateSyncStatusUI('connected', `已成功同步至云端 (${new Date().toLocaleTimeString()})`);
+    // 3. ICON PALETTE
+    function renderAvatarIconPalette() {
+      const palette = document.getElementById('avatarIconPalette');
+      palette.innerHTML = AVATAR_ICONS.map(icon => `
+        <button type="button" onclick="selectAvatarIcon('${icon.id}')" class="p-1 rounded-xl flex items-center justify-center text-lg transition tap-active ${icon.id === activeEditingAvatarIcon ? 'ring-2 ring-teal-600 bg-teal-50' : 'hover:bg-slate-200'}">
+          <span class="w-8 h-8 rounded-lg ${icon.bg} text-white flex items-center justify-center text-base shadow-xs">${icon.emoji}</span>
+        </button>
+      `).join('');
     }
 
-    // Test & Save Cloud Connection Modal
-    async function testAndSaveCloudSync() {
-      const urlInput = document.getElementById('syncInputUrl').value.trim();
-      const keyInput = document.getElementById('syncInputKey').value.trim();
-      const roomInput = document.getElementById('syncInputRoomCode').value.trim().toUpperCase() || "TYO-882";
-      const resultBox = document.getElementById('syncTestResultBox');
-
-      if (!urlInput || !keyInput) {
-        resultBox.className = "p-3 rounded-xl text-xs bg-rose-50 text-rose-800 border border-rose-200 block";
-        resultBox.innerHTML = "❌ 请填写完整的 Project URL 与 API Key。";
-        return;
-      }
-
-      resultBox.className = "p-3 rounded-xl text-xs bg-amber-50 text-amber-800 border border-amber-200 block";
-      resultBox.innerHTML = "⏳ 正在测试连接 Supabase 并验证数据表权限...";
-
-      state.supabase.url = urlInput;
-      state.supabase.key = keyInput;
-      state.roomCode = roomInput;
-      document.getElementById('headerRoomCode').textContent = roomInput;
-
-      try {
-        // Attempt Push & Verify
-        await pushToCloud();
-        resultBox.className = "p-3 rounded-xl text-xs bg-emerald-50 text-emerald-800 border border-emerald-200 block";
-        resultBox.innerHTML = `✅ <strong>连接并上传成功！</strong><br>
-          已成功在云端登记房间 <code>${roomInput}</code>。<br>
-          当前所有消费明细、旅伴成员及多币种数据已全部实时存入您的 Supabase。`;
-        
-        persistState(true);
-        setTimeout(() => {
-          closeSyncConfigModal();
-        }, 1500);
-      } catch (err) {
-        resultBox.className = "p-3 rounded-xl text-xs bg-rose-50 text-rose-800 border border-rose-200 block leading-relaxed";
-        resultBox.innerHTML = `❌ <strong>上传验证失败：</strong> ${err.message}<br><br>
-          <strong>排查建议：</strong><br>
-          1. 检查 URL 是否只写到 <code>.supabase.co</code>，不要带有 <code>/rest/v1</code>。<br>
-          2. 检查是否在 Supabase <code>SQL Editor</code> 中运行了建表 SQL（展开下方指南查看）。<br>
-          3. 如果使用的是新版 <code>sb_publishable_</code> 密钥，请确保已启用公开 RLS 策略。`;
-      }
+    function selectAvatarIcon(iconId) {
+      activeEditingAvatarIcon = iconId;
+      const icon = getAvatarIconObj(iconId);
+      const preview = document.getElementById('selectedAvatarIconPreview');
+      preview.className = `w-12 h-12 rounded-2xl ${icon.bg} text-white text-2xl flex items-center justify-center shadow-sm`;
+      preview.textContent = icon.emoji;
+      document.getElementById('selectedAvatarIconLabel').textContent = `${icon.label} (${icon.emoji})`;
+      renderAvatarIconPalette();
     }
 
-    // Force pull from cloud
-    async function forcePullFromCloud() {
-      const resultBox = document.getElementById('syncTestResultBox');
-      resultBox.className = "p-3 rounded-xl text-xs bg-sky-50 text-sky-800 border border-sky-200 block";
-      resultBox.innerHTML = "⏳ 正在从云端拉取最新数据...";
-      try {
-        await syncWithCloud(true);
-        resultBox.className = "p-3 rounded-xl text-xs bg-emerald-50 text-emerald-800 border border-emerald-200 block";
-        resultBox.innerHTML = "✅ 已成功从云端覆盖本地数据！";
-      } catch (e) {
-        resultBox.className = "p-3 rounded-xl text-xs bg-rose-50 text-rose-800 border border-rose-200 block";
-        resultBox.innerHTML = "❌ 拉取失败: " + e.message;
-      }
-    }
-
-    // ==========================================
-    // 3. RENDERING & UI CALCULATIONS
-    // ==========================================
-
+    // 4. RENDERING
     function renderAll() {
+      ensureValidCurrentTrip();
+      renderHeaderUser();
       renderTripDropdown();
       renderTripBanner();
       renderExpensesList();
@@ -1177,80 +954,123 @@
       renderCurrenciesManagement();
     }
 
-    // Render Trip Selector Dropdown
+    function renderHeaderUser() {
+      const user = getCurrentUser();
+      const icon = getAvatarIconObj(user.avatarIcon);
+      const slot = document.getElementById('headerUserAvatarSlot');
+      slot.className = `w-9 h-9 rounded-xl shadow-sm flex items-center justify-center border-2 border-teal-500 ${icon.bg} text-white text-base`;
+      slot.textContent = icon.emoji;
+
+      const phone = user.phone || "13800000000";
+      const masked = phone.length >= 7 ? phone.substring(0, 3) + "****" + phone.substring(phone.length - 4) : phone;
+      document.getElementById('headerUserPhoneMask').textContent = `${user.name} · ${masked}`;
+
+      const roleBadge = document.getElementById('headerUserRoleBadge');
+      if (user.isAdmin) {
+        roleBadge.className = "text-[9px] bg-amber-100 text-amber-800 font-bold px-1.5 py-0.2 rounded border border-amber-300";
+        roleBadge.textContent = "超级管理员";
+        document.getElementById('addTripHeaderBtn')?.classList.remove('hidden');
+        document.getElementById('tripCreateFooterBtnArea')?.classList.remove('hidden');
+      } else {
+        roleBadge.className = "text-[9px] bg-teal-50 text-teal-700 font-semibold px-1 rounded border border-teal-200";
+        roleBadge.textContent = "授权旅伴";
+        document.getElementById('addTripHeaderBtn')?.classList.add('hidden');
+        document.getElementById('tripCreateFooterBtnArea')?.classList.add('hidden');
+      }
+
+      document.getElementById('sysCurrentUserAvatar').textContent = icon.emoji;
+      document.getElementById('sysCurrentUserAvatar').className = `w-10 h-10 rounded-2xl ${icon.bg} text-white text-xl flex items-center justify-center shadow`;
+      document.getElementById('sysCurrentUserName').textContent = user.name;
+      document.getElementById('sysCurrentUserPhone').textContent = user.phone;
+      document.getElementById('sysCurrentUserRole').textContent = user.isAdmin ? "超级管理员 (全权限)" : "授权旅伴";
+    }
+
     function renderTripDropdown() {
       const select = document.getElementById('tripSelectFilter');
       const formSelect = document.getElementById('formExpenseTrip');
-      
-      let html = '';
-      state.trips.forEach(t => {
-        const selected = t.id === state.currentTripId ? 'selected' : '';
-        html += `<option value="${t.id}" ${selected}>${t.flag} ${t.name}</option>`;
-      });
-      select.innerHTML = html;
-      formSelect.innerHTML = html;
-      document.getElementById('tripCountBadge').textContent = `${state.trips.length}个`;
+      const trips = getAccessibleTrips();
+
+      if (trips.length === 0) {
+        select.innerHTML = `<option value="">无授权行程</option>`;
+        formSelect.innerHTML = `<option value="">无行程可选</option>`;
+        document.getElementById('tripCountBadge').textContent = `0个授权`;
+        return;
+      }
+
+      const opts = trips.map(t => `<option value="${t.id}" ${t.id === state.currentTripId ? 'selected' : ''}>${t.flag} ${t.name}</option>`).join('');
+      select.innerHTML = opts;
+      formSelect.innerHTML = opts;
+      document.getElementById('tripCountBadge').textContent = `${trips.length}个授权行程`;
     }
 
-    // Render Active Trip Banner
     function renderTripBanner() {
-      const activeTrip = state.trips.find(t => t.id === state.currentTripId) || state.trips[0];
-      if (!activeTrip) return;
+      const activeTrip = state.trips.find(t => t.id === state.currentTripId);
+      if (!activeTrip || !isTripAccessible(activeTrip.id)) {
+        document.getElementById('tripFlagEmoji').textContent = '🔒';
+        document.getElementById('tripNameDisplay').textContent = '未选定或暂未获授权行程';
+        document.getElementById('tripDateDisplay').textContent = '请联系管理员分配行程权限或登录对应账号';
+        document.getElementById('tripTotalSgdDisplay').textContent = 'S$ 0.00';
+        document.getElementById('tripMembersAvatarsList').innerHTML = '';
+        document.getElementById('memberCountText').textContent = '0人';
+        return;
+      }
 
       document.getElementById('tripFlagEmoji').textContent = activeTrip.flag || '✈️';
       document.getElementById('tripNameDisplay').textContent = activeTrip.name;
       document.getElementById('tripDateDisplay').textContent = `${activeTrip.startDate || ''} ~ ${activeTrip.endDate || ''}`;
 
-      // Calculate total SGD for this trip
       const tripExpenses = state.expenses.filter(e => e.tripId === activeTrip.id);
       const totalSGD = tripExpenses.reduce((sum, e) => sum + (e.amountSGD || 0), 0);
       document.getElementById('tripTotalSgdDisplay').textContent = `S$ ${totalSGD.toFixed(2)}`;
 
-      // Render avatars in banner
-      const avatarList = document.getElementById('tripMembersAvatarsList');
-      avatarList.innerHTML = state.members.map(m => `
-        <img src="${m.avatar}" title="${m.name}" class="w-6 h-6 rounded-full border border-white object-cover shadow-xs">
-      `).join('');
-      document.getElementById('memberCountText').textContent = `${state.members.length}人`;
+      const tripMembers = state.members.filter(m => m.isAdmin || (m.allowedTrips && m.allowedTrips.includes(activeTrip.id)));
+      document.getElementById('tripMembersAvatarsList').innerHTML = tripMembers.map(m => {
+        const icon = getAvatarIconObj(m.avatarIcon);
+        return `<div title="${m.name}" class="w-6 h-6 rounded-full border-2 border-white ${icon.bg} text-white text-[11px] flex items-center justify-center shadow-xs">${icon.emoji}</div>`;
+      }).join('');
+      document.getElementById('memberCountText').textContent = `${tripMembers.length}人`;
     }
 
-    // Render Expenses List (Tab 1)
     function renderExpensesList() {
       const container = document.getElementById('expenseListContainer');
-      const category = state.currentCategoryFilter || "ALL";
+      const cat = state.currentCategoryFilter || "ALL";
 
-      // Filter by trip and category
-      const list = state.expenses.filter(e => {
-        const matchesTrip = e.tripId === state.currentTripId;
-        const matchesCategory = category === "ALL" || e.category === category;
-        return matchesTrip && matchesCategory;
-      });
+      if (!state.currentTripId || !isTripAccessible(state.currentTripId)) {
+        container.innerHTML = `
+          <div class="bg-white rounded-2xl p-8 text-center border border-dashed border-slate-200">
+            <div class="text-3xl mb-2">🔒</div>
+            <p class="text-xs font-semibold text-slate-700">您暂无访问该行程账本的权限</p>
+            <p class="text-[11px] text-slate-400 mt-1">请使用上方头像按钮登录对应授权旅伴账号</p>
+          </div>
+        `;
+        document.getElementById('filteredCount').textContent = '0';
+        document.getElementById('filteredTotalSGD').textContent = `S$ 0.00`;
+        document.getElementById('perCapitaSGD').textContent = `S$ 0.00`;
+        document.getElementById('payerBreakdownPills').innerHTML = '';
+        return;
+      }
 
-      // Stats
+      const list = state.expenses.filter(e => e.tripId === state.currentTripId && (cat === "ALL" || e.category === cat));
+      const tripMembers = state.members.filter(m => m.isAdmin || (m.allowedTrips && m.allowedTrips.includes(state.currentTripId)));
       const totalSGD = list.reduce((sum, e) => sum + (e.amountSGD || 0), 0);
-      const perCapita = state.members.length > 0 ? (totalSGD / state.members.length) : 0;
+      const perCapita = tripMembers.length > 0 ? (totalSGD / tripMembers.length) : 0;
 
       document.getElementById('filteredCount').textContent = list.length;
       document.getElementById('filteredTotalSGD').textContent = `S$ ${totalSGD.toFixed(2)}`;
       document.getElementById('perCapitaSGD').textContent = `S$ ${perCapita.toFixed(2)}`;
 
-      // Payer breakdown stats
       const payerMap = {};
-      state.members.forEach(m => payerMap[m.id] = 0);
-      list.forEach(e => {
-        if (payerMap[e.payerId] !== undefined) {
-          payerMap[e.payerId] += (e.amountSGD || 0);
-        }
-      });
+      tripMembers.forEach(m => payerMap[m.id] = 0);
+      list.forEach(e => { if (payerMap[e.payerId] !== undefined) payerMap[e.payerId] += (e.amountSGD || 0); });
 
-      const pillsContainer = document.getElementById('payerBreakdownPills');
-      pillsContainer.innerHTML = state.members.map(m => {
+      document.getElementById('payerBreakdownPills').innerHTML = tripMembers.map(m => {
         const paid = payerMap[m.id] || 0;
         const pct = totalSGD > 0 ? ((paid / totalSGD) * 100).toFixed(0) : 0;
+        const icon = getAvatarIconObj(m.avatarIcon);
         return `
           <div class="bg-white border border-slate-200 px-2.5 py-1 rounded-xl shrink-0 flex items-center gap-1.5 text-xs shadow-2xs">
-            <img src="${m.avatar}" class="w-4 h-4 rounded-full object-cover">
-            <span class="font-medium text-slate-700">${m.name}垫付:</span>
+            <span class="w-4 h-4 rounded-md ${icon.bg} text-white flex items-center justify-center text-[10px]">${icon.emoji}</span>
+            <span class="font-medium text-slate-700">${m.name}:</span>
             <span class="font-mono font-bold text-slate-900">S$${paid.toFixed(2)}</span>
             <span class="text-[10px] text-teal-600 font-semibold bg-teal-50 px-1 rounded">${pct}%</span>
           </div>
@@ -1258,39 +1078,29 @@
       }).join('');
 
       if (list.length === 0) {
-        container.innerHTML = `
-          <div class="bg-white rounded-2xl p-8 text-center border border-dashed border-slate-200">
-            <div class="text-3xl mb-2">🏝️</div>
-            <p class="text-xs font-semibold text-slate-600">当前行程暂无该筛选条件下的账目</p>
-            <p class="text-[11px] text-slate-400 mt-1">点击下方按钮快速记录第一笔吧！</p>
-            <button onclick="openExpenseModal()" class="mt-3 bg-teal-50 text-teal-700 font-bold px-3.5 py-1.5 rounded-lg text-xs border border-teal-200 tap-active">
-              + 记一笔消费
-            </button>
-          </div>
-        `;
+        container.innerHTML = `<div class="bg-white rounded-2xl p-8 text-center text-xs text-slate-400">当前筛选无账目记录</div>`;
         return;
       }
 
-      // Sort by date desc
       list.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
-
       container.innerHTML = list.map(exp => {
-        const payer = state.members.find(m => m.id === exp.payerId) || { name: '未知', avatar: '' };
-        const categoryIcon = getCategoryIcon(exp.category);
+        const payer = state.members.find(m => m.id === exp.payerId) || { name: '未知', avatarIcon: 'ico_backpack' };
+        const icon = getAvatarIconObj(payer.avatarIcon);
+        const hasReceipt = !!exp.receiptUrl;
 
         return `
           <div class="bg-white rounded-2xl p-3.5 shadow-2xs border border-slate-100 flex items-center justify-between gap-3 hover:border-teal-200 transition">
             <div class="flex items-center gap-3 min-w-0">
-              <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-lg shrink-0 border border-slate-200/60">
-                ${categoryIcon}
+              <div class="w-10 h-10 rounded-2xl bg-slate-100 flex items-center justify-center text-lg shrink-0 border border-slate-200/60">
+                ${getCategoryIcon(exp.category)}
               </div>
               <div class="min-w-0">
                 <div class="flex items-center gap-1.5">
                   <h4 class="font-bold text-slate-900 text-sm truncate">${exp.title}</h4>
-                  ${exp.receiptUrl ? '<span class="text-xs" title="有发票照片">🧾</span>' : ''}
+                  ${hasReceipt ? `<button onclick="viewReceiptImage('${exp.id}')" class="text-xs bg-amber-50 text-amber-700 border border-amber-200 px-1 rounded flex items-center gap-0.5 hover:bg-amber-100" title="点击查看发票图片"><span>🧾</span><span class="text-[9px] font-bold">发票</span></button>` : ''}
                 </div>
                 <div class="flex items-center gap-1.5 text-[11px] text-slate-400 mt-0.5">
-                  <img src="${payer.avatar}" class="w-3.5 h-3.5 rounded-full object-cover">
+                  <span class="w-3.5 h-3.5 rounded-md ${icon.bg} text-white flex items-center justify-center text-[9px]">${icon.emoji}</span>
                   <span>${payer.name} 垫付</span>
                   <span>·</span>
                   <span class="font-mono">${exp.date || ''}</span>
@@ -1301,160 +1111,97 @@
 
             <div class="text-right shrink-0 flex items-center gap-2">
               <div>
-                <div class="font-mono font-extrabold text-slate-900 text-sm">
-                  S$ ${(exp.amountSGD || 0).toFixed(2)}
-                </div>
+                <div class="font-mono font-extrabold text-slate-900 text-sm">S$ ${(exp.amountSGD || 0).toFixed(2)}</div>
                 <span class="text-[10px] text-emerald-700 bg-emerald-50 px-1 py-0.2 rounded font-semibold">新币计入</span>
               </div>
-              <button onclick="handleDeleteExpense('${exp.id}')" class="text-slate-300 hover:text-rose-500 p-1 rounded tap-active transition" title="删除">
-                🗑️
-              </button>
+              <button onclick="handleDeleteExpense('${exp.id}')" class="text-slate-300 hover:text-rose-500 p-1 rounded tap-active transition" title="删除">🗑️</button>
             </div>
           </div>
         `;
       }).join('');
     }
 
-    // Helper: Category Icon
     function getCategoryIcon(cat) {
-      switch(cat) {
-        case '餐饮美食': return '🍜';
-        case '交通出行': return '🚕';
-        case '酒店住宿': return '🏨';
-        case '门票娱乐': return '🎟️';
-        case '购物买买': return '🛍️';
-        case '签证保险': return '📄';
-        case '通信WiFi': return '📶';
-        default: return '📦';
-      }
+      const map = { '餐饮美食': '🍜', '交通出行': '🚕', '酒店住宿': '🏨', '门票娱乐': '🎟️', '购物买买': '🛍️', '签证保险': '📄', '通信WiFi': '📶' };
+      return map[cat] || '📦';
     }
 
-    // Render Settlement Tab (Tab 2)
+    // 5. SETTLEMENT
     function renderSettlement() {
-      const tripExpenses = state.expenses.filter(e => e.tripId === state.currentTripId);
-      const totalSGD = tripExpenses.reduce((sum, e) => sum + (e.amountSGD || 0), 0);
+      const container = document.getElementById('settlementBalancesList');
+      const stepsContainer = document.getElementById('settlementStepsList');
+      if (!state.currentTripId || !isTripAccessible(state.currentTripId)) {
+        container.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">无当前行程访问权限</p>`;
+        stepsContainer.innerHTML = '';
+        return;
+      }
 
-      // Compute balance per member
-      const netBalances = {};
-      state.members.forEach(m => {
-        netBalances[m.id] = {
-          member: m,
-          paid: 0,
-          shouldPay: 0,
-          net: 0
-        };
-      });
+      const tripExpenses = state.expenses.filter(e => e.tripId === state.currentTripId);
+      const tripMembers = state.members.filter(m => m.isAdmin || (m.allowedTrips && m.allowedTrips.includes(state.currentTripId)));
+      const balances = {};
+      tripMembers.forEach(m => balances[m.id] = { member: m, paid: 0, shouldPay: 0, net: 0 });
 
       tripExpenses.forEach(exp => {
         const cost = exp.amountSGD || 0;
-        // Payer credited
-        if (netBalances[exp.payerId]) {
-          netBalances[exp.payerId].paid += cost;
-        }
-
-        // Split members debited
-        const splitters = (exp.splitMemberIds && exp.splitMemberIds.length > 0) ? exp.splitMemberIds : state.members.map(m => m.id);
-        const share = cost / splitters.length;
-        splitters.forEach(uid => {
-          if (netBalances[uid]) {
-            netBalances[uid].shouldPay += share;
-          }
-        });
+        if (balances[exp.payerId]) balances[exp.payerId].paid += cost;
+        const splitters = (exp.splitMemberIds && exp.splitMemberIds.length > 0) ? exp.splitMemberIds : tripMembers.map(m => m.id);
+        const valid = splitters.filter(uid => balances[uid]);
+        const share = cost / (valid.length || 1);
+        valid.forEach(uid => balances[uid].shouldPay += share);
       });
 
-      // Calculate net = paid - shouldPay
-      const balanceList = [];
-      Object.values(netBalances).forEach(b => {
-        b.net = b.paid - b.shouldPay;
-        balanceList.push(b);
-      });
+      const list = Object.values(balances);
+      list.forEach(b => b.net = b.paid - b.shouldPay);
 
-      // Render Balance Cards
-      const container = document.getElementById('settlementBalancesList');
-      container.innerHTML = balanceList.map(b => {
-        const isPositive = b.net >= 0.005;
-        const isNeutral = Math.abs(b.net) < 0.005;
-        const colorClass = isNeutral ? 'text-slate-500 bg-slate-50' : (isPositive ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-rose-700 bg-rose-50 border-rose-200');
-        const badgeText = isNeutral ? '已结清' : (isPositive ? `应收 S$ ${b.net.toFixed(2)}` : `应付 S$ ${Math.abs(b.net).toFixed(2)}`);
+      container.innerHTML = list.map(b => {
+        const isPos = b.net >= 0.01;
+        const isNeutral = Math.abs(b.net) < 0.01;
+        const badge = isNeutral ? '已结清' : (isPos ? `应收 S$ ${b.net.toFixed(2)}` : `应付 S$ ${Math.abs(b.net).toFixed(2)}`);
+        const color = isNeutral ? 'text-slate-500 bg-slate-50' : (isPos ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-rose-700 bg-rose-50 border-rose-200');
+        const icon = getAvatarIconObj(b.member.avatarIcon);
+        const isCur = b.member.id === state.currentLoggedInUserId;
 
         return `
           <div class="bg-white rounded-xl p-3 border border-slate-200/80 flex items-center justify-between">
             <div class="flex items-center gap-2.5">
-              <img src="${b.member.avatar}" class="w-9 h-9 rounded-full object-cover border border-slate-200">
+              <div class="w-9 h-9 rounded-xl ${icon.bg} text-white flex items-center justify-center text-lg shadow-xs">${icon.emoji}</div>
               <div>
-                <div class="font-bold text-slate-800 text-sm flex items-center gap-1">
+                <div class="font-bold text-slate-800 text-sm flex items-center gap-1.5">
                   <span>${b.member.name}</span>
-                  ${b.member.isMe ? '<span class="text-[9px] bg-teal-100 text-teal-800 px-1 rounded">我</span>' : ''}
+                  ${isCur ? '<span class="text-[9px] bg-teal-100 text-teal-800 px-1 rounded font-semibold">当前登入</span>' : ''}
                 </div>
-                <div class="text-[11px] text-slate-400 font-mono">
-                  垫付: S$${b.paid.toFixed(2)} | 应摊: S$${b.shouldPay.toFixed(2)}
-                </div>
+                <div class="text-[11px] text-slate-400 font-mono">垫付: S$${b.paid.toFixed(2)} | 应摊: S$${b.shouldPay.toFixed(2)}</div>
               </div>
             </div>
-            <div class="text-right">
-              <span class="font-mono font-bold text-xs px-2 py-1 rounded-lg border ${colorClass}">
-                ${badgeText}
-              </span>
-            </div>
+            <span class="font-mono font-bold text-xs px-2 py-1 rounded-lg border ${color}">${badge}</span>
           </div>
         `;
       }).join('');
 
-      // Simplified Debt Settlement Algorithm (Min Transactions)
-      const debtors = [];
-      const creditors = [];
-
-      balanceList.forEach(b => {
-        if (b.net < -0.01) {
-          debtors.push({ member: b.member, amount: -b.net });
-        } else if (b.net > 0.01) {
-          creditors.push({ member: b.member, amount: b.net });
-        }
-      });
-
-      debtors.sort((a, b) => b.amount - a.amount);
-      creditors.sort((a, b) => b.amount - a.amount);
-
-      const transactions = [];
-      let dIdx = 0;
-      let cIdx = 0;
-
-      while (dIdx < debtors.length && cIdx < creditors.length) {
-        const debtor = debtors[dIdx];
-        const creditor = creditors[cIdx];
-        const transfer = Math.min(debtor.amount, creditor.amount);
-
-        if (transfer > 0.01) {
-          transactions.push({
-            from: debtor.member,
-            to: creditor.member,
-            amount: transfer
-          });
-        }
-
-        debtor.amount -= transfer;
-        creditor.amount -= transfer;
-
-        if (debtor.amount < 0.01) dIdx++;
-        if (creditor.amount < 0.01) cIdx++;
+      // Min transfer steps
+      const debtors = list.filter(b => b.net < -0.01).map(b => ({ member: b.member, amount: -b.net })).sort((a,b)=>b.amount-a.amount);
+      const creditors = list.filter(b => b.net > 0.01).map(b => ({ member: b.member, amount: b.net })).sort((a,b)=>b.amount-a.amount);
+      const transfers = [];
+      let d = 0, c = 0;
+      while(d < debtors.length && c < creditors.length) {
+        const t = Math.min(debtors[d].amount, creditors[c].amount);
+        if (t > 0.01) transfers.push({ from: debtors[d].member, to: creditors[c].member, amount: t });
+        debtors[d].amount -= t; creditors[c].amount -= t;
+        if (debtors[d].amount < 0.01) d++;
+        if (creditors[c].amount < 0.01) c++;
       }
 
-      const stepsContainer = document.getElementById('settlementStepsList');
-      if (transactions.length === 0) {
-        stepsContainer.innerHTML = `
-          <div class="bg-slate-50 p-4 rounded-xl text-center text-xs text-slate-400">
-            🎉 当前行程所有成员账目完全平衡，无需额外转账！
-          </div>
-        `;
+      if (transfers.length === 0) {
+        stepsContainer.innerHTML = `<div class="bg-slate-50 p-4 rounded-xl text-center text-xs text-slate-400">🎉 所有账目完全平衡，无需额外转账！</div>`;
       } else {
-        stepsContainer.innerHTML = transactions.map((t, i) => `
+        stepsContainer.innerHTML = transfers.map((t, i) => `
           <div class="bg-gradient-to-r from-slate-50 to-teal-50/40 p-3 rounded-xl border border-slate-200 flex items-center justify-between text-xs">
             <div class="flex items-center gap-2">
               <span class="w-5 h-5 rounded-full bg-teal-700 text-white flex items-center justify-center font-bold text-[10px]">${i+1}</span>
-              <div class="flex items-center gap-1.5">
-                <span class="font-bold text-slate-900">${t.from.name}</span>
-                <span class="text-teal-600 font-bold">➔</span>
-                <span class="font-bold text-slate-900">${t.to.name}</span>
+              <div class="flex items-center gap-1.5 font-bold text-slate-900">
+                <span>${t.from.name}</span>
+                <span class="text-teal-600">➔</span>
+                <span>${t.to.name}</span>
               </div>
             </div>
             <div class="text-right">
@@ -1464,61 +1211,54 @@
           </div>
         `).join('');
       }
-
-      // Store transactions globally for copy function
-      window.lastCalculatedTransactions = transactions;
+      window.lastTransfers = transfers;
     }
 
-    // Render Reports Tab (Tab 3)
+    // 6. REPORTS & CSV EXPORT WITH RECEIPT URL
     function renderReports() {
+      const catBars = document.getElementById('categoryStatsBars');
+      const memBars = document.getElementById('memberStatsBars');
+      if (!state.currentTripId || !isTripAccessible(state.currentTripId)) {
+        catBars.innerHTML = `<p class="text-xs text-slate-400">无权限</p>`;
+        memBars.innerHTML = '';
+        return;
+      }
+
       const tripExpenses = state.expenses.filter(e => e.tripId === state.currentTripId);
       const total = tripExpenses.reduce((sum, e) => sum + (e.amountSGD || 0), 0);
 
-      // Category breakdown
       const catMap = {};
-      tripExpenses.forEach(e => {
-        catMap[e.category] = (catMap[e.category] || 0) + (e.amountSGD || 0);
-      });
+      tripExpenses.forEach(e => catMap[e.category] = (catMap[e.category] || 0) + (e.amountSGD || 0));
+      const sortedCats = Object.entries(catMap).sort((a,b)=>b[1]-a[1]);
 
-      const catBars = document.getElementById('categoryStatsBars');
-      const sortedCats = Object.entries(catMap).sort((a, b) => b[1] - a[1]);
-
-      if (sortedCats.length === 0) {
-        catBars.innerHTML = `<p class="text-xs text-slate-400">暂无消费数据</p>`;
-      } else {
-        catBars.innerHTML = sortedCats.map(([cat, amt]) => {
-          const pct = total > 0 ? ((amt / total) * 100).toFixed(1) : 0;
-          return `
-            <div class="space-y-1 text-xs">
-              <div class="flex justify-between font-medium">
-                <span class="text-slate-700">${cat}</span>
-                <span class="font-mono font-bold text-slate-900">S$ ${amt.toFixed(2)} (${pct}%)</span>
-              </div>
-              <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                <div class="h-full bg-teal-500 rounded-full" style="width: ${pct}%"></div>
-              </div>
-            </div>
-          `;
-        }).join('');
-      }
-
-      // Member breakdown
-      const memberMap = {};
-      state.members.forEach(m => memberMap[m.id] = 0);
-      tripExpenses.forEach(e => {
-        if (memberMap[e.payerId] !== undefined) {
-          memberMap[e.payerId] += (e.amountSGD || 0);
-        }
-      });
-
-      const memBars = document.getElementById('memberStatsBars');
-      memBars.innerHTML = state.members.map(m => {
-        const amt = memberMap[m.id] || 0;
+      catBars.innerHTML = sortedCats.map(([cat, amt]) => {
         const pct = total > 0 ? ((amt / total) * 100).toFixed(1) : 0;
         return `
           <div class="space-y-1 text-xs">
             <div class="flex justify-between font-medium">
-              <span class="text-slate-700">${m.name}</span>
+              <span class="text-slate-700">${cat}</span>
+              <span class="font-mono font-bold text-slate-900">S$ ${amt.toFixed(2)} (${pct}%)</span>
+            </div>
+            <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+              <div class="h-full bg-teal-500 rounded-full" style="width: ${pct}%"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      const tripMembers = state.members.filter(m => m.isAdmin || (m.allowedTrips && m.allowedTrips.includes(state.currentTripId)));
+      const memMap = {};
+      tripMembers.forEach(m => memMap[m.id] = 0);
+      tripExpenses.forEach(e => { if (memMap[e.payerId] !== undefined) memMap[e.payerId] += (e.amountSGD || 0); });
+
+      memBars.innerHTML = tripMembers.map(m => {
+        const amt = memMap[m.id] || 0;
+        const pct = total > 0 ? ((amt / total) * 100).toFixed(1) : 0;
+        const icon = getAvatarIconObj(m.avatarIcon);
+        return `
+          <div class="space-y-1 text-xs">
+            <div class="flex justify-between font-medium items-center">
+              <span class="text-slate-700 flex items-center gap-1"><span>${icon.emoji}</span><span>${m.name}</span></span>
               <span class="font-mono font-bold text-slate-900">S$ ${amt.toFixed(2)} (${pct}%)</span>
             </div>
             <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
@@ -1529,29 +1269,87 @@
       }).join('');
     }
 
-    // Render Members Management (Tab 4)
-    function renderMembersManagement() {
-      const container = document.getElementById('membersManagementList');
-      container.innerHTML = state.members.map(m => `
-        <div class="py-2.5 flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <img src="${m.avatar}" class="w-10 h-10 rounded-full object-cover border border-slate-200">
-            <div>
-              <div class="font-bold text-slate-900 text-sm flex items-center gap-1.5">
-                <span>${m.name}</span>
-                ${m.isMe ? '<span class="text-[9px] bg-teal-100 text-teal-800 px-1.5 py-0.2 rounded font-semibold">本人</span>' : ''}
-              </div>
-              <div class="text-[11px] text-slate-400">${m.paymentInfo || '未设置收款信息'}</div>
-            </div>
-          </div>
-          <button onclick="openEditMemberModal('${m.id}')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-2.5 py-1.5 rounded-lg tap-active border border-slate-200">
-            编辑资料
-          </button>
-        </div>
-      `).join('');
+    // EXPORT CSV WITH RECEIPT PHOTO LINK
+    function exportExpensesCSV() {
+      const activeTrip = state.trips.find(t => t.id === state.currentTripId);
+      if (!activeTrip) return alert("请先选择行程！");
+
+      const list = state.expenses.filter(e => e.tripId === activeTrip.id);
+      if (list.length === 0) return alert("当前行程没有账目可导出！");
+
+      // CSV Headers with 发票凭证链接 (Receipt Link)
+      const headers = ["日期", "行程名称", "消费项目", "支出分类", "原币金额", "原币币种", "汇率(对SGD)", "折合基准新币(SGD)", "垫付人", "分摊参与人", "记账人", "发票凭证链接", "备注说明"];
+      const rows = list.map(exp => {
+        const payer = state.members.find(m => m.id === exp.payerId)?.name || exp.payerId;
+        const recorder = state.members.find(m => m.id === exp.recordedBy)?.name || exp.recordedBy;
+        const splitters = (exp.splitMemberIds || []).map(id => state.members.find(m => m.id === id)?.name || id).join(';');
+        
+        // Receipt Link: Clean HTTP URL or Data URI note
+        let receiptLink = exp.receiptUrl || "无发票";
+        if (receiptLink.startsWith("data:image")) {
+          receiptLink = `内嵌凭证图像(可在网页端点击查看)`;
+        }
+
+        return [
+          `"${exp.date || ''}"`,
+          `"${activeTrip.name.replace(/"/g, '""')}"`,
+          `"${exp.title.replace(/"/g, '""')}"`,
+          `"${exp.category || ''}"`,
+          `"${exp.originalAmount}"`,
+          `"${exp.currency}"`,
+          `"${exp.rateToSGD}"`,
+          `"${exp.amountSGD}"`,
+          `"${payer}"`,
+          `"${splitters}"`,
+          `"${recorder}"`,
+          `"${receiptLink}"`,
+          `"${(exp.remark || '').replace(/"/g, '""')}"`
+        ];
+      });
+
+      const csvContent = "\uFEFF" + [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `Equator_Journey_${activeTrip.name}_账本明细(含发票).csv`;
+      link.click();
     }
 
-    // Render Currencies Management (Tab 4)
+    // 7. MEMBERS MANAGEMENT
+    function renderMembersManagement() {
+      const container = document.getElementById('membersManagementList');
+      const cur = getCurrentUser();
+
+      container.innerHTML = state.members.map(m => {
+        const icon = getAvatarIconObj(m.avatarIcon);
+        const isCurrent = m.id === cur.id;
+        const tripNames = m.isAdmin ? "全部行程 (超级管理员)" : (m.allowedTrips || []).map(tid => {
+          const t = state.trips.find(item => item.id === tid);
+          return t ? t.name.split('·')[0].trim() : tid;
+        }).join(', ') || '未分配任何行程';
+
+        return `
+          <div class="py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-2xl ${icon.bg} text-white flex items-center justify-center text-xl shadow-xs">${icon.emoji}</div>
+              <div>
+                <div class="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                  <span>${m.name}</span>
+                  ${isCurrent ? '<span class="text-[9px] bg-teal-100 text-teal-800 px-1.5 py-0.2 rounded font-bold">我正在登录</span>' : ''}
+                  ${m.isAdmin ? '<span class="text-[9px] bg-amber-100 text-amber-800 px-1.5 py-0.2 rounded font-bold">管理员</span>' : ''}
+                </div>
+                <div class="text-[11px] text-slate-400 font-mono">📱 ${m.phone || '未留电话'} · PIN: ****</div>
+                <div class="text-[10px] text-teal-700 font-medium">授权行程: ${tripNames}</div>
+              </div>
+            </div>
+            <button onclick="openEditMemberModal('${m.id}')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-2.5 py-1.5 rounded-xl tap-active border border-slate-200">
+              设置账号
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
     function renderCurrenciesManagement() {
       const container = document.getElementById('currenciesManagementList');
       container.innerHTML = state.currencies.map(c => `
@@ -1561,54 +1359,140 @@
             <div class="text-[10px] text-slate-500 font-mono">1 SGD = ${c.rateToSGD} ${c.code}</div>
           </div>
           ${c.isBase ? '<span class="text-[9px] bg-teal-100 text-teal-800 font-bold px-1 rounded">基准</span>' : `
-            <button onclick="openEditCurrencyModal('${c.code}')" class="text-[11px] text-teal-600 hover:underline">修改</button>
+            <button onclick="openEditCurrencyModal('${c.code}')" class="text-[11px] text-teal-600 hover:underline font-semibold">修改</button>
           `}
         </div>
       `).join('');
     }
 
-    // ==========================================
-    // 4. ACTION HANDLERS & FORMS
-    // ==========================================
+    // 8. LOGIN AND AUTH
+    function openLoginModal() {
+      const grid = document.getElementById('loginQuickSelectGrid');
+      grid.innerHTML = state.members.map(m => {
+        const icon = getAvatarIconObj(m.avatarIcon);
+        const isCurrent = m.id === state.currentLoggedInUserId;
+        return `
+          <button type="button" onclick="selectLoginMember('${m.id}')" class="p-2 rounded-xl flex flex-col items-center gap-1 border transition tap-active ${isCurrent ? 'border-teal-500 bg-teal-50 shadow-xs' : 'border-slate-200 bg-white hover:bg-slate-50'}">
+            <span class="w-8 h-8 rounded-xl ${icon.bg} text-white flex items-center justify-center text-base">${icon.emoji}</span>
+            <span class="font-bold text-[11px] text-slate-800 truncate w-full text-center">${m.name}</span>
+          </button>
+        `;
+      }).join('');
 
-    // Tab Switching
-    function switchTab(tabId) {
-      const views = {
-        expenses: document.getElementById('viewTabExpenses'),
-        settlement: document.getElementById('viewTabSettlement'),
-        reports: document.getElementById('viewTabReports'),
-        members: document.getElementById('viewTabMembers')
-      };
-
-      const tabs = {
-        expenses: document.getElementById('navTabExpenses'),
-        settlement: document.getElementById('navTabSettlement'),
-        reports: document.getElementById('navTabReports'),
-        members: document.getElementById('navTabMembers')
-      };
-
-      Object.keys(views).forEach(key => {
-        if (key === tabId) {
-          views[key].classList.remove('hidden');
-          tabs[key].className = "flex-1 py-1.5 flex flex-col items-center gap-0.5 text-teal-600 font-bold transition";
-        } else {
-          views[key].classList.add('hidden');
-          tabs[key].className = "flex-1 py-1.5 flex flex-col items-center gap-0.5 text-slate-400 font-medium hover:text-slate-600 transition";
-        }
-      });
+      const user = getCurrentUser();
+      document.getElementById('loginInputAccount').value = user.phone || user.name;
+      document.getElementById('loginInputPin').value = '';
+      document.getElementById('loginErrorMsg').classList.add('hidden');
+      document.getElementById('loginModal').classList.remove('hidden');
     }
 
-    function handleTripFilterChange(newTripId) {
-      state.currentTripId = newTripId;
+    function closeLoginModal() { document.getElementById('loginModal').classList.add('hidden'); }
+
+    function selectLoginMember(uid) {
+      const m = state.members.find(item => item.id === uid);
+      if (m) {
+        document.getElementById('loginInputAccount').value = m.phone || m.name;
+        document.getElementById('loginInputPin').value = '';
+        document.getElementById('loginInputPin').focus();
+      }
+    }
+
+    function handleLoginSubmit(e) {
+      e.preventDefault();
+      const acc = document.getElementById('loginInputAccount').value.trim();
+      const pin = document.getElementById('loginInputPin').value.trim();
+
+      const matched = state.members.find(m => (m.phone && m.phone === acc) || (m.name && m.name.toLowerCase() === acc.toLowerCase()));
+      if (!matched || matched.pin !== pin) {
+        document.getElementById('loginErrorMsg').classList.remove('hidden');
+        return;
+      }
+
+      state.currentLoggedInUserId = matched.id;
+      ensureValidCurrentTrip();
+      closeLoginModal();
       persistState();
+      alert(`欢迎旅伴【${matched.name}】登入！系统已为您自动切换至授权行程。`);
     }
 
-    function handleCategoryFilterChange(cat) {
-      state.currentCategoryFilter = cat;
-      renderExpensesList();
+    // 9. EXPENSE & RECEIPTS
+    function openExpenseModal() {
+      const trips = getAccessibleTrips();
+      if (trips.length === 0) return alert("当前旅伴未获任何行程授权，请登录管理员账号分配行程！");
+
+      document.getElementById('formExpenseTitle').value = '';
+      document.getElementById('formExpenseAmount').value = '';
+      document.getElementById('formExpenseDate').value = new Date().toISOString().split('T')[0];
+      activeUploadedReceiptDataUrl = "";
+      document.getElementById('receiptFileName').textContent = "拍照或选凭证";
+      document.getElementById('receiptPreviewBox').classList.add('hidden');
+
+      const currSelect = document.getElementById('formExpenseCurrency');
+      currSelect.innerHTML = state.currencies.map(c => `<option value="${c.code}" ${c.code === 'CNY' ? 'selected' : ''}>${c.code} (${c.symbol})</option>`).join('');
+
+      const tripMembers = state.members.filter(m => m.isAdmin || (m.allowedTrips && m.allowedTrips.includes(state.currentTripId)));
+      const payerSelect = document.getElementById('formExpensePayer');
+      payerSelect.innerHTML = tripMembers.map(m => {
+        const icon = getAvatarIconObj(m.avatarIcon);
+        return `<option value="${m.id}" ${m.id === state.currentLoggedInUserId ? 'selected' : ''}>${icon.emoji} ${m.name}</option>`;
+      }).join('');
+
+      const splitBoxes = document.getElementById('formSplitMembersCheckboxes');
+      splitBoxes.innerHTML = tripMembers.map(m => {
+        const icon = getAvatarIconObj(m.avatarIcon);
+        return `
+          <label class="flex items-center gap-2 bg-slate-50 p-2 rounded-xl border border-slate-200 text-xs font-semibold cursor-pointer">
+            <input type="checkbox" name="splitMember" value="${m.id}" checked class="rounded text-teal-600 focus:ring-teal-500">
+            <span class="w-4 h-4 rounded-md ${icon.bg} text-white flex items-center justify-center text-[10px]">${icon.emoji}</span>
+            <span class="truncate">${m.name}</span>
+          </label>
+        `;
+      }).join('');
+
+      updateExpenseConversionCalc();
+      document.getElementById('expenseModal').classList.remove('hidden');
     }
 
-    // Save Expense
+    function closeExpenseModal() { document.getElementById('expenseModal').classList.add('hidden'); }
+
+    function updateExpenseConversionCalc() {
+      const curr = document.getElementById('formExpenseCurrency').value;
+      const amt = parseFloat(document.getElementById('formExpenseAmount').value) || 0;
+      const currObj = state.currencies.find(c => c.code === curr) || { rateToSGD: 1.0 };
+      document.getElementById('rateHintText').textContent = `1 SGD ≈ ${currObj.rateToSGD} ${curr}`;
+      const sgd = curr === 'SGD' ? amt : (amt / currObj.rateToSGD);
+      document.getElementById('formConvertedSGD').textContent = `S$ ${sgd.toFixed(2)}`;
+    }
+
+    function handleReceiptFileSelect(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const maxDim = 800;
+          let w = img.width, h = img.height;
+          if (w > h) { if (w > maxDim) { h = Math.round(h * maxDim / w); w = maxDim; } }
+          else { if (h > maxDim) { w = Math.round(w * maxDim / h); h = maxDim; } }
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          activeUploadedReceiptDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+          document.getElementById('receiptFileName').textContent = file.name;
+          document.getElementById('receiptPreviewBox').classList.remove('hidden');
+        };
+        img.src = evt.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clearReceiptUpload() {
+      activeUploadedReceiptDataUrl = "";
+      document.getElementById('receiptFileName').textContent = "拍照或选凭证";
+      document.getElementById('receiptPreviewBox').classList.add('hidden');
+    }
+
     function handleSaveExpense(e) {
       e.preventDefault();
       const tripId = document.getElementById('formExpenseTrip').value;
@@ -1618,180 +1502,121 @@
       const amount = parseFloat(document.getElementById('formExpenseAmount').value);
       const payerId = document.getElementById('formExpensePayer').value;
       const date = document.getElementById('formExpenseDate').value || new Date().toISOString().split('T')[0];
-
-      // Get selected split members
       const checkboxes = document.querySelectorAll('input[name="splitMember"]:checked');
       const splitMemberIds = Array.from(checkboxes).map(cb => cb.value);
 
       const currObj = state.currencies.find(c => c.code === currency) || { rateToSGD: 1.0 };
       const amountSGD = currency === 'SGD' ? amount : (amount / currObj.rateToSGD);
 
-      const newExp = {
+      state.expenses.unshift({
         id: "exp_" + Date.now(),
-        tripId: tripId,
-        title: title,
-        category: category,
-        currency: currency,
+        tripId, title, category, currency,
         originalAmount: amount,
         rateToSGD: currObj.rateToSGD,
         amountSGD: parseFloat(amountSGD.toFixed(2)),
-        payerId: payerId,
-        splitMemberIds: splitMemberIds.length > 0 ? splitMemberIds : state.members.map(m => m.id),
-        date: date,
-        receiptUrl: window.currentUploadedReceiptUrl || ""
-      };
+        payerId,
+        recordedBy: state.currentLoggedInUserId,
+        splitMemberIds: splitMemberIds.length > 0 ? splitMemberIds : [payerId],
+        date,
+        receiptUrl: activeUploadedReceiptDataUrl || "",
+        remark: ""
+      });
 
-      state.expenses.unshift(newExp);
-      window.currentUploadedReceiptUrl = "";
+      activeUploadedReceiptDataUrl = "";
       closeExpenseModal();
       persistState();
     }
 
     function handleDeleteExpense(id) {
-      if (confirm("确定要删除这笔消费记录吗？")) {
+      if (confirm("确定要删除这笔记录吗？")) {
         state.expenses = state.expenses.filter(e => e.id !== id);
         persistState();
       }
     }
 
-    // Auto-recalculate SGD conversion in Expense Modal
-    function updateExpenseConversionCalc() {
-      const curr = document.getElementById('formExpenseCurrency').value;
-      const amt = parseFloat(document.getElementById('formExpenseAmount').value) || 0;
-      const currObj = state.currencies.find(c => c.code === curr) || { rateToSGD: 1.0 };
-      
-      document.getElementById('rateHintText').textContent = `1 SGD ≈ ${currObj.rateToSGD} ${curr}`;
-      const sgd = curr === 'SGD' ? amt : (amt / currObj.rateToSGD);
-      document.getElementById('formConvertedSGD').textContent = `S$ ${sgd.toFixed(2)}`;
+    function viewReceiptImage(expId) {
+      const exp = state.expenses.find(e => e.id === expId);
+      if (!exp || !exp.receiptUrl) return;
+      document.getElementById('receiptViewerTitle').textContent = `发票凭证 · ${exp.title}`;
+      document.getElementById('receiptViewerImage').src = exp.receiptUrl;
+      document.getElementById('receiptViewerDate').textContent = `日期: ${exp.date} · 折合: S$${(exp.amountSGD||0).toFixed(2)}`;
+      document.getElementById('receiptViewerDownloadLink').href = exp.receiptUrl;
+      document.getElementById('receiptViewerModal').classList.remove('hidden');
     }
 
-    // Modal Control: Expense
-    function openExpenseModal() {
-      document.getElementById('formExpenseTitle').value = '';
-      document.getElementById('formExpenseAmount').value = '';
-      document.getElementById('formExpenseDate').value = new Date().toISOString().split('T')[0];
-      
-      // Populate currencies
-      const currSelect = document.getElementById('formExpenseCurrency');
-      currSelect.innerHTML = state.currencies.map(c => `
-        <option value="${c.code}" ${c.code === 'CNY' ? 'selected' : ''}>${c.code} (${c.symbol})</option>
-      `).join('');
+    function closeReceiptViewerModal() { document.getElementById('receiptViewerModal').classList.add('hidden'); }
 
-      // Populate payers
-      const payerSelect = document.getElementById('formExpensePayer');
-      payerSelect.innerHTML = state.members.map(m => `
-        <option value="${m.id}">${m.name} (${m.paymentInfo || '未留账号'})</option>
-      `).join('');
-
-      // Populate split members checkboxes
-      const splitBoxes = document.getElementById('formSplitMembersCheckboxes');
-      splitBoxes.innerHTML = state.members.map(m => `
-        <label class="flex items-center gap-1.5 bg-slate-50 p-2 rounded-xl border border-slate-200 text-xs font-semibold cursor-pointer">
-          <input type="checkbox" name="splitMember" value="${m.id}" checked class="rounded text-teal-600 focus:ring-teal-500">
-          <span class="truncate">${m.name}</span>
-        </label>
-      `).join('');
-
-      updateExpenseConversionCalc();
-      document.getElementById('expenseModal').classList.remove('hidden');
-    }
-
-    function closeExpenseModal() {
-      document.getElementById('expenseModal').classList.add('hidden');
-    }
-
-    // Member Avatar Compression & Upload
-    function handleMemberAvatarUpload(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        // Compress using Canvas
-        const img = new Image();
-        img.onload = function() {
-          const canvas = document.createElement('canvas');
-          const maxDim = 120;
-          let w = img.width;
-          let h = img.height;
-          if (w > h) {
-            if (w > maxDim) { h = Math.round(h * maxDim / w); w = maxDim; }
-          } else {
-            if (h > maxDim) { w = Math.round(w * maxDim / h); h = maxDim; }
-          }
-          canvas.width = w;
-          canvas.height = h;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, w, h);
-          const compressed = canvas.toDataURL('image/jpeg', 0.8);
-          document.getElementById('formMemberAvatarPreview').src = compressed;
-          window.currentUploadedMemberAvatar = compressed;
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-
-    // Open/Close Member Modal
+    // 10. MEMBER EDITING WITH PERMISSIONS & PIN
     function openAddMemberModal() {
-      document.getElementById('memberModalTitle').textContent = "添加新旅伴";
+      document.getElementById('memberModalTitle').textContent = "登记新旅伴账号";
       document.getElementById('formMemberId').value = "";
       document.getElementById('formMemberName').value = "";
+      document.getElementById('formMemberPhone').value = "";
+      document.getElementById('formMemberPin').value = "1234";
       document.getElementById('formMemberPaymentInfo').value = "";
-      document.getElementById('formMemberIsCurrentMe').checked = false;
-      document.getElementById('formMemberAvatarPreview').src = "https://lh3.googleusercontent.com/aida/AEtjO1VHXv2k76EO9LvatFn5Cs46G06JXBx3DpRCtyY_13sTFYRM8nbRcvBswCtNTTKNoqkshE3N6aprC3A3UUX7J6tIAci19bYjyrWyEmdL62U7UJzfyw8AgfEmHGJhXoW1p3aY9OW3SjUcNVL6pZWqkDi8KKGwaxwNxyeDeYJydooxDmPzQ-GT_R_Hm7DJIXbZbtxdiFF2TbP6WCpQy07M7ywvMtDptpPsLk0bpitdE4KGLcvWFVtqrMW8mQo";
+      document.getElementById('formMemberIsAdmin').checked = false;
       document.getElementById('deleteMemberBtn').classList.add('hidden');
-      window.currentUploadedMemberAvatar = "";
+
+      selectAvatarIcon("ico_backpack");
+      renderMemberAllowedTripCheckboxes([]);
       document.getElementById('memberModal').classList.remove('hidden');
     }
 
     function openEditMemberModal(uid) {
-      const member = state.members.find(m => m.id === uid);
-      if (!member) return;
-      document.getElementById('memberModalTitle').textContent = "编辑旅伴资料";
-      document.getElementById('formMemberId').value = member.id;
-      document.getElementById('formMemberName').value = member.name;
-      document.getElementById('formMemberPaymentInfo').value = member.paymentInfo || '';
-      document.getElementById('formMemberIsCurrentMe').checked = !!member.isMe;
-      document.getElementById('formMemberAvatarPreview').src = member.avatar;
+      const m = state.members.find(item => item.id === uid);
+      if (!m) return;
+      document.getElementById('memberModalTitle').textContent = `编辑旅伴资料 · ${m.name}`;
+      document.getElementById('formMemberId').value = m.id;
+      document.getElementById('formMemberName').value = m.name;
+      document.getElementById('formMemberPhone').value = m.phone || '';
+      document.getElementById('formMemberPin').value = m.pin || '1234';
+      document.getElementById('formMemberPaymentInfo').value = m.paymentInfo || '';
+      document.getElementById('formMemberIsAdmin').checked = !!m.isAdmin;
       document.getElementById('deleteMemberBtn').classList.remove('hidden');
-      window.currentUploadedMemberAvatar = member.avatar;
+
+      selectAvatarIcon(m.avatarIcon || "ico_backpack");
+      renderMemberAllowedTripCheckboxes(m.allowedTrips || []);
       document.getElementById('memberModal').classList.remove('hidden');
     }
 
-    function closeMemberModal() {
-      document.getElementById('memberModal').classList.add('hidden');
+    function renderMemberAllowedTripCheckboxes(allowedList) {
+      const box = document.getElementById('formMemberAllowedTripsBox');
+      const set = new Set(allowedList);
+      box.innerHTML = state.trips.map(t => `
+        <label class="flex items-center gap-2 text-xs text-slate-700 cursor-pointer">
+          <input type="checkbox" name="memberTripAccess" value="${t.id}" ${set.has(t.id) ? 'checked' : ''} class="rounded text-teal-600 focus:ring-teal-500">
+          <span class="font-medium">${t.flag} ${t.name}</span>
+        </label>
+      `).join('');
     }
+
+    function closeMemberModal() { document.getElementById('memberModal').classList.add('hidden'); }
 
     function handleSaveMember(e) {
       e.preventDefault();
       const uid = document.getElementById('formMemberId').value;
       const name = document.getElementById('formMemberName').value.trim();
+      const phone = document.getElementById('formMemberPhone').value.trim();
+      const pin = document.getElementById('formMemberPin').value.trim();
       const paymentInfo = document.getElementById('formMemberPaymentInfo').value.trim();
-      const isMe = document.getElementById('formMemberIsCurrentMe').checked;
-      const avatar = window.currentUploadedMemberAvatar || document.getElementById('formMemberAvatarPreview').src;
-
-      if (isMe) {
-        state.members.forEach(m => m.isMe = false);
-      }
+      const isAdmin = document.getElementById('formMemberIsAdmin').checked;
+      const checkedTrips = Array.from(document.querySelectorAll('input[name="memberTripAccess"]:checked')).map(el => el.value);
 
       if (uid) {
-        // Edit existing
-        const member = state.members.find(m => m.id === uid);
-        if (member) {
-          member.name = name;
-          member.paymentInfo = paymentInfo;
-          member.isMe = isMe;
-          member.avatar = avatar;
+        const mem = state.members.find(m => m.id === uid);
+        if (mem) {
+          mem.name = name; mem.phone = phone; mem.pin = pin;
+          mem.avatarIcon = activeEditingAvatarIcon;
+          mem.paymentInfo = paymentInfo; mem.isAdmin = isAdmin;
+          mem.allowedTrips = checkedTrips;
         }
       } else {
-        // Create new
         state.members.push({
           id: "user_" + Date.now(),
-          name: name,
-          avatar: avatar,
-          paymentInfo: paymentInfo,
-          isMe: isMe
+          name, phone, pin,
+          avatarIcon: activeEditingAvatarIcon,
+          paymentInfo, isAdmin,
+          allowedTrips: checkedTrips.length > 0 ? checkedTrips : [state.currentTripId]
         });
       }
 
@@ -1801,43 +1626,118 @@
 
     function handleDeleteMember() {
       const uid = document.getElementById('formMemberId').value;
-      if (state.members.length <= 1) {
-        alert("至少需要保留一位成员！");
-        return;
-      }
-      if (confirm("确定要移除该旅伴吗？历史记账中该成员的数据仍将保留。")) {
+      if (state.members.length <= 1) return alert("至少保留一位旅伴！");
+      if (confirm("确定移除该旅伴账户吗？")) {
         state.members = state.members.filter(m => m.id !== uid);
+        if (state.currentLoggedInUserId === uid) state.currentLoggedInUserId = state.members[0].id;
         closeMemberModal();
         persistState();
       }
     }
 
-    // Currencies Modals & Actions
+    // 11. NAVIGATION & MODALS
+    function switchTab(tabId) {
+      const views = { expenses: 'viewTabExpenses', settlement: 'viewTabSettlement', reports: 'viewTabReports', members: 'viewTabMembers' };
+      const tabs = { expenses: 'navTabExpenses', settlement: 'navTabSettlement', reports: 'navTabReports', members: 'navTabMembers' };
+      Object.keys(views).forEach(k => {
+        if (k === tabId) {
+          document.getElementById(views[k]).classList.remove('hidden');
+          document.getElementById(tabs[k]).className = "flex-1 py-1.5 flex flex-col items-center gap-0.5 text-teal-600 font-bold transition";
+        } else {
+          document.getElementById(views[k]).classList.add('hidden');
+          document.getElementById(tabs[k]).className = "flex-1 py-1.5 flex flex-col items-center gap-0.5 text-slate-400 font-medium hover:text-slate-600 transition";
+        }
+      });
+    }
+
+    function handleTripFilterChange(tid) {
+      if (isTripAccessible(tid)) {
+        state.currentTripId = tid;
+        persistState();
+      }
+    }
+
+    function handleCategoryFilterChange(cat) {
+      state.currentCategoryFilter = cat;
+      renderExpensesList();
+    }
+
+    function openManageTripsModal() {
+      const list = document.getElementById('tripsFullList');
+      const accessible = getAccessibleTrips();
+      list.innerHTML = accessible.map(t => `
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between ${t.id === state.currentTripId ? 'ring-2 ring-teal-500 bg-teal-50/50' : ''}">
+          <div>
+            <div class="font-bold text-slate-900 text-xs">${t.flag} ${t.name}</div>
+            <div class="text-[10px] text-slate-400 font-mono">${t.startDate} ~ ${t.endDate}</div>
+          </div>
+          <button onclick="selectTripFromModal('${t.id}')" class="text-xs bg-white border border-slate-200 px-2.5 py-1 rounded-lg font-bold text-teal-700 tap-active">
+            ${t.id === state.currentTripId ? '当前使用中' : '进入账本'}
+          </button>
+        </div>
+      `).join('');
+      document.getElementById('tripsModal').classList.remove('hidden');
+    }
+
+    function selectTripFromModal(tid) {
+      state.currentTripId = tid;
+      closeTripsModal();
+      persistState();
+    }
+
+    function closeTripsModal() { document.getElementById('tripsModal').classList.add('hidden'); }
+
+    function openCreateTripModal() {
+      closeTripsModal();
+      document.getElementById('formTripName').value = '';
+      document.getElementById('formTripStart').value = new Date().toISOString().split('T')[0];
+      document.getElementById('formTripEnd').value = '';
+      document.getElementById('formTripFlag').value = '✈️';
+      document.getElementById('createTripModal').classList.remove('hidden');
+    }
+
+    function closeCreateTripModal() { document.getElementById('createTripModal').classList.add('hidden'); }
+
+    function handleSaveTrip(e) {
+      e.preventDefault();
+      const newTripId = "trip_" + Date.now();
+      const newTrip = {
+        id: newTripId,
+        name: document.getElementById('formTripName').value.trim(),
+        flag: document.getElementById('formTripFlag').value.trim() || '✈️',
+        startDate: document.getElementById('formTripStart').value,
+        endDate: document.getElementById('formTripEnd').value
+      };
+      state.trips.push(newTrip);
+      
+      // Auto authorize current user to this trip
+      const curUser = getCurrentUser();
+      if (curUser && !curUser.isAdmin) {
+        if (!curUser.allowedTrips) curUser.allowedTrips = [];
+        curUser.allowedTrips.push(newTripId);
+      }
+      state.currentTripId = newTripId;
+      closeCreateTripModal();
+      persistState();
+    }
+
     function openAddCurrencyModal() {
-      document.getElementById('currencyModalTitle').textContent = "添加新货币";
       document.getElementById('formCurrencyCode').value = '';
-      document.getElementById('formCurrencyCode').readOnly = false;
       document.getElementById('formCurrencySymbol').value = '';
       document.getElementById('formCurrencyRate').value = '';
-      document.getElementById('formCurrencyCodeSuffix').textContent = '';
       document.getElementById('currencyModal').classList.remove('hidden');
     }
 
     function openEditCurrencyModal(code) {
       const c = state.currencies.find(item => item.code === code);
       if (!c) return;
-      document.getElementById('currencyModalTitle').textContent = `修改 ${c.code} 汇率`;
       document.getElementById('formCurrencyCode').value = c.code;
-      document.getElementById('formCurrencyCode').readOnly = true;
       document.getElementById('formCurrencySymbol').value = c.symbol;
       document.getElementById('formCurrencyRate').value = c.rateToSGD;
-      document.getElementById('formCurrencyCodeSuffix').textContent = c.code;
       document.getElementById('currencyModal').classList.remove('hidden');
     }
 
-    function closeCurrencyModal() {
-      document.getElementById('currencyModal').classList.add('hidden');
-    }
+    function closeCurrencyModal() { document.getElementById('currencyModal').classList.add('hidden'); }
 
     function handleSaveCurrency(e) {
       e.preventDefault();
@@ -1850,229 +1750,62 @@
         existing.symbol = symbol;
         existing.rateToSGD = rate;
       } else {
-        state.currencies.push({
-          code: code,
-          symbol: symbol,
-          rateToSGD: rate,
-          isBase: false
-        });
+        state.currencies.push({ code, symbol, rateToSGD: rate, isBase: false });
       }
-
       closeCurrencyModal();
       persistState();
     }
 
-    // Trips Modals
-    function openManageTripsModal() {
-      const list = document.getElementById('tripsFullList');
-      list.innerHTML = state.trips.map(t => {
-        const count = state.expenses.filter(e => e.tripId === t.id).length;
-        const isCurrent = t.id === state.currentTripId;
-        return `
-          <div class="p-3 rounded-2xl border ${isCurrent ? 'border-teal-500 bg-teal-50/50' : 'border-slate-200 bg-slate-50'} flex items-center justify-between">
-            <div class="flex items-center gap-2.5">
-              <span class="text-2xl">${t.flag || '✈️'}</span>
-              <div>
-                <div class="font-bold text-slate-900 text-xs">${t.name}</div>
-                <div class="text-[10px] text-slate-400 font-mono">${t.startDate || ''} ~ ${t.endDate || ''} · ${count}笔</div>
-              </div>
-            </div>
-            <div class="flex items-center gap-1.5">
-              ${isCurrent ? '<span class="text-[10px] text-teal-700 font-bold px-2 py-0.5 bg-white rounded-md border border-teal-200">当前</span>' : `
-                <button onclick="handleSwitchAndCloseTrip('${t.id}')" class="text-xs text-teal-600 font-bold px-2 py-1 bg-white rounded-md border border-slate-200 hover:bg-teal-50">切换</button>
-              `}
-              <button onclick="handleDeleteTrip('${t.id}')" class="text-xs text-slate-300 hover:text-rose-600 p-1">🗑️</button>
-            </div>
-          </div>
-        `;
-      }).join('');
-      document.getElementById('tripsModal').classList.remove('hidden');
-    }
+    function openSyncConfigModal() { document.getElementById('syncConfigModal').classList.remove('hidden'); }
+    function closeSyncConfigModal() { document.getElementById('syncConfigModal').classList.add('hidden'); }
+    function openSystemSettingsModal() { document.getElementById('systemSettingsModal').classList.remove('hidden'); }
+    function closeSystemSettingsModal() { document.getElementById('systemSettingsModal').classList.add('hidden'); }
 
-    function closeTripsModal() {
-      document.getElementById('tripsModal').classList.add('hidden');
-    }
-
-    function handleSwitchAndCloseTrip(tripId) {
-      state.currentTripId = tripId;
-      closeTripsModal();
+    function testAndSaveCloudSync() {
+      state.roomCode = document.getElementById('syncInputRoomCode').value.trim().toUpperCase() || "TYO-882";
+      state.supabase.url = document.getElementById('syncInputUrl').value.trim();
+      state.supabase.key = document.getElementById('syncInputKey').value.trim();
       persistState();
+      alert("云端配置已保存！");
     }
 
-    function handleDeleteTrip(tripId) {
-      if (state.trips.length <= 1) {
-        alert("至少需要保留一个行程账本！");
-        return;
+    function forcePullFromCloud() {
+      if (confirm("确定拉取云端数据并覆盖当前本地吗？")) {
+        syncWithCloud(true);
       }
-      if (confirm("确定要删除该行程及其名下所有花费吗？")) {
-        state.trips = state.trips.filter(t => t.id !== tripId);
-        state.expenses = state.expenses.filter(e => e.tripId !== tripId);
-        if (state.currentTripId === tripId) {
-          state.currentTripId = state.trips[0].id;
-        }
-        openManageTripsModal();
-        persistState();
-      }
-    }
-
-    function openCreateTripModal() {
-      document.getElementById('formTripId').value = '';
-      document.getElementById('formTripName').value = '';
-      document.getElementById('formTripStart').value = new Date().toISOString().split('T')[0];
-      document.getElementById('formTripEnd').value = '';
-      document.getElementById('formTripFlag').value = '✈️';
-      document.getElementById('createTripModal').classList.remove('hidden');
-    }
-
-    function closeCreateTripModal() {
-      document.getElementById('createTripModal').classList.add('hidden');
-    }
-
-    function handleSaveTrip(e) {
-      e.preventDefault();
-      const name = document.getElementById('formTripName').value.trim();
-      const start = document.getElementById('formTripStart').value;
-      const end = document.getElementById('formTripEnd').value;
-      const flag = document.getElementById('formTripFlag').value.trim() || '✈️';
-
-      const newTrip = {
-        id: "trip_" + Date.now(),
-        name: name,
-        flag: flag,
-        startDate: start,
-        endDate: end
-      };
-
-      state.trips.push(newTrip);
-      state.currentTripId = newTrip.id;
-      closeCreateTripModal();
-      closeTripsModal();
-      persistState();
-    }
-
-    // Modal Control: Cloud Sync Config
-    function openSyncConfigModal() {
-      document.getElementById('syncInputRoomCode').value = state.roomCode || "TYO-882";
-      document.getElementById('syncInputUrl').value = state.supabase.url || "";
-      document.getElementById('syncInputKey').value = state.supabase.key || "";
-      document.getElementById('syncTestResultBox').classList.add('hidden');
-      document.getElementById('syncConfigModal').classList.remove('hidden');
-    }
-
-    function closeSyncConfigModal() {
-      document.getElementById('syncConfigModal').classList.add('hidden');
     }
 
     function generateNewRoomCode() {
-      const prefixes = ["TYO", "SIN", "CDU", "PAR", "LON", "BER"];
-      const randPre = prefixes[Math.floor(Math.random() * prefixes.length)];
-      const randNum = Math.floor(100 + Math.random() * 900);
-      document.getElementById('syncInputRoomCode').value = `${randPre}-${randNum}`;
+      const code = "ROOM-" + Math.floor(100 + Math.random() * 900);
+      document.getElementById('syncInputRoomCode').value = code;
     }
 
     function copyInviteLink() {
-      const room = document.getElementById('syncInputRoomCode').value.trim().toUpperCase();
-      const url = `${window.location.origin}${window.location.pathname}?room=${encodeURIComponent(room)}`;
-      navigator.clipboard.writeText(url).then(() => {
-        alert(`已复制房间 ${room} 的专属链接！旅伴在电脑或手机打开此链接即可加入同步协同。`);
+      const url = `${window.location.origin}${window.location.pathname}?room=${encodeURIComponent(state.roomCode)}`;
+      navigator.clipboard.writeText(url).then(() => alert("协同房间链接已复制！"));
+    }
+
+    function copySettlementSummaryText() {
+      if (!window.lastTransfers || window.lastTransfers.length === 0) return alert("当前账目已平，无需结算！");
+      const activeTrip = state.trips.find(t => t.id === state.currentTripId);
+      let text = `【Equator Journey 智能清账方案】\n行程：${activeTrip?.name || ''}\n-------------------------\n`;
+      window.lastTransfers.forEach((t, i) => {
+        text += `${i+1}. ${t.from.name} ➔ ${t.to.name}：S$ ${t.amount.toFixed(2)} (${t.to.paymentInfo || '未注收款方式'})\n`;
       });
-    }
-
-    function copySQLCode() {
-      const sql = `-- 创建云端多端同步账本房间表
-create table if not exists trip_rooms (
-  room_code text primary key,
-  data jsonb not null,
-  updated_at timestamp with time zone default timezone('utc'::text, now())
-);
-alter table trip_rooms enable row level security;
-create policy "Allow public all" on trip_rooms for all using (true) with check (true);`;
-      navigator.clipboard.writeText(sql).then(() => {
-        alert("已复制建表 SQL！请前往 Supabase -> SQL Editor 粘贴并运行。");
-      });
-    }
-
-    // Modal Control: System Settings
-    function openSystemSettingsModal() {
-      document.getElementById('systemSettingsModal').classList.remove('hidden');
-    }
-
-    function closeSystemSettingsModal() {
-      document.getElementById('systemSettingsModal').classList.add('hidden');
-    }
-
-    function handleUserAvatarChange(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        document.getElementById('myAvatarImg').src = evt.target.result;
-        document.getElementById('settingsAvatarPreview').src = evt.target.result;
-        state.myAvatar = evt.target.result;
-        // Also update '我' in members
-        const me = state.members.find(m => m.isMe);
-        if (me) me.avatar = evt.target.result;
-        persistState();
-      };
-      reader.readAsDataURL(file);
+      navigator.clipboard.writeText(text).then(() => alert("清账方案文本已复制，可直接粘贴发往群聊！"));
     }
 
     function resetDefaultDemoData() {
-      if (confirm("确定要重置并还原为演示数据吗？本地已录入的所有数据将被覆盖。")) {
+      if (confirm("确定恢复初始演示数据吗？")) {
+        localStorage.removeItem(STORAGE_KEY);
         state = JSON.parse(JSON.stringify(DEFAULT_APP_STATE));
-        persistState();
+        renderAll();
         closeSystemSettingsModal();
+        alert("已恢复初始演示数据！");
       }
     }
 
-    // Copy text settlement for WhatsApp/WeChat
-    function copySettlementSummaryText() {
-      const trip = state.trips.find(t => t.id === state.currentTripId);
-      const tripName = trip ? trip.name : "旅行账本";
-      let text = `✈️【${tripName}】智能清账对账清单 (SGD 基准)\n`;
-      text += `--------------------------------\n`;
-
-      if (!window.lastCalculatedTransactions || window.lastCalculatedTransactions.length === 0) {
-        text += `全部账目已结清，无须转账！\n`;
-      } else {
-        text += `最简转账结清方案：\n`;
-        window.lastCalculatedTransactions.forEach((t, i) => {
-          text += `${i + 1}. ${t.from.name} ➔ 转给 ${t.to.name}: S$ ${t.amount.toFixed(2)} (${t.to.paymentInfo || '未注账号'})\n`;
-        });
-      }
-      text += `--------------------------------\n由 Equator Journey 自动核算生成`;
-
-      navigator.clipboard.writeText(text).then(() => {
-        alert("已复制结算清单！可直接粘贴发送到微信/WhatsApp 旅行群。");
-      });
-    }
-
-    // Export CSV
-    function exportExpensesCSV() {
-      const tripExpenses = state.expenses.filter(e => e.tripId === state.currentTripId);
-      let csv = "ID,行程,描述,分类,原始币种,原始金额,汇率(对SGD),新币折合(SGD),垫付人,日期\n";
-      tripExpenses.forEach(e => {
-        const payer = state.members.find(m => m.id === e.payerId) || { name: '未知' };
-        csv += `"${e.id}","${state.currentTripId}","${e.title}","${e.category}","${e.currency}",${e.originalAmount},${e.rateToSGD},${e.amountSGD},"${payer.name}","${e.date}"\n`;
-      });
-
-      const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = `Equator_Journey_${state.currentTripId}_Expenses.csv`;
-      link.click();
-    }
-
-    // Receipt selection helper
-    function handleReceiptFileSelect(e) {
-      const file = e.target.files[0];
-      if (file) {
-        document.getElementById('receiptFileName').textContent = file.name;
-        window.currentUploadedReceiptUrl = "receipt_attached";
-      }
-    }
-
-    // Start App on DOM Ready
+    // Start
     window.addEventListener('DOMContentLoaded', initApp);
   </script>
 </body>
