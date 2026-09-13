@@ -1,14 +1,11 @@
-<!DOCTYPE html>
-
-<html lang="zh-CN">
-<head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<!DOCTYPE html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport">
 <title>Equator Journey - 私人旅行记账 (账户隔离与图标版)</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;600;700&amp;display=swap" rel="stylesheet">
 <script>
     tailwind.config = {
       theme: {
@@ -33,7 +30,7 @@
   </style>
 </head>
 <body class="flex justify-center min-h-screen">
-<div class="w-full max-w-[430px] bg-slate-50 min-h-screen flex flex-col shadow-2xl relative border-x border-slate-200 selection:bg-teal-500 selection:text-white p-5 justify-between" id="authPortalContainer"><div class="pt-8 text-center space-y-3"><div class="w-16 h-16 rounded-3xl bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center text-white text-3xl font-extrabold mx-auto shadow-lg shadow-teal-500/30">EJ</div><div><h1 class="text-2xl font-black text-slate-900 tracking-tight">Equator Journey</h1><p class="text-xs text-teal-700 font-semibold mt-1 tracking-wide">私人与团队旅行多币种记账 · 超管隔离版</p></div><div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-800 text-[11px] font-bold border border-teal-200/80 font-mono"><span>🇸🇬 基准货币: SGD (S$)</span><span>·</span><span>离线+云端双驱</span></div></div><div class="bg-white rounded-3xl p-5 shadow-sm border border-slate-200/90 my-4 space-y-4"><div class="flex rounded-2xl bg-slate-100 p-1"><button class="flex-1 py-2 rounded-xl text-xs font-bold text-teal-700 bg-white shadow-xs transition" id="authTabLoginBtn" onclick="switchAuthMode('login')" type="button">登入账本</button><button class="flex-1 py-2 rounded-xl text-xs font-bold text-slate-500 hover:text-slate-800 transition" id="authTabRegisterBtn" onclick="switchAuthMode('register')" type="button">新成员登记</button></div><form class="space-y-3 text-xs" id="portalAuthForm" onsubmit="handlePortalAuthSubmit(event)"><div><label class="block font-bold text-slate-700 mb-1">旅伴姓名 / 昵称</label><input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white" id="portalInputName" placeholder="例如：小明、小林、阿伟" required="" type="text"/></div><div><div class="flex items-center justify-between mb-1"><label class="font-bold text-slate-700">登录密码 (1-6位数字)</label><span class="text-[10px] text-teal-600 font-mono">超管初始密码: 1234</span></div><input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-center font-mono text-base tracking-widest text-slate-900 font-bold focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white" id="portalInputPin" maxlength="6" pattern="[0-9]{1,6}" placeholder="请输入简单数字密码" required="" type="password"/></div><div class="hidden space-y-1.5 pt-1" id="portalRegisterTripSection"><label class="block font-bold text-slate-700">指派加入的专属行程 (普通成员唯一行程)</label><select class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800" id="portalRegisterTripSelect"></select><p class="text-[10px] text-slate-400">普通旅伴仅可查看和记账于该唯一授权行程，不可跨行程篡改</p></div><div class="hidden text-[11px] text-rose-600 font-semibold bg-rose-50 p-2.5 rounded-xl border border-rose-200 text-center" id="portalAuthError"></div><button class="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-bold py-3 rounded-xl shadow-md shadow-teal-600/25 text-sm tap-active" id="portalSubmitBtn" type="submit">登入系统</button></form><div class="pt-3 border-t border-slate-100"><div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 text-center">快捷体验身份 (一键填充登入)</div><div class="grid grid-cols-3 gap-1.5"><button class="p-2 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200 text-center tap-active" onclick="quickLoginAs('user_admin')" type="button"><div class="text-base">🎒</div><div class="text-[10px] font-extrabold text-amber-900 truncate">超管·小明</div><div class="text-[8px] text-amber-700 font-mono">PIN: 1234</div></button><button class="p-2 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-center tap-active" onclick="quickLoginAs('user_2')" type="button"><div class="text-base">📷</div><div class="text-[10px] font-bold text-slate-800 truncate">旅伴·小林</div><div class="text-[8px] text-slate-500 font-mono">PIN: 8888</div></button><button class="p-2 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-center tap-active" onclick="quickLoginAs('user_3')" type="button"><div class="text-base">🧭</div><div class="text-[10px] font-bold text-slate-800 truncate">旅伴·阿伟</div><div class="text-[8px] text-slate-500 font-mono">PIN: 6666</div></button></div></div></div><div class="text-center pb-3 text-[11px] text-slate-400 flex items-center justify-center gap-2 font-mono"><span>Equator Journey 2025</span><span>·</span><span>RBAC 权限分级架构</span></div></div><div class="w-full max-w-[430px] bg-slate-50 min-h-screen flex flex-col shadow-2xl relative pb-28 border-x border-slate-200 selection:bg-teal-500 selection:text-white hidden" id="appContainer">
+<div class="w-full max-w-[430px] bg-slate-50 min-h-screen flex flex-col shadow-2xl relative border-x border-slate-200 selection:bg-teal-500 selection:text-white p-5 justify-between" id="authPortalContainer"><div class="pt-8 text-center space-y-3"><div class="w-16 h-16 rounded-3xl bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center text-white text-3xl font-extrabold mx-auto shadow-lg shadow-teal-500/30">EJ</div><div><h1 class="text-2xl font-black text-slate-900 tracking-tight">Equator Journey</h1><p class="text-xs text-teal-700 font-semibold mt-1 tracking-wide">私人与团队旅行多币种记账 · 超管隔离版</p></div><div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-800 text-[11px] font-bold border border-teal-200/80 font-mono"><span class="">🇸🇬 基准货币: SGD (S$)</span><span class="">·</span><span class="">离线+云端双驱</span></div></div><div class="bg-white rounded-3xl p-5 shadow-sm border border-slate-200/90 my-4 space-y-4"><div class="flex rounded-2xl bg-slate-100 p-1"><button class="flex-1 py-2 rounded-xl text-xs font-bold text-teal-700 bg-white shadow-xs transition" id="authTabLoginBtn" onclick="switchAuthMode('login')" type="button">登入账本</button><button class="flex-1 py-2 rounded-xl text-xs font-bold text-slate-500 hover:text-slate-800 transition" id="authTabRegisterBtn" onclick="switchAuthMode('register')" type="button">新成员登记</button></div><form class="space-y-3 text-xs" id="portalAuthForm" onsubmit="handlePortalAuthSubmit(event)"><div><label class="block font-bold text-slate-700 mb-1">旅伴姓名 / 昵称</label><input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white" id="portalInputName" placeholder="例如：小明、小林、阿伟" required="" type="text"></div><div><div class="flex items-center justify-between mb-1"><label class="font-bold text-slate-700">登录密码 (1-6位数字)</label></div><input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-center font-mono text-base tracking-widest text-slate-900 font-bold focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white" id="portalInputPin" maxlength="6" pattern="[0-9]{1,6}" placeholder="请输入简单数字密码" required="" type="password"></div><div class="hidden space-y-1.5 pt-1" id="portalRegisterTripSection"><label class="block font-bold text-slate-700">指派加入的专属行程 (普通成员唯一行程)</label><select class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800" id="portalRegisterTripSelect"><option value="trip_1">🇨🇳 中国15日深度游 · 成都-重庆</option><option value="trip_2">🇯🇵 日本关东红叶季 · 东京-箱根</option><option value="trip_3">🇨🇭 瑞士阿尔卑斯山徒步</option></select><p class="text-[10px] text-slate-400">普通旅伴仅可查看和记账于该唯一授权行程，不可跨行程篡改</p></div><div class="hidden text-[11px] text-rose-600 font-semibold bg-rose-50 p-2.5 rounded-xl border border-rose-200 text-center" id="portalAuthError"></div><button class="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-bold py-3 rounded-xl shadow-md shadow-teal-600/25 text-sm tap-active" id="portalSubmitBtn" type="submit">登入系统</button></form></div><div class="text-center pb-3 text-[11px] text-slate-400 flex items-center justify-center gap-2 font-mono"><span class="">Equator Journey 2025</span><span class="">·</span><span class="">RBAC 权限分级架构</span></div></div><div class="w-full max-w-[430px] bg-slate-50 min-h-screen flex flex-col shadow-2xl relative pb-28 border-x border-slate-200 selection:bg-teal-500 selection:text-white hidden" id="appContainer">
 <!-- Top Header with Account Info -->
 <header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-slate-100 px-4 py-3">
 <div class="flex items-center justify-between gap-2">
@@ -48,11 +45,11 @@
 </div>
 <div class="flex items-center gap-1.5 text-[11px] text-slate-400">
 <span class="text-[9px] bg-slate-100 text-slate-600 font-semibold px-1 rounded" id="headerUserRoleBadge">普通旅伴</span>
-<span id="headerUserPhoneMask">138****0000</span>
+<span id="headerUserPhoneMask" class="">138****0000</span>
 </div>
 </div>
 </div>
-<div class="flex items-center gap-2"><button class="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1.5 rounded-full text-xs font-mono font-medium transition tap-active border border-slate-200" id="headerSyncBtn" onclick="openSyncConfigModal()" title="房间云同步设置"><span class="w-2 h-2 rounded-full bg-amber-400" id="syncIndicatorDot"></span><span id="headerRoomCode">TYO-882</span><span id="cloudIcon">☁️</span></button><button class="px-2.5 py-1.5 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 text-xs font-bold tap-active flex items-center gap-1" onclick="portalLogout()" title="退出并返回登入页"><span>🚪</span><span class="text-[11px]">登出</span></button></div>
+<div class="flex items-center gap-2"><button class="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1.5 rounded-full text-xs font-mono font-medium transition tap-active border border-slate-200" id="headerSyncBtn" onclick="openSyncConfigModal()" title="房间云同步设置"><span class="w-2 h-2 rounded-full bg-amber-400" id="syncIndicatorDot"></span><span id="headerRoomCode" class="">TYO-882</span><span id="cloudIcon" class="">☁️</span></button><button class="px-2.5 py-1.5 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 text-xs font-bold tap-active flex items-center gap-1" onclick="portalLogout()" title="退出并返回登入页"><span class="">🚪</span><span class="text-[11px]">登出</span></button></div>
 </div>
 <!-- Sync Alert Bar -->
 <div class="mt-2 text-xs py-1.5 px-3 rounded-xl flex items-center justify-between cursor-pointer transition bg-amber-50 text-amber-800 border border-amber-200" id="syncStatusBar" onclick="openSyncConfigModal()">
@@ -69,12 +66,12 @@
 <section class="bg-white rounded-2xl p-3.5 shadow-sm border border-slate-200/80 space-y-3">
 <div class="flex items-center justify-between">
 <div class="flex items-center gap-1.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-<span>当前行程账本</span>
+<span class="">当前行程账本</span>
 <span class="bg-slate-100 text-slate-600 px-1.5 py-0.2 rounded-full text-[10px]" id="tripCountBadge">1个授权</span>
 </div>
 <button class="text-xs text-teal-600 hover:text-teal-700 font-semibold flex items-center gap-1 tap-active" onclick="openManageTripsModal()">
-<span>管理/切换行程</span>
-<span>▸</span>
+<span class="">管理/切换行程</span>
+<span class="">▸</span>
 </button>
 </div>
 <div class="flex items-center gap-2">
@@ -87,7 +84,7 @@
             </div>
 </div>
 <button class="bg-teal-50 text-teal-700 hover:bg-teal-100 border border-teal-200 px-3 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-1 shrink-0 tap-active" id="addTripHeaderBtn" onclick="openCreateTripModal()">
-<span>+ 新增行程</span>
+<span class="">+ 新增行程</span>
 </button>
 </div>
 <!-- Trip Summary Pill Banner -->
@@ -110,7 +107,7 @@
 <!-- Rendered with colorful icon badges -->
 </div>
 <button class="text-[11px] text-teal-100 hover:text-white flex items-center gap-1 tap-active bg-teal-800/60 px-2 py-0.5 rounded-md" onclick="switchTab('members')">
-<span>👥 授权旅伴 (<span id="memberCountText">3人</span>)</span>
+<span class="">👥 授权旅伴 (<span id="memberCountText" class="">3人</span>)</span>
 </button>
 </div>
 </div>
@@ -170,13 +167,13 @@
 <div class="mt-4 space-y-2.5" id="settlementBalancesList"></div>
 <div class="mt-5 pt-4 border-t border-slate-100">
 <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-<span>💳 最简转账结清步骤</span>
+<span class="">💳 最简转账结清步骤</span>
 <span class="text-[10px] font-normal text-slate-400">(直接转账即可平账)</span>
 </h3>
 <div class="space-y-2" id="settlementStepsList"></div>
 </div>
 <button class="w-full mt-4 bg-slate-100 hover:bg-slate-200 text-slate-700 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition tap-active border border-slate-200" onclick="copySettlementSummaryText()">
-<span>📋 复制结算清单至微信/WhatsApp</span>
+<span class="">📋 复制结算清单至微信/WhatsApp</span>
 </button>
 </div>
 </section>
@@ -189,12 +186,12 @@
 <p class="text-xs text-slate-400">导出表格含发票凭证直链与参与人明细</p>
 </div>
 <button class="text-xs bg-teal-600 hover:bg-teal-700 text-white font-bold px-3 py-1.5 rounded-lg shadow-sm shadow-teal-600/20 tap-active flex items-center gap-1" onclick="exportExpensesCSV()">
-<span>📥 导出完整 CSV (含发票链接)</span>
+<span class="">📥 导出完整 CSV (含发票链接)</span>
 </button>
 </div>
 <div class="p-2.5 rounded-xl bg-teal-50/70 border border-teal-100 text-xs text-teal-800 flex items-center gap-2">
 <span class="text-base">🧾</span>
-<span>导出的 CSV 表格已自动增加「发票凭证链接」列，点击链接或直接在应用中均可查看发票详情。</span>
+<span class="">导出的 CSV 表格已自动增加「发票凭证链接」列，点击链接或直接在应用中均可查看发票详情。</span>
 </div>
 <div>
 <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">支出分类占比</h3>
@@ -238,7 +235,7 @@
 <div class="fixed bottom-20 left-0 right-0 max-w-[430px] mx-auto pointer-events-none px-6 flex justify-center z-20">
 <button class="pointer-events-auto bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white font-bold px-5 py-3 rounded-full shadow-lg shadow-teal-600/30 flex items-center gap-2 text-sm transform transition active:scale-95" onclick="openExpenseModal()">
 <span class="text-lg leading-none">+</span>
-<span>记一笔消费</span>
+<span class="">记一笔消费</span>
 </button>
 </div>
 <!-- Bottom Navigation Bar -->
@@ -281,14 +278,14 @@
 <form class="space-y-3 text-xs" id="loginForm" onsubmit="handleLoginSubmit(event)">
 <div>
 <label class="block font-semibold text-slate-700 mb-1">手机号或旅伴姓名</label>
-<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-semibold text-slate-800" id="loginInputAccount" placeholder="如 13800000000 或 小林" required="" type="text"/>
+<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-semibold text-slate-800" id="loginInputAccount" placeholder="如 13800000000 或 小林" required="" type="text">
 </div>
 <div>
 <div class="flex items-center justify-between mb-1">
 <label class="font-semibold text-slate-700">4-6 位数字密码 (PIN)</label>
 <span class="text-[10px] text-teal-600">默认PIN：1234 / 8888 / 6666</span>
 </div>
-<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-center font-mono text-sm tracking-widest text-slate-900 font-bold focus:ring-2 focus:ring-teal-500" id="loginInputPin" maxlength="6" pattern="[0-9]{4,6}" placeholder="输入 4-6 位数字" required="" type="password"/>
+<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-center font-mono text-sm tracking-widest text-slate-900 font-bold focus:ring-2 focus:ring-teal-500" id="loginInputPin" maxlength="6" pattern="[0-9]{4,6}" placeholder="输入 4-6 位数字" required="" type="password">
 </div>
 <div class="hidden text-[11px] text-rose-600 font-semibold bg-rose-50 p-2 rounded-lg border border-rose-200" id="loginErrorMsg">
             密码或账号错误，请重新输入。
@@ -314,7 +311,7 @@
 <div class="grid grid-cols-3 gap-2">
 <div class="col-span-2">
 <label class="block text-xs font-semibold text-slate-600 mb-1">消费描述</label>
-<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-800" id="formExpenseTitle" placeholder="如：宽窄巷子火锅聚餐" required="" type="text"/>
+<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-800" id="formExpenseTitle" placeholder="如：宽窄巷子火锅聚餐" required="" type="text">
 </div>
 <div>
 <label class="block text-xs font-semibold text-slate-600 mb-1">支出分类</label>
@@ -332,7 +329,7 @@
 </div>
 <div class="bg-teal-50/70 p-3 rounded-2xl border border-teal-100 space-y-2">
 <div class="flex items-center justify-between text-xs text-teal-800 font-semibold">
-<span>原始花费金额</span>
+<span class="">原始花费金额</span>
 <span class="text-[11px] text-teal-600 font-mono" id="rateHintText">1 SGD ≈ 5.35 CNY</span>
 </div>
 <div class="flex gap-2">
@@ -340,7 +337,7 @@
 <select class="w-full bg-white border border-teal-200 rounded-xl px-2 py-2.5 text-sm font-bold text-teal-950" id="formExpenseCurrency" onchange="updateExpenseConversionCalc()"></select>
 </div>
 <div class="flex-1">
-<input class="w-full bg-white border border-teal-200 rounded-xl px-3 py-2.5 text-lg font-black font-mono text-slate-900 focus:ring-2 focus:ring-teal-500 text-right" id="formExpenseAmount" min="0.01" oninput="updateExpenseConversionCalc()" placeholder="0.00" required="" step="0.01" type="number"/>
+<input class="w-full bg-white border border-teal-200 rounded-xl px-3 py-2.5 text-lg font-black font-mono text-slate-900 focus:ring-2 focus:ring-teal-500 text-right" id="formExpenseAmount" min="0.01" oninput="updateExpenseConversionCalc()" placeholder="0.00" required="" step="0.01" type="number">
 </div>
 </div>
 <div class="flex items-center justify-between text-xs pt-1 border-t border-teal-200/50">
@@ -361,14 +358,14 @@
 <div class="grid grid-cols-2 gap-2">
 <div>
 <label class="block text-xs font-semibold text-slate-600 mb-1">消费日期</label>
-<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono text-slate-800" id="formExpenseDate" type="date"/>
+<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono text-slate-800" id="formExpenseDate" type="date">
 </div>
 <div>
 <label class="block text-xs font-semibold text-slate-600 mb-1">发票/收据凭证</label>
 <label class="flex items-center justify-center gap-1.5 w-full bg-slate-50 hover:bg-slate-100 border border-dashed border-slate-300 rounded-xl px-2 py-2 text-xs text-slate-600 cursor-pointer">
-<span>🧾</span>
+<span class="">🧾</span>
 <span class="truncate" id="receiptFileName">拍照或选凭证</span>
-<input accept="image/*" class="hidden" id="formExpenseReceipt" onchange="handleReceiptFileSelect(event)" type="file"/>
+<input accept="image/*" class="hidden" id="formExpenseReceipt" onchange="handleReceiptFileSelect(event)" type="file">
 </label>
 </div>
 </div>
@@ -390,7 +387,7 @@
 <button class="text-slate-400 hover:text-slate-600 text-base" onclick="closeMemberModal()">✕</button>
 </div>
 <form class="space-y-3 text-xs" onsubmit="handleSaveMember(event)">
-<input id="formMemberId" type="hidden" value=""/>
+<input id="formMemberId" type="hidden" value="">
 <div>
 <label class="block font-semibold text-slate-700 mb-1.5">选择代表图标 (点击更换，轻量无损)</label>
 <div class="flex items-center gap-3 p-2 bg-slate-50 rounded-2xl border border-slate-200">
@@ -407,11 +404,11 @@
 <div class="grid grid-cols-2 gap-2">
 <div>
 <label class="block font-semibold text-slate-700 mb-1">真实姓名/昵称</label>
-<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold text-slate-800" id="formMemberName" placeholder="如：小明、阿伟" required="" type="text"/>
+<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold text-slate-800" id="formMemberName" placeholder="如：小明、阿伟" required="" type="text">
 </div>
 <div>
 <label class="block font-semibold text-slate-700 mb-1">手机电话 (登录账号)</label>
-<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-mono text-slate-800" id="formMemberPhone" placeholder="如 13800000000" required="" type="tel"/>
+<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-mono text-slate-800" id="formMemberPhone" placeholder="如 13800000000" required="" type="tel">
 </div>
 </div>
 <div>
@@ -419,18 +416,18 @@
 <label class="font-semibold text-slate-700">4-6 位数字登录密码 (PIN)</label>
 <span class="text-[10px] text-slate-400">仅限纯数字</span>
 </div>
-<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-mono text-center tracking-widest text-xs font-bold text-slate-800" id="formMemberPin" maxlength="6" pattern="[0-9]{4,6}" placeholder="如 8888 或 1234" required="" type="password"/>
+<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-mono text-center tracking-widest text-xs font-bold text-slate-800" id="formMemberPin" maxlength="6" pattern="[0-9]{4,6}" placeholder="如 8888 或 1234" required="" type="password">
 </div>
 <div>
 <label class="block font-semibold text-slate-700 mb-1">收款账号说明 (清账显示)</label>
-<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800" id="formMemberPaymentInfo" placeholder="如 PayNow: +65 91234567 / 微信: lin_traveler" type="text"/>
+<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800" id="formMemberPaymentInfo" placeholder="如 PayNow: +65 91234567 / 微信: lin_traveler" type="text">
 </div>
 <div>
 <label class="block font-semibold text-slate-700 mb-1">分配授权行程 (该旅伴仅能查看勾选的行程)</label>
 <div class="space-y-1.5 p-2 bg-slate-50 rounded-xl border border-slate-200 max-h-28 overflow-y-auto custom-scroll" id="formMemberAllowedTripsBox"></div>
 </div>
 <div class="flex items-center gap-2 p-2 bg-amber-50/60 rounded-xl border border-amber-200/70">
-<input class="rounded text-amber-600 focus:ring-amber-500" id="formMemberIsAdmin" type="checkbox"/>
+<input class="rounded text-amber-600 focus:ring-amber-500" id="formMemberIsAdmin" type="checkbox">
 <label class="text-amber-900 text-[11px] font-medium" for="formMemberIsAdmin">超级管理员 (有权查看与管理所有行程)</label>
 </div>
 <div class="flex gap-2 pt-2">
@@ -453,10 +450,10 @@
 </div>
 <div class="space-y-2 text-xs">
 <div class="w-full max-h-64 bg-slate-100 rounded-xl overflow-hidden flex items-center justify-center border border-slate-200">
-<img alt="发票凭证" class="max-h-64 object-contain" id="receiptViewerImage" src=""/>
+<img alt="发票凭证" class="max-h-64 object-contain" id="receiptViewerImage" src="">
 </div>
 <div class="flex items-center justify-between text-[11px] text-slate-500 pt-1">
-<span id="receiptViewerDate">日期: -</span>
+<span id="receiptViewerDate" class="">日期: -</span>
 <a class="text-teal-600 font-bold hover:underline" download="receipt.jpg" href="#" id="receiptViewerDownloadLink" target="_blank">在新窗口查看大图 ↗</a>
 </div>
 </div>
@@ -482,7 +479,7 @@
 <button class="text-[11px] text-teal-700 hover:underline" onclick="generateNewRoomCode()">🎲 换新房间</button>
 </div>
 <div class="flex gap-2">
-<input class="flex-1 bg-white border border-teal-200 rounded-xl px-3 py-2 font-mono font-bold text-slate-800 uppercase" id="syncInputRoomCode" placeholder="TYO-882" type="text"/>
+<input class="flex-1 bg-white border border-teal-200 rounded-xl px-3 py-2 font-mono font-bold text-slate-800 uppercase" id="syncInputRoomCode" placeholder="TYO-882" type="text">
 <button class="bg-teal-700 hover:bg-teal-800 text-white px-3 py-2 rounded-xl text-xs font-bold shrink-0 tap-active" onclick="copyInviteLink()">
                 🔗 复制链接
               </button>
@@ -491,11 +488,11 @@
 <div class="space-y-2.5">
 <div>
 <label class="block font-bold text-slate-700 mb-1">Project URL</label>
-<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-mono text-slate-800" id="syncInputUrl" placeholder="https://xxx.supabase.co" type="text"/>
+<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-mono text-slate-800" id="syncInputUrl" placeholder="https://xxx.supabase.co" type="text">
 </div>
 <div>
 <label class="block font-bold text-slate-700 mb-1">API Key (Publishable / Anon)</label>
-<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-mono text-slate-800" id="syncInputKey" placeholder="sb_publishable_... 或 eyJhbGci..." type="password"/>
+<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-mono text-slate-800" id="syncInputKey" placeholder="sb_publishable_... 或 eyJhbGci..." type="password">
 </div>
 </div>
 <div class="p-3 rounded-xl text-xs hidden" id="syncTestResultBox"></div>
@@ -521,18 +518,18 @@
 <div class="grid grid-cols-2 gap-2">
 <div>
 <label class="block font-semibold text-slate-700 mb-1">代码 (如 THB)</label>
-<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-mono uppercase font-bold text-slate-800" id="formCurrencyCode" maxlength="5" placeholder="THB" required="" type="text"/>
+<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-mono uppercase font-bold text-slate-800" id="formCurrencyCode" maxlength="5" placeholder="THB" required="" type="text">
 </div>
 <div>
 <label class="block font-semibold text-slate-700 mb-1">符号 (如 ฿)</label>
-<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold text-slate-800" id="formCurrencySymbol" placeholder="฿" required="" type="text"/>
+<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold text-slate-800" id="formCurrencySymbol" placeholder="฿" required="" type="text">
 </div>
 </div>
 <div>
 <label class="block font-semibold text-slate-700 mb-1">对 1 SGD (新币) 的汇率</label>
 <div class="flex items-center gap-2">
 <span class="font-mono text-slate-500 font-bold">1 SGD =</span>
-<input class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-mono font-bold text-slate-800" id="formCurrencyRate" min="0.0001" placeholder="26.8" required="" step="0.0001" type="number"/>
+<input class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-mono font-bold text-slate-800" id="formCurrencyRate" min="0.0001" placeholder="26.8" required="" step="0.0001" type="number">
 <span class="font-mono text-slate-500 font-bold" id="formCurrencyCodeSuffix">THB</span>
 </div>
 </div>
@@ -570,21 +567,21 @@
 <form class="space-y-2.5 text-xs" onsubmit="handleSaveTrip(event)">
 <div>
 <label class="block font-semibold text-slate-700 mb-1">行程名称</label>
-<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold text-slate-800" id="formTripName" placeholder="如：欧洲35日夏日探索之旅" required="" type="text"/>
+<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold text-slate-800" id="formTripName" placeholder="如：欧洲35日夏日探索之旅" required="" type="text">
 </div>
 <div class="grid grid-cols-2 gap-2">
 <div>
 <label class="block font-semibold text-slate-700 mb-1">开始日期</label>
-<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2 py-1.5 font-mono text-xs" id="formTripStart" type="date"/>
+<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2 py-1.5 font-mono text-xs" id="formTripStart" type="date">
 </div>
 <div>
 <label class="block font-semibold text-slate-700 mb-1">结束日期</label>
-<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2 py-1.5 font-mono text-xs" id="formTripEnd" type="date"/>
+<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2 py-1.5 font-mono text-xs" id="formTripEnd" type="date">
 </div>
 </div>
 <div>
 <label class="block font-semibold text-slate-700 mb-1">国旗/标志 Emoji</label>
-<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-base text-center" id="formTripFlag" maxlength="4" placeholder="🇨🇳 或 🇪🇺" type="text"/>
+<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-base text-center" id="formTripFlag" maxlength="4" placeholder="🇨🇳 或 🇪🇺" type="text">
 </div>
 <button class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 rounded-xl text-xs tap-active mt-2" type="submit">
             创建行程并自动授权
@@ -605,7 +602,7 @@
 <div class="w-10 h-10 rounded-2xl bg-teal-600 text-white text-xl flex items-center justify-center shadow" id="sysCurrentUserAvatar">🎒</div>
 <div>
 <div class="font-bold text-slate-800 flex items-center gap-1.5">
-<span id="sysCurrentUserName">小明</span>
+<span id="sysCurrentUserName" class="">小明</span>
 <span class="text-[9px] bg-teal-100 text-teal-800 px-1 rounded" id="sysCurrentUserRole">超级管理员</span>
 </div>
 <div class="text-[10px] text-slate-400 font-mono" id="sysCurrentUserPhone">13800000000</div>
@@ -614,17 +611,17 @@
 <button class="text-teal-700 font-bold bg-white border border-teal-200 px-2.5 py-1 rounded-lg hover:bg-teal-50 tap-active" onclick="closeSystemSettingsModal(); openLoginModal();">
               切换身份
             </button>
-</div>
+</div><div class="p-3 bg-teal-50/60 rounded-2xl border border-teal-100 space-y-2"><div class="flex items-center justify-between"><div class="flex items-center gap-1.5 font-bold text-slate-800 text-xs"><span class="">🔑</span><span class="">安全与密码设置</span></div><span class="text-[10px] text-teal-700 font-medium">支持自主改密</span></div><div class="space-y-1.5"><label class="block text-[11px] font-semibold text-slate-600">新登录密码 (4-6 位数字)</label><div class="flex gap-2"><input type="password" maxlength="6" pattern="[0-9]{4,6}" id="sysUpdatePinInput" placeholder="输入新密码" class="flex-1 bg-white border border-teal-200 rounded-xl px-3 py-1.5 font-mono text-xs text-slate-800 font-bold focus:outline-none focus:ring-2 focus:ring-teal-500"><button type="button" onclick="const p=document.getElementById('sysUpdatePinInput').value.trim(); if(p.length&lt;4||p.length&gt;6||!/^\d+$/.test(p)){alert('请输入4-6位纯数字密码');return;} const u=getCurrentUser(); if(u){u.pin=p; persistState(); alert('密码修改成功！下次请使用新密码登录。'); document.getElementById('sysUpdatePinInput').value=''; }" class="bg-teal-600 hover:bg-teal-700 text-white font-bold px-3 py-1.5 rounded-xl text-xs tap-active shadow-xs">确认修改</button></div><p class="text-[10px] text-slate-400">超级管理员与旅伴均可随时更新个人凭证以保障独立安全</p></div></div>
 <button class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 py-2.5 rounded-xl font-semibold flex items-center justify-center gap-2 border border-slate-200 tap-active" onclick="closeSystemSettingsModal(); openSyncConfigModal();">
-<span>☁️</span>
-<span>配置 Supabase 房间与多端协同</span>
+<span class="">☁️</span>
+<span class="">配置 Supabase 房间与多端协同</span>
 </button>
 <div class="pt-2 border-t border-slate-100 flex justify-between items-center text-[11px]">
 <span class="text-slate-400">如需重新体验纯净数据</span>
 <button class="text-rose-600 hover:underline font-semibold" onclick="resetDefaultDemoData()">
               恢复初始演示数据
             </button>
-</div>
+</div><div class="p-3 bg-teal-50/60 rounded-2xl border border-teal-100 space-y-2"><div class="flex items-center justify-between"><div class="flex items-center gap-1.5 font-bold text-slate-800 text-xs"><span class="">🔑</span><span class="">安全与密码设置</span></div><span class="text-[10px] text-teal-700 font-medium">支持自主改密</span></div><div class="space-y-1.5"><label class="block text-[11px] font-semibold text-slate-600">新登录密码 (4-6 位数字)</label><div class="flex gap-2"><input type="password" maxlength="6" pattern="[0-9]{4,6}" id="sysUpdatePinInput" placeholder="输入新密码" class="flex-1 bg-white border border-teal-200 rounded-xl px-3 py-1.5 font-mono text-xs text-slate-800 font-bold focus:outline-none focus:ring-2 focus:ring-teal-500"><button type="button" onclick="const p=document.getElementById('sysUpdatePinInput').value.trim(); if(p.length&lt;4||p.length&gt;6||!/^\d+$/.test(p)){alert('请输入4-6位纯数字密码');return;} const u=getCurrentUser(); if(u){u.pin=p; persistState(); alert('密码修改成功！下次请使用新密码登录。'); document.getElementById('sysUpdatePinInput').value=''; }" class="bg-teal-600 hover:bg-teal-700 text-white font-bold px-3 py-1.5 rounded-xl text-xs tap-active shadow-xs">确认修改</button></div><p class="text-[10px] text-slate-400">超级管理员与旅伴均可随时更新个人凭证以保障独立安全</p></div></div>
 </div>
 </div>
 </div>
@@ -1854,5 +1851,7 @@ exportExpensesCSV = function() {
 };
 
 renderPortalTripOptions();
-</script></body>
-</html>
+</script>
+
+
+</body></html>
