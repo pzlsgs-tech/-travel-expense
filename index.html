@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Equator Journey - 旅行记账与智能清账</title>
-  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-  <style>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Equator Journey - 旅行记账与智能清账</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
     body { font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; background-color: #f1f5f9; color: #0f172a; }
     .font-mono { font-family: 'JetBrains Mono', monospace; }
     .custom-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
@@ -16,490 +17,578 @@
   </style>
 </head>
 <body class="flex justify-center min-h-screen">
-
-  <!-- ==================== 1. 登录 / 注册 Portal ==================== -->
-  <div id="authPortal" class="w-full max-w-md bg-white min-h-screen flex flex-col justify-between p-6 shadow-xl border-x border-slate-200">
-    <div class="pt-8 text-center space-y-3">
-      <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-teal-600 to-emerald-500 flex items-center justify-center text-white text-3xl font-black mx-auto shadow-lg shadow-teal-600/30">
+<!-- ==================== 1. 登录 / 注册 Portal ==================== -->
+<div class="w-full max-w-md bg-white min-h-screen flex flex-col justify-between p-6 shadow-xl border-x border-slate-200" id="authPortal">
+<div class="pt-8 text-center space-y-3">
+<div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-teal-600 to-emerald-500 flex items-center justify-center text-white text-3xl font-black mx-auto shadow-lg shadow-teal-600/30">
         EJ
       </div>
-      <div>
-        <h1 class="text-2xl font-black text-slate-900 tracking-tight">Equator Journey</h1>
-        <p class="text-xs text-teal-700 font-bold mt-1">旅行多币种记账 · RBAC 隔离安全版</p>
-      </div>
-      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-800 text-xs font-bold border border-teal-200 font-mono">
-        <span>🇸🇬 基准货币: SGD (S$)</span>
-        <span>·</span>
-        <span>最简清账</span>
-      </div>
-    </div>
-
-    <!-- 登录 / 注册 卡片 -->
-    <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200 space-y-4 my-auto">
-      <div class="flex rounded-xl bg-slate-200 p-1">
-        <button id="tabLoginBtn" type="button" onclick="setAuthMode('login')" class="flex-1 py-1.5 rounded-lg text-xs font-bold text-teal-700 bg-white shadow-xs transition">
+<div>
+<h1 class="text-2xl font-black text-slate-900 tracking-tight">Equator Journey</h1>
+<p class="text-xs text-teal-700 font-bold mt-1">旅行多币种记账 · RBAC 隔离安全版</p>
+</div>
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-800 text-xs font-bold border border-teal-200 font-mono">
+<span>🇸🇬 基准货币: SGD (S$)</span>
+<span>·</span>
+<span>最简清账</span>
+</div>
+</div>
+<!-- 登录 / 注册 卡片 -->
+<div class="bg-slate-50 rounded-2xl p-5 border border-slate-200 space-y-4 my-auto">
+<div class="flex rounded-xl bg-slate-200 p-1">
+<button class="flex-1 py-1.5 rounded-lg text-xs font-bold text-teal-700 bg-white shadow-xs transition" id="tabLoginBtn" onclick="setAuthMode('login')" type="button">
           登入账本
         </button>
-        <button id="tabRegisterBtn" type="button" onclick="setAuthMode('register')" class="flex-1 py-1.5 rounded-lg text-xs font-bold text-slate-500 hover:text-slate-800 transition">
+<button class="flex-1 py-1.5 rounded-lg text-xs font-bold text-slate-500 hover:text-slate-800 transition" id="tabRegisterBtn" onclick="setAuthMode('register')" type="button">
           新旅伴注册
         </button>
-      </div>
-
-      <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-3 text-xs">
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">旅伴姓名 / 昵称</label>
-          <input id="authNameInput" type="text" required placeholder="如：小明 (超管) 或 新旅伴" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold text-slate-800 focus:ring-2 focus:ring-teal-500">
-        </div>
-
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">登录密码 (1-6位数字 PIN)</label>
-          <input id="authPinInput" type="password" maxlength="6" pattern="[0-9]{1,6}" required placeholder="输入数字 PIN" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-center font-mono text-sm tracking-widest text-slate-900 font-bold focus:ring-2 focus:ring-teal-500">
-        </div>
-
-        <!-- 注册时必须指派且仅允许加入单一行程 -->
-        <div id="registerTripSection" class="hidden space-y-1">
-          <label class="block font-bold text-slate-700">指派唯一所属行程 <span class="text-teal-600 font-normal">(注册后仅可查看此行程)</span></label>
-          <select id="registerTripSelect" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-teal-500">
-          </select>
-        </div>
-
-        <div id="authErrorMsg" class="hidden text-xs text-rose-600 font-bold bg-rose-50 p-2.5 rounded-xl border border-rose-200 text-center"></div>
-
-        <button id="authSubmitBtn" type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 rounded-xl shadow-md text-sm tap-scale transition">
+</div>
+<form class="space-y-3 text-xs" id="authForm" onsubmit="handleAuthSubmit(event)">
+<div>
+<label class="block font-bold text-slate-700 mb-1">旅伴姓名 / 昵称</label>
+<input class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold text-slate-800 focus:ring-2 focus:ring-teal-500" id="authNameInput" placeholder="如：老张 (超管) 或 新旅伴" required="" type="text"/>
+</div>
+<!-- 手机号（注册必填，登录选填或备用） -->
+<div class="hidden" id="registerPhoneSection">
+<label class="block font-bold text-slate-700 mb-1">手机号码 <span class="text-teal-600 font-normal">(用于身份确认)</span></label>
+<input class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm font-mono text-slate-800 focus:ring-2 focus:ring-teal-500" id="authPhoneInput" placeholder="如：13800138000" type="tel"/>
+</div>
+<div>
+<label class="block font-bold text-slate-700 mb-1">登录密码 (1-6位数字 PIN)</label>
+<input class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-center font-mono text-sm tracking-widest text-slate-900 font-bold focus:ring-2 focus:ring-teal-500" id="authPinInput" maxlength="6" pattern="[0-9]{1,6}" placeholder="输入数字 PIN" required="" type="password"/>
+</div>
+<!-- 注册时必须指派申请加入单一行程 -->
+<div class="hidden space-y-1" id="registerTripSection">
+<label class="block font-bold text-slate-700">申请加入行程 <span class="text-teal-600 font-normal">(需超管老张批准后方可登入)</span></label>
+<select class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-teal-500" id="registerTripSelect">
+</select>
+</div>
+<div class="hidden text-xs text-rose-600 font-bold bg-rose-50 p-2.5 rounded-xl border border-rose-200 text-center leading-relaxed" id="authErrorMsg"></div>
+<div class="hidden text-xs text-teal-800 font-medium bg-teal-50 p-3 rounded-xl border border-teal-200 text-center leading-relaxed" id="authSuccessMsg"></div>
+<button class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 rounded-xl shadow-md text-sm tap-scale transition" id="authSubmitBtn" type="submit">
           登入账本
         </button>
-      </form>
-    </div>
-
-    <div class="text-center pb-4 text-xs text-slate-400 font-mono">
+</form>
+</div>
+<div class="text-center pb-4 text-xs text-slate-400 font-mono">
       Equator Journey · 严格数据权限与隐私隔离
     </div>
-  </div>
-
-  <!-- ==================== 2. 主应用主界面 ==================== -->
-  <div id="appContainer" class="w-full max-w-md bg-white min-h-screen flex flex-col shadow-xl border-x border-slate-200 pb-20 hidden">
-    
-    <!-- 顶部状态栏 -->
-    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-slate-200 px-4 py-3">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-2.5">
-          <div id="userAvatarBadge" class="w-9 h-9 rounded-xl bg-teal-600 text-white flex items-center justify-center text-lg font-bold shadow-xs">
-            🎒
+</div>
+<!-- ==================== 2. 主应用主界面 ==================== -->
+<div class="w-full max-w-md bg-white min-h-screen flex flex-col shadow-xl border-x border-slate-200 pb-20 hidden" id="appContainer">
+<!-- 顶部状态栏 -->
+<header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-slate-200 px-4 py-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-xl bg-teal-600 text-white flex items-center justify-center text-lg font-bold shadow-xs" id="userAvatarBadge">
+            👑
           </div>
-          <div>
-            <div class="flex items-center gap-1.5">
-              <span id="headerUserName" class="font-bold text-slate-900 text-sm">小明</span>
-              <span id="headerRoleBadge" class="text-[9px] bg-amber-100 text-amber-800 font-bold px-1.5 py-0.2 rounded border border-amber-300">超级管理员</span>
-            </div>
-            <p class="text-[11px] text-slate-400 font-mono">基准货币: SGD (S$)</p>
-          </div>
-        </div>
-
-        <div class="flex items-center gap-1.5">
-          <!-- 云配置按钮：严格仅限超级管理员可见 -->
-          <button id="btnOpenCloudSync" type="button" onclick="openCloudModal()" class="flex items-center gap-1 bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1.5 rounded-full text-xs font-mono font-medium tap-scale border border-slate-200" title="Supabase 云同步配置">
-            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span id="roomCodeLabel">TYO-882</span>
-            <span>☁️</span>
-          </button>
-
-          <!-- 个人改密 -->
-          <button type="button" onclick="openProfileModal()" class="p-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs border border-slate-200 tap-scale" title="修改密码">
+<div>
+<div class="flex items-center gap-1.5">
+<span class="font-bold text-slate-900 text-sm" id="headerUserName">老张</span>
+<span class="text-[9px] bg-amber-100 text-amber-800 font-bold px-1.5 py-0.2 rounded border border-amber-300" id="headerRoleBadge">超级管理员</span>
+</div>
+<p class="text-[11px] text-slate-400 font-mono">基准货币: SGD (S$)</p>
+</div>
+</div>
+<div class="flex items-center gap-1.5">
+<!-- 云配置按钮：严格仅限超级管理员可见 -->
+<button class="flex items-center gap-1 bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1.5 rounded-full text-xs font-mono font-medium tap-scale border border-slate-200" id="btnOpenCloudSync" onclick="openCloudModal()" title="Supabase 云同步配置" type="button">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span id="roomCodeLabel">TYO-882</span>
+<span>☁️</span>
+</button>
+<!-- 个人改密 -->
+<button class="p-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs border border-slate-200 tap-scale" onclick="openProfileModal()" title="修改密码" type="button">
             ⚙️
           </button>
-
-          <!-- 登出 -->
-          <button type="button" onclick="handleLogout()" class="px-2.5 py-1.5 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold border border-rose-200 tap-scale">
+<!-- 登出 -->
+<button class="px-2.5 py-1.5 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold border border-rose-200 tap-scale" onclick="handleLogout()" type="button">
             退出
           </button>
-        </div>
-      </div>
-    </header>
-
-    <!-- 主滚动区 -->
-    <main class="flex-1 px-4 py-3 space-y-3.5">
-
-      <!-- 行程账本卡片与下拉选择 (普通成员严格锁定且隐藏其他行程) -->
-      <section class="bg-slate-50 rounded-2xl p-3.5 border border-slate-200 space-y-3">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-1.5 text-xs font-bold text-slate-500 uppercase tracking-wider">
-            <span>当前行程</span>
-            <span id="tripScopeBadge" class="bg-teal-50 text-teal-700 border border-teal-200 px-1.5 py-0.2 rounded text-[10px] font-bold">全权访问</span>
-          </div>
-
-          <!-- 仅管理员可新增行程 -->
-          <button id="adminNewTripBtn" type="button" onclick="openNewTripModal()" class="text-xs text-teal-700 bg-teal-50 hover:bg-teal-100 border border-teal-200 px-2.5 py-1 rounded-lg font-bold tap-scale">
+</div>
+</div>
+</header>
+<!-- 主滚动区 -->
+<main class="flex-1 px-4 py-3 space-y-3.5">
+<!-- 行程账本卡片与下拉选择 (普通成员严格锁定且隐藏其他行程) -->
+<section class="bg-slate-50 rounded-2xl p-3.5 border border-slate-200 space-y-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5 text-xs font-bold text-slate-500 uppercase tracking-wider">
+<span>当前行程</span>
+<span class="bg-teal-50 text-teal-700 border border-teal-200 px-1.5 py-0.2 rounded text-[10px] font-bold" id="tripScopeBadge">全权访问</span>
+</div>
+<!-- 仅管理员可新增行程 -->
+<button class="text-xs text-teal-700 bg-teal-50 hover:bg-teal-100 border border-teal-200 px-2.5 py-1 rounded-lg font-bold tap-scale" id="adminNewTripBtn" onclick="openNewTripModal()" type="button">
             + 新建行程
           </button>
-        </div>
-
-        <!-- 行程下拉框：普通成员只显示其唯一的行程，且下拉被禁用 -->
-        <div>
-          <select id="tripSelector" onchange="handleTripChange(this.value)" class="w-full bg-white border border-slate-300 text-slate-900 text-sm font-bold rounded-xl px-3 py-2 focus:ring-2 focus:ring-teal-500">
-          </select>
-        </div>
-
-        <!-- 行程概览横幅 -->
-        <div class="bg-gradient-to-r from-teal-800 to-emerald-900 text-white p-3.5 rounded-2xl shadow-sm space-y-2.5">
-          <div class="flex items-center justify-between">
-            <div>
-              <div class="flex items-center gap-1.5">
-                <span id="bannerTripFlag" class="text-xl">🇨🇳</span>
-                <span id="bannerTripName" class="font-bold text-sm">中国15日深度游</span>
-              </div>
-              <p id="bannerTripDate" class="text-[11px] text-teal-200/90 font-mono mt-0.5">2023-10-12 ~ 2023-10-26</p>
-            </div>
-            <div class="text-right">
-              <span class="text-[10px] text-teal-200">行程总花费</span>
-              <div id="bannerTripTotalSGD" class="text-lg font-black font-mono">S$ 0.00</div>
-            </div>
-          </div>
-          <div class="pt-2 border-t border-teal-700 flex items-center justify-between text-xs">
-            <div id="bannerTripMembersList" class="flex items-center -space-x-1.5"></div>
-            <span id="bannerMemberCount" class="text-[11px] text-teal-100 font-medium">3 位旅伴</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- TAB 1: 账本明细 -->
-      <section id="tabViewExpenses" class="space-y-3">
-        <div class="bg-white rounded-2xl p-3 border border-slate-200 space-y-2.5">
-          <div class="flex items-center justify-between text-xs">
-            <div class="flex items-center gap-1.5">
-              <span class="text-slate-500 font-semibold">分类筛选:</span>
-              <select id="categoryFilter" onchange="handleCategoryFilter(this.value)" class="bg-slate-50 border border-slate-300 rounded-lg text-xs font-bold px-2 py-1">
-                <option value="ALL">全部支出</option>
-                <option value="餐饮美食">🍜 餐饮美食</option>
-                <option value="交通出行">🚕 交通出行</option>
-                <option value="酒店住宿">🏨 酒店住宿</option>
-                <option value="门票娱乐">🎟️ 门票娱乐</option>
-                <option value="购物买买">🛍️ 购物买买</option>
-                <option value="签证保险">📄 签证保险</option>
-                <option value="通信WiFi">📶 通信WiFi</option>
-                <option value="其他费用">📦 其他费用</option>
-              </select>
-            </div>
-            <span class="text-slate-400 font-mono">共 <b id="filteredCount" class="text-slate-800">0</b> 笔</span>
-          </div>
-
-          <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex justify-between items-baseline">
-            <div>
-              <span class="text-xs text-slate-500">当前筛选总计</span>
-              <div id="sumFilteredSGD" class="text-xl font-black font-mono text-slate-900">S$ 0.00</div>
-            </div>
-            <div class="text-right text-xs">
-              <span class="text-slate-400">人均应分摊</span>
-              <div id="perCapitaSGD" class="text-sm font-bold font-mono text-teal-700">S$ 0.00</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 记一笔操作条 -->
-        <div class="flex items-center justify-between px-1">
-          <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">流水记录 (倒序)</h2>
-          <div class="flex items-center gap-2">
-            <button type="button" onclick="quickAddTestExpense()" class="text-[11px] text-teal-700 bg-teal-50 hover:bg-teal-100 border border-teal-200 px-2 py-1 rounded-lg font-bold tap-scale" title="快速注入一笔测试消费">
+</div>
+<!-- 行程下拉框：普通成员只显示其唯一的行程，且下拉被禁用 -->
+<div>
+<select class="w-full bg-white border border-slate-300 text-slate-900 text-sm font-bold rounded-xl px-3 py-2 focus:ring-2 focus:ring-teal-500" id="tripSelector" onchange="handleTripChange(this.value)">
+</select>
+</div>
+<!-- 行程概览横幅 -->
+<div class="bg-gradient-to-r from-teal-800 to-emerald-900 text-white p-3.5 rounded-2xl shadow-sm space-y-2.5">
+<div class="flex items-center justify-between">
+<div>
+<div class="flex items-center gap-1.5">
+<span class="text-xl" id="bannerTripFlag">🇨🇳</span>
+<span class="font-bold text-sm" id="bannerTripName">中国15日深度游</span>
+</div>
+<p class="text-[11px] text-teal-200/90 font-mono mt-0.5" id="bannerTripDate">2023-10-12 ~ 2023-10-26</p>
+</div>
+<div class="text-right">
+<span class="text-[10px] text-teal-200">行程总花费</span>
+<div class="text-lg font-black font-mono" id="bannerTripTotalSGD">S$ 0.00</div>
+</div>
+</div>
+<div class="pt-2 border-t border-teal-700 flex items-center justify-between text-xs">
+<div class="flex items-center -space-x-1.5" id="bannerTripMembersList"></div>
+<span class="text-[11px] text-teal-100 font-medium" id="bannerMemberCount">3 位旅伴</span>
+</div>
+</div>
+</section>
+<!-- TAB 1: 账本明细 -->
+<section class="space-y-3" id="tabViewExpenses">
+<div class="bg-white rounded-2xl p-3 border border-slate-200 space-y-2.5">
+<div class="flex items-center justify-between text-xs">
+<div class="flex items-center gap-1.5">
+<span class="text-slate-500 font-semibold">分类筛选:</span>
+<select class="bg-slate-50 border border-slate-300 rounded-lg text-xs font-bold px-2 py-1" id="categoryFilter" onchange="handleCategoryFilter(this.value)">
+<option value="ALL">全部支出</option>
+<option value="餐饮美食">🍜 餐饮美食</option>
+<option value="交通出行">🚕 交通出行</option>
+<option value="酒店住宿">🏨 酒店住宿</option>
+<option value="门票娱乐">🎟️ 门票娱乐</option>
+<option value="购物买买">🛍️ 购物买买</option>
+<option value="签证保险">📄 签证保险</option>
+<option value="通信WiFi">📶 通信WiFi</option>
+<option value="其他费用">📦 其他费用</option>
+</select>
+</div>
+<span class="text-slate-400 font-mono">共 <b class="text-slate-800" id="filteredCount">0</b> 笔</span>
+</div>
+<div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex justify-between items-baseline">
+<div>
+<span class="text-xs text-slate-500">当前筛选总计</span>
+<div class="text-xl font-black font-mono text-slate-900" id="sumFilteredSGD">S$ 0.00</div>
+</div>
+<div class="text-right text-xs">
+<span class="text-slate-400">人均应分摊</span>
+<div class="text-sm font-bold font-mono text-teal-700" id="perCapitaSGD">S$ 0.00</div>
+</div>
+</div>
+</div>
+<!-- 记一笔操作条 -->
+<div class="flex items-center justify-between px-1">
+<h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">流水记录 (倒序)</h2>
+<div class="flex items-center gap-2">
+<button class="text-[11px] text-teal-700 bg-teal-50 hover:bg-teal-100 border border-teal-200 px-2 py-1 rounded-lg font-bold tap-scale" onclick="quickAddTestExpense()" title="快速注入一笔测试消费" type="button">
               ⚡ 模拟一笔
             </button>
-            <button type="button" onclick="openExpenseModal()" class="text-xs bg-teal-600 hover:bg-teal-700 text-white font-bold px-3 py-1 rounded-lg shadow-sm tap-scale">
+<button class="text-xs bg-teal-600 hover:bg-teal-700 text-white font-bold px-3 py-1 rounded-lg shadow-sm tap-scale" onclick="openExpenseModal()" type="button">
               + 记一笔
             </button>
-          </div>
-        </div>
-
-        <!-- 消费流水列表容器 -->
-        <div id="expenseList" class="space-y-2.5">
-          <!-- 动态渲染消费卡片 -->
-        </div>
-      </section>
-
-      <!-- TAB 2: 智能清账 -->
-      <section id="tabViewSettlement" class="space-y-3 hidden">
-        <div class="bg-white rounded-2xl p-4 border border-slate-200 space-y-3">
-          <div class="border-b border-slate-100 pb-2.5 flex items-center justify-between">
-            <div>
-              <h2 class="text-sm font-bold text-slate-900">智能清账方案</h2>
-              <p class="text-[11px] text-slate-400">总垫付 - 应摊份额 = 净余额</p>
-            </div>
-            <span class="text-[10px] bg-teal-50 text-teal-700 border border-teal-200 px-2 py-0.5 rounded font-bold">最小转账贪心法</span>
-          </div>
-
-          <!-- 各成员净余额 -->
-          <div id="settlementBalances" class="space-y-2"></div>
-
-          <!-- 最优转账步骤 -->
-          <div class="pt-2 border-t border-slate-100 space-y-2">
-            <h3 class="text-xs font-bold text-slate-700">💳 结清转账步骤</h3>
-            <div id="settlementSteps" class="space-y-1.5"></div>
-          </div>
-
-          <button type="button" onclick="copySettlementSummary()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 py-2 rounded-xl text-xs font-bold border border-slate-200 tap-scale">
+</div>
+</div>
+<!-- 消费流水列表容器 -->
+<div class="space-y-2.5" id="expenseList">
+<!-- 动态渲染消费卡片 -->
+</div>
+</section>
+<!-- TAB 2: 智能清账 -->
+<section class="space-y-3 hidden" id="tabViewSettlement">
+<div class="bg-white rounded-2xl p-4 border border-slate-200 space-y-3">
+<div class="border-b border-slate-100 pb-2.5 flex items-center justify-between">
+<div>
+<h2 class="text-sm font-bold text-slate-900">智能清账方案</h2>
+<p class="text-[11px] text-slate-400">总垫付 - 应摊份额 = 净余额</p>
+</div>
+<span class="text-[10px] bg-teal-50 text-teal-700 border border-teal-200 px-2 py-0.5 rounded font-bold">最小转账贪心法</span>
+</div>
+<!-- 各成员净余额 -->
+<div class="space-y-2" id="settlementBalances"></div>
+<!-- 最优转账步骤 -->
+<div class="pt-2 border-t border-slate-100 space-y-2">
+<h3 class="text-xs font-bold text-slate-700">💳 结清转账步骤</h3>
+<div class="space-y-1.5" id="settlementSteps"></div>
+</div>
+<button class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 py-2 rounded-xl text-xs font-bold border border-slate-200 tap-scale" onclick="copySettlementSummary()" type="button">
             📋 复制清账清单至微信 / WhatsApp
           </button>
-        </div>
-      </section>
-
-      <!-- TAB 3: 统计报表 -->
-      <section id="tabViewReports" class="space-y-3 hidden">
-        <div class="bg-white rounded-2xl p-4 border border-slate-200 space-y-4">
-          <div class="flex items-center justify-between">
-            <div>
-              <h2 class="text-sm font-bold text-slate-900">消费统计报表</h2>
-              <p class="text-[11px] text-slate-400">分类占比与垫付排行</p>
-            </div>
-            <!-- CSV 导出：严格仅超级管理员可用 -->
-            <button id="btnExportCSV" type="button" onclick="exportCSV()" class="text-xs bg-teal-600 hover:bg-teal-700 text-white font-bold px-2.5 py-1.5 rounded-lg tap-scale">
-              📥 导出 CSV
-            </button>
-          </div>
-
-          <!-- 分类统计条 -->
-          <div class="space-y-2">
-            <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">支出分类分布</h3>
-            <div id="statsCategories" class="space-y-2"></div>
-          </div>
-
-          <!-- 垫付排行 -->
-          <div class="space-y-2 pt-3 border-t border-slate-100">
-            <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">本行程垫付贡献</h3>
-            <div id="statsPayers" class="space-y-2"></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- TAB 4: 旅伴与币种 (普通成员仅能查看当前行程旅伴，不可配置全系统) -->
-      <section id="tabViewMembers" class="space-y-3 hidden">
-        <div class="bg-white rounded-2xl p-4 border border-slate-200 space-y-3">
-          <div class="flex items-center justify-between">
-            <div>
-              <h2 class="text-sm font-bold text-slate-900">行程旅伴</h2>
-              <p class="text-[11px] text-slate-400">当前行程授权成员</p>
-            </div>
-            <!-- 仅管理员可登记旅伴 -->
-            <button id="adminAddMemberBtn" type="button" onclick="openMemberModal()" class="text-xs bg-teal-600 hover:bg-teal-700 text-white font-bold px-2.5 py-1 rounded-lg tap-scale">
+</div>
+</section>
+<!-- TAB 3: 统计报表 -->
+<section class="space-y-3 hidden" id="tabViewReports">
+<div class="bg-white rounded-2xl p-4 border border-slate-200 space-y-4">
+<div class="flex items-center justify-between flex-wrap gap-2">
+<div>
+<h2 class="text-sm font-bold text-slate-900">消费统计报表</h2>
+<p class="text-[11px] text-slate-400">分类占比与垫付排行</p>
+</div>
+<div class="flex items-center gap-1.5">
+<!-- 查看/下载全部发票凭证 -->
+<button class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-bold px-2 py-1.5 rounded-lg tap-scale flex items-center gap-1" id="btnViewAllReceipts" onclick="openAllReceiptsModal()" type="button">
+<span>🧾</span>
+<span>发票卷宗</span>
+</button>
+<!-- CSV 导出：严格仅超级管理员可用 -->
+<button class="text-xs bg-teal-600 hover:bg-teal-700 text-white font-bold px-2.5 py-1.5 rounded-lg tap-scale flex items-center gap-1" id="btnExportCSV" onclick="exportCSV()" type="button">
+<span>📥</span>
+<span>导出 CSV</span>
+</button>
+</div>
+</div>
+<!-- 分类统计条 -->
+<div class="space-y-2">
+<h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">支出分类分布</h3>
+<div class="space-y-2" id="statsCategories"></div>
+</div>
+<!-- 垫付排行 -->
+<div class="space-y-2 pt-3 border-t border-slate-100">
+<h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">本行程垫付贡献</h3>
+<div class="space-y-2" id="statsPayers"></div>
+</div>
+</div>
+</section>
+<!-- TAB 4: 旅伴与审批 (升级：超管待审批卡片 + 旅伴编辑/删除) -->
+<section class="space-y-3 hidden" id="tabViewMembers">
+<!-- 超管专属：待审核旅伴申请卡片 -->
+<div class="hidden bg-amber-50 rounded-2xl p-3.5 border border-amber-200 space-y-2.5 shadow-xs" id="adminPendingSection">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="text-base">⏳</span>
+<h3 class="text-xs font-bold text-amber-900">新旅伴入队审批</h3>
+<span class="bg-amber-600 text-white text-[10px] font-mono font-bold px-1.5 py-0.2 rounded-full" id="pendingCountBadge">0</span>
+</div>
+<span class="text-[10px] text-amber-700 font-medium">仅超管老张可见</span>
+</div>
+<div class="space-y-2" id="pendingMembersContainer">
+<!-- 待审批列表项 -->
+</div>
+</div>
+<div class="bg-white rounded-2xl p-4 border border-slate-200 space-y-3">
+<div class="flex items-center justify-between">
+<div>
+<h2 class="text-sm font-bold text-slate-900">行程旅伴名录</h2>
+<p class="text-[11px] text-slate-400" id="membersSubtitleHint">当前行程已授权成员</p>
+</div>
+<!-- 仅管理员可登记旅伴 -->
+<button class="text-xs bg-teal-600 hover:bg-teal-700 text-white font-bold px-2.5 py-1 rounded-lg tap-scale" id="adminAddMemberBtn" onclick="openMemberModal()" type="button">
               + 登记旅伴
             </button>
-          </div>
-          <div id="membersListContainer" class="space-y-2 divide-y divide-slate-100"></div>
-        </div>
-
-        <div class="bg-white rounded-2xl p-4 border border-slate-200 space-y-2">
-          <h2 class="text-sm font-bold text-slate-900">货币汇率参考</h2>
-          <div id="currenciesListContainer" class="grid grid-cols-2 gap-2 text-xs"></div>
-        </div>
-      </section>
-    </main>
-
-    <!-- 底部 Tab 导航 -->
-    <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-slate-200 px-2 py-1.5 flex items-center justify-around z-30">
-      <button id="tabBtnExpenses" type="button" onclick="switchNavTab('expenses')" class="flex-1 py-1 flex flex-col items-center text-teal-600 font-bold text-xs">
-        <span class="text-base leading-tight">🧾</span>
-        <span>明细</span>
-      </button>
-      <button id="tabBtnSettlement" type="button" onclick="switchNavTab('settlement')" class="flex-1 py-1 flex flex-col items-center text-slate-400 font-medium text-xs">
-        <span class="text-base leading-tight">⚖️</span>
-        <span>清账</span>
-      </button>
-      <button id="tabBtnReports" type="button" onclick="switchNavTab('reports')" class="flex-1 py-1 flex flex-col items-center text-slate-400 font-medium text-xs">
-        <span class="text-base leading-tight">📊</span>
-        <span>统计</span>
-      </button>
-      <button id="tabBtnMembers" type="button" onclick="switchNavTab('members')" class="flex-1 py-1 flex flex-col items-center text-slate-400 font-medium text-xs">
-        <span class="text-base leading-tight">👥</span>
-        <span>旅伴</span>
-      </button>
-    </nav>
-  </div>
-
-  <!-- ==================== 3. 模态弹窗集 ==================== -->
-
-  <!-- Modal: 记一笔消费 (Add Expense) -->
-  <div id="modalExpense" class="fixed inset-0 z-50 modal-bg hidden flex items-center justify-center p-4">
-    <div class="bg-white w-full max-w-sm rounded-3xl p-4 shadow-2xl space-y-3 max-h-[90vh] overflow-y-auto custom-scroll">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-        <h3 class="font-bold text-slate-900 text-sm flex items-center gap-1.5">
-          <span>🧾</span>
-          <span>记一笔旅行消费</span>
-        </h3>
-        <button type="button" onclick="closeExpenseModal()" class="text-slate-400 hover:text-slate-600 text-base">✕</button>
-      </div>
-
-      <form onsubmit="saveExpense(event)" class="space-y-3 text-xs">
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">所属行程账本</label>
-          <select id="expenseTripSelect" required onchange="onExpenseTripSelectChange(this.value)" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800">
-          </select>
-        </div>
-
-        <div class="grid grid-cols-3 gap-2">
-          <div class="col-span-2">
-            <label class="block font-bold text-slate-700 mb-1">消费描述</label>
-            <input id="expenseTitleInput" type="text" required placeholder="如：锦里火锅、机场打车" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800">
-          </div>
-          <div>
-            <label class="block font-bold text-slate-700 mb-1">支出分类</label>
-            <select id="expenseCatSelect" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-2 py-2 text-xs font-bold text-slate-800">
-              <option value="餐饮美食">🍜 餐饮</option>
-              <option value="交通出行">🚕 交通</option>
-              <option value="酒店住宿">🏨 住宿</option>
-              <option value="门票娱乐">🎟️ 门票</option>
-              <option value="购物买买">🛍️ 购物</option>
-              <option value="签证保险">📄 签证</option>
-              <option value="通信WiFi">📶 通信</option>
-              <option value="其他费用">📦 其他</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- 货币与金额 -->
-        <div class="bg-teal-50/70 p-3 rounded-xl border border-teal-200 space-y-2">
-          <div class="flex justify-between items-center text-teal-900 font-bold">
-            <span>原始花费金额</span>
-            <span id="expenseRateHint" class="text-[10px] font-mono">1 SGD ≈ 5.35 CNY</span>
-          </div>
-          <div class="flex gap-2">
-            <select id="expenseCurrencySelect" onchange="calcConvertedSGD()" class="w-1/3 bg-white border border-teal-300 rounded-xl px-2 py-2 font-bold text-xs text-slate-800">
-            </select>
-            <input id="expenseAmountInput" type="number" step="0.01" min="0.01" required placeholder="0.00" oninput="calcConvertedSGD()" class="flex-1 bg-white border border-teal-300 rounded-xl px-3 py-2 text-base font-black font-mono text-slate-900 text-right">
-          </div>
-          <div class="flex justify-between items-center text-xs pt-1 border-t border-teal-200">
-            <span class="text-teal-800 font-medium">折合基准新币 (SGD):</span>
-            <span id="expenseSGDResult" class="font-mono font-black text-teal-900 text-sm">S$ 0.00</span>
-          </div>
-        </div>
-
-        <!-- 垫付人与分摊 -->
-        <div class="space-y-2">
-          <div>
-            <label class="block font-bold text-slate-700 mb-1">垫付人 (谁付款)</label>
-            <select id="expensePayerSelect" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800">
-            </select>
-          </div>
-          <div>
-            <label class="block font-bold text-slate-700 mb-1">分摊旅伴 (默认全员平摊)</label>
-            <div id="expenseSplitBoxes" class="grid grid-cols-2 gap-1.5"></div>
-          </div>
-        </div>
-
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">消费日期</label>
-          <input id="expenseDateInput" type="date" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 font-mono text-xs text-slate-800">
-        </div>
-
-        <button type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 rounded-xl shadow-md text-sm tap-scale transition">
+</div>
+<div class="space-y-2 divide-y divide-slate-100" id="membersListContainer"></div>
+</div>
+<div class="bg-white rounded-2xl p-4 border border-slate-200 space-y-2">
+<h2 class="text-sm font-bold text-slate-900">货币汇率参考</h2>
+<div class="grid grid-cols-2 gap-2 text-xs" id="currenciesListContainer"></div>
+</div>
+</section>
+</main>
+<!-- 底部 Tab 导航 (带待审核角标) -->
+<nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-slate-200 px-2 py-1.5 flex items-center justify-around z-30">
+<button class="flex-1 py-1 flex flex-col items-center text-teal-600 font-bold text-xs" id="tabBtnExpenses" onclick="switchNavTab('expenses')" type="button">
+<span class="text-base leading-tight">🧾</span>
+<span>明细</span>
+</button>
+<button class="flex-1 py-1 flex flex-col items-center text-slate-400 font-medium text-xs" id="tabBtnSettlement" onclick="switchNavTab('settlement')" type="button">
+<span class="text-base leading-tight">⚖️</span>
+<span>清账</span>
+</button>
+<button class="flex-1 py-1 flex flex-col items-center text-slate-400 font-medium text-xs" id="tabBtnReports" onclick="switchNavTab('reports')" type="button">
+<span class="text-base leading-tight">📊</span>
+<span>统计</span>
+</button>
+<button class="relative flex-1 py-1 flex flex-col items-center text-slate-400 font-medium text-xs" id="tabBtnMembers" onclick="switchNavTab('members')" type="button">
+<span class="text-base leading-tight">👥</span>
+<span>旅伴</span>
+<span class="hidden absolute top-0.5 right-4 w-2 h-2 bg-amber-500 rounded-full" id="navMembersBadge"></span>
+</button>
+</nav>
+</div>
+<!-- ==================== 3. 模态弹窗集 ==================== -->
+<!-- Modal: 记一笔消费 (升级发票凭证上传) -->
+<div class="fixed inset-0 z-50 modal-bg hidden flex items-center justify-center p-4" id="modalExpense">
+<div class="bg-white w-full max-w-sm rounded-3xl p-4 shadow-2xl space-y-3 max-h-[92vh] overflow-y-auto custom-scroll">
+<div class="flex items-center justify-between border-b border-slate-100 pb-2">
+<h3 class="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+<span>🧾</span>
+<span>记一笔旅行消费</span>
+</h3>
+<button class="text-slate-400 hover:text-slate-600 text-base" onclick="closeExpenseModal()" type="button">✕</button>
+</div>
+<form class="space-y-3 text-xs" onsubmit="saveExpense(event)">
+<div>
+<label class="block font-bold text-slate-700 mb-1">所属行程账本</label>
+<select class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800" id="expenseTripSelect" onchange="onExpenseTripSelectChange(this.value)" required="">
+</select>
+</div>
+<div class="grid grid-cols-3 gap-2">
+<div class="col-span-2">
+<label class="block font-bold text-slate-700 mb-1">消费描述</label>
+<input class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800" id="expenseTitleInput" placeholder="如：锦里火锅、打车" required="" type="text"/>
+</div>
+<div>
+<label class="block font-bold text-slate-700 mb-1">支出分类</label>
+<select class="w-full bg-slate-50 border border-slate-300 rounded-xl px-2 py-2 text-xs font-bold text-slate-800" id="expenseCatSelect">
+<option value="餐饮美食">🍜 餐饮</option>
+<option value="交通出行">🚕 交通</option>
+<option value="酒店住宿">🏨 住宿</option>
+<option value="门票娱乐">🎟️ 门票</option>
+<option value="购物买买">🛍️ 购物</option>
+<option value="签证保险">📄 签证</option>
+<option value="通信WiFi">📶 通信</option>
+<option value="其他费用">📦 其他</option>
+</select>
+</div>
+</div>
+<!-- 货币与金额 -->
+<div class="bg-teal-50/70 p-3 rounded-xl border border-teal-200 space-y-2">
+<div class="flex justify-between items-center text-teal-900 font-bold">
+<span>原始花费金额</span>
+<span class="text-[10px] font-mono" id="expenseRateHint">1 SGD ≈ 5.35 CNY</span>
+</div>
+<div class="flex gap-2">
+<select class="w-1/3 bg-white border border-teal-300 rounded-xl px-2 py-2 font-bold text-xs text-slate-800" id="expenseCurrencySelect" onchange="calcConvertedSGD()">
+</select>
+<input class="flex-1 bg-white border border-teal-300 rounded-xl px-3 py-2 text-base font-black font-mono text-slate-900 text-right" id="expenseAmountInput" min="0.01" oninput="calcConvertedSGD()" placeholder="0.00" required="" step="0.01" type="number"/>
+</div>
+<div class="flex justify-between items-center text-xs pt-1 border-t border-teal-200">
+<span class="text-teal-800 font-medium">折合基准新币 (SGD):</span>
+<span class="font-mono font-black text-teal-900 text-sm" id="expenseSGDResult">S$ 0.00</span>
+</div>
+</div>
+<!-- 垫付人与分摊 -->
+<div class="space-y-2">
+<div>
+<label class="block font-bold text-slate-700 mb-1">垫付人 (谁付款)</label>
+<select class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800" id="expensePayerSelect">
+</select>
+</div>
+<div>
+<label class="block font-bold text-slate-700 mb-1">分摊旅伴 (默认全员平摊)</label>
+<div class="grid grid-cols-2 gap-1.5" id="expenseSplitBoxes"></div>
+</div>
+</div>
+<div>
+<label class="block font-bold text-slate-700 mb-1">消费日期</label>
+<input class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 font-mono text-xs text-slate-800" id="expenseDateInput" required="" type="date"/>
+</div>
+<!-- 新增：发票/收据上传 -->
+<div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 space-y-2">
+<div class="flex items-center justify-between">
+<label class="block font-bold text-slate-700">📸 发票 / 收据凭证 (可选)</label>
+<span class="text-[10px] text-slate-400">支持相册与拍照</span>
+</div>
+<input accept="image/*" class="block w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 cursor-pointer" id="expenseReceiptInput" onchange="handleReceiptFileSelect(event)" type="file"/>
+<!-- 缩略图预览区 -->
+<div class="hidden items-center justify-between bg-white p-2 rounded-lg border border-slate-200" id="receiptPreviewBox">
+<div class="flex items-center gap-2">
+<img alt="凭证预览" class="w-12 h-12 object-cover rounded-md border border-slate-100" id="receiptPreviewImg" src=""/>
+<div class="text-[11px] text-slate-600 font-medium">已添加发票凭证</div>
+</div>
+<button class="text-rose-600 text-xs hover:underline font-bold" onclick="clearReceiptUpload()" type="button">移除</button>
+</div>
+</div>
+<button class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 rounded-xl shadow-md text-sm tap-scale transition" type="submit">
           💾 确认保存并实时结算
         </button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Modal: Supabase 云配置 (严格仅超级管理员可访问) -->
-  <div id="modalCloud" class="fixed inset-0 z-50 modal-bg hidden flex items-center justify-center p-4">
-    <div class="bg-white w-full max-w-sm rounded-3xl p-4 shadow-2xl space-y-3 text-xs">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-        <h3 class="font-bold text-slate-900 text-sm">Supabase 云同步配置 (超管)</h3>
-        <button type="button" onclick="closeCloudModal()" class="text-slate-400 hover:text-slate-600 text-base">✕</button>
-      </div>
-
-      <div class="space-y-2">
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">协同房间号 (Room ID)</label>
-          <input id="cloudRoomInput" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-mono font-bold uppercase text-slate-800">
-        </div>
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">Supabase Project URL</label>
-          <input id="cloudUrlInput" type="text" placeholder="https://xxx.supabase.co" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-mono text-slate-800">
-        </div>
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">Supabase API Key (Publishable / Anon)</label>
-          <input id="cloudKeyInput" type="password" placeholder="eyJ..." class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-mono text-slate-800">
-        </div>
-      </div>
-
-      <div class="flex gap-2 pt-2 border-t border-slate-100">
-        <button type="button" onclick="saveCloudConfig()" class="flex-1 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 rounded-xl tap-scale">
+</form>
+</div>
+</div>
+<!-- Modal: 查看单张发票大图 -->
+<div class="fixed inset-0 z-50 modal-bg hidden flex items-center justify-center p-4" id="modalReceiptViewer">
+<div class="bg-white w-full max-w-sm rounded-3xl p-4 shadow-2xl space-y-3">
+<div class="flex items-center justify-between border-b border-slate-100 pb-2">
+<div>
+<h3 class="font-bold text-slate-900 text-sm" id="receiptViewerTitle">发票凭证详情</h3>
+<p class="text-[10px] text-slate-400 font-mono" id="receiptViewerSub"></p>
+</div>
+<button class="text-slate-400 hover:text-slate-600 text-base" onclick="closeReceiptModal()" type="button">✕</button>
+</div>
+<div class="max-h-[60vh] overflow-auto flex items-center justify-center bg-slate-950/5 rounded-xl p-1">
+<img alt="高清发票" class="max-w-full max-h-[55vh] object-contain rounded-lg" id="receiptViewerImage" src=""/>
+</div>
+<div class="flex gap-2 pt-1">
+<a class="flex-1 text-center bg-teal-600 hover:bg-teal-700 text-white py-2 rounded-xl text-xs font-bold tap-scale" download="发票凭证.jpg" href="" id="receiptDownloadBtn">
+          💾 另存发票图片
+        </a>
+<button class="px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold border border-slate-200 tap-scale" onclick="closeReceiptModal()" type="button">
+          关闭
+        </button>
+</div>
+</div>
+</div>
+<!-- Modal: 发票卷宗 (一览当前行程所有发票) -->
+<div class="fixed inset-0 z-50 modal-bg hidden flex items-center justify-center p-4" id="modalAllReceipts">
+<div class="bg-white w-full max-w-md rounded-3xl p-4 shadow-2xl space-y-3 max-h-[85vh] flex flex-col">
+<div class="flex items-center justify-between border-b border-slate-100 pb-2 shrink-0">
+<div>
+<h3 class="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+<span>🧾</span>
+<span>行程发票卷宗归档</span>
+</h3>
+<p class="text-[10px] text-slate-400">已自动汇总当前行程中所有带凭证的账目</p>
+</div>
+<button class="text-slate-400 hover:text-slate-600 text-base" onclick="closeAllReceiptsModal()" type="button">✕</button>
+</div>
+<div class="flex-1 overflow-y-auto space-y-2.5 custom-scroll p-1" id="allReceiptsGallery">
+<!-- 动态发票列表 -->
+</div>
+</div>
+</div>
+<!-- Modal: Supabase 云配置 (严格仅超级管理员可访问) -->
+<div class="fixed inset-0 z-50 modal-bg hidden flex items-center justify-center p-4" id="modalCloud">
+<div class="bg-white w-full max-w-sm rounded-3xl p-4 shadow-2xl space-y-3 text-xs">
+<div class="flex items-center justify-between border-b border-slate-100 pb-2">
+<h3 class="font-bold text-slate-900 text-sm">Supabase 云同步配置 (超管老张)</h3>
+<button class="text-slate-400 hover:text-slate-600 text-base" onclick="closeCloudModal()" type="button">✕</button>
+</div>
+<div class="space-y-2">
+<div>
+<label class="block font-bold text-slate-700 mb-1">协同房间号 (Room ID)</label>
+<input class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-mono font-bold uppercase text-slate-800" id="cloudRoomInput" type="text"/>
+</div>
+<div>
+<label class="block font-bold text-slate-700 mb-1">Supabase Project URL</label>
+<input class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-mono text-slate-800" id="cloudUrlInput" placeholder="https://xxx.supabase.co" type="text"/>
+</div>
+<div>
+<label class="block font-bold text-slate-700 mb-1">Supabase API Key (Publishable / Anon)</label>
+<input class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-mono text-slate-800" id="cloudKeyInput" placeholder="eyJ..." type="password"/>
+</div>
+</div>
+<div class="bg-slate-50 p-2 rounded-xl border border-slate-200">
+<details class="text-[10px] text-slate-500">
+<summary class="font-bold text-teal-700 cursor-pointer">一键建表 SQL (点击查看)</summary>
+<pre class="mt-1 p-2 bg-slate-900 text-teal-300 rounded-lg overflow-x-auto text-[9px] font-mono leading-tight">create table if not exists journey_sync (
+  room_code text primary key,
+  data jsonb not null,
+  updated_at timestamp with time zone default now()
+);</pre>
+</details>
+</div>
+<div class="flex gap-2 pt-2 border-t border-slate-100">
+<button class="flex-1 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 rounded-xl tap-scale" onclick="saveCloudConfig()" type="button">
           保存并同步
         </button>
-        <button type="button" onclick="pullFromCloud()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-2 rounded-xl border border-slate-200 tap-scale">
+<button class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-2 rounded-xl border border-slate-200 tap-scale" onclick="pullFromCloud()" type="button">
           从云拉取
         </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal: 个人改密 (所有成员均可改自己密码) -->
-  <div id="modalProfile" class="fixed inset-0 z-50 modal-bg hidden flex items-center justify-center p-4">
-    <div class="bg-white w-full max-w-xs rounded-3xl p-4 shadow-2xl space-y-3 text-xs">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-        <h3 class="font-bold text-slate-900 text-sm">个人安全设置</h3>
-        <button type="button" onclick="closeProfileModal()" class="text-slate-400 hover:text-slate-600 text-base">✕</button>
-      </div>
-      <div>
-        <label class="block font-bold text-slate-700 mb-1">修改 1-6 位数字 PIN</label>
-        <input id="newPinInput" type="password" maxlength="6" pattern="[0-9]{1,6}" placeholder="新数字密码" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-center font-mono font-bold text-sm">
-      </div>
-      <button type="button" onclick="updatePersonalPin()" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 rounded-xl tap-scale">
+</div>
+</div>
+</div>
+<!-- Modal: 个人改密 (所有成员均可改自己密码) -->
+<div class="fixed inset-0 z-50 modal-bg hidden flex items-center justify-center p-4" id="modalProfile">
+<div class="bg-white w-full max-w-xs rounded-3xl p-4 shadow-2xl space-y-3 text-xs">
+<div class="flex items-center justify-between border-b border-slate-100 pb-2">
+<h3 class="font-bold text-slate-900 text-sm">个人安全设置</h3>
+<button class="text-slate-400 hover:text-slate-600 text-base" onclick="closeProfileModal()" type="button">✕</button>
+</div>
+<div>
+<label class="block font-bold text-slate-700 mb-1">修改 1-6 位数字 PIN</label>
+<input class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-center font-mono font-bold text-sm" id="newPinInput" maxlength="6" pattern="[0-9]{1,6}" placeholder="新数字密码" type="password"/>
+</div>
+<button class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 rounded-xl tap-scale" onclick="updatePersonalPin()" type="button">
         保存新密码
       </button>
-    </div>
-  </div>
-
-  <!-- Modal: 新建行程 (超管) -->
-  <div id="modalNewTrip" class="fixed inset-0 z-50 modal-bg hidden flex items-center justify-center p-4">
-    <div class="bg-white w-full max-w-xs rounded-3xl p-4 shadow-2xl space-y-3 text-xs">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-        <h3 class="font-bold text-slate-900 text-sm">新建行程账本</h3>
-        <button type="button" onclick="closeNewTripModal()" class="text-slate-400 hover:text-slate-600 text-base">✕</button>
-      </div>
-      <form onsubmit="saveNewTrip(event)" class="space-y-2">
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">行程名称</label>
-          <input id="newTripName" type="text" required placeholder="如：新西兰南岛自驾" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-bold text-slate-800">
-        </div>
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">标志 Emoji</label>
-          <input id="newTripFlag" type="text" value="✈️" maxlength="4" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 text-center text-base">
-        </div>
-        <button type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 rounded-xl tap-scale mt-2">
+</div>
+</div>
+<!-- Modal: 新建行程 (超管) -->
+<div class="fixed inset-0 z-50 modal-bg hidden flex items-center justify-center p-4" id="modalNewTrip">
+<div class="bg-white w-full max-w-xs rounded-3xl p-4 shadow-2xl space-y-3 text-xs">
+<div class="flex items-center justify-between border-b border-slate-100 pb-2">
+<h3 class="font-bold text-slate-900 text-sm">新建行程账本</h3>
+<button class="text-slate-400 hover:text-slate-600 text-base" onclick="closeNewTripModal()" type="button">✕</button>
+</div>
+<form class="space-y-2" onsubmit="saveNewTrip(event)">
+<div>
+<label class="block font-bold text-slate-700 mb-1">行程名称</label>
+<input class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-bold text-slate-800" id="newTripName" placeholder="如：新西兰南岛自驾" required="" type="text"/>
+</div>
+<div>
+<label class="block font-bold text-slate-700 mb-1">标志 Emoji</label>
+<input class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 text-center text-base" id="newTripFlag" maxlength="4" type="text" value="✈️"/>
+</div>
+<button class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 rounded-xl tap-scale mt-2" type="submit">
           确认创建
         </button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Modal: 登记旅伴 (超管) -->
-  <div id="modalMember" class="fixed inset-0 z-50 modal-bg hidden flex items-center justify-center p-4">
-    <div class="bg-white w-full max-w-xs rounded-3xl p-4 shadow-2xl space-y-3 text-xs">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-        <h3 class="font-bold text-slate-900 text-sm">登记新旅伴资料</h3>
-        <button type="button" onclick="closeMemberModal()" class="text-slate-400 hover:text-slate-600 text-base">✕</button>
-      </div>
-      <form onsubmit="saveNewMember(event)" class="space-y-2.5">
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">旅伴姓名</label>
-          <input id="newMemberName" type="text" required placeholder="如：阿伟" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-bold text-slate-800">
-        </div>
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">登录 PIN (1-6位数字)</label>
-          <input id="newMemberPin" type="password" maxlength="6" pattern="[0-9]{1,6}" required placeholder="1234" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-mono text-center font-bold">
-        </div>
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">指派所属行程</label>
-          <select id="newMemberTrip" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800"></select>
-        </div>
-        <button type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 rounded-xl tap-scale mt-1">
-          登记旅伴
+</form>
+</div>
+</div>
+<!-- Modal: 登记旅伴 (超管手动登记，直接为 active) -->
+<div class="fixed inset-0 z-50 modal-bg hidden flex items-center justify-center p-4" id="modalMember">
+<div class="bg-white w-full max-w-xs rounded-3xl p-4 shadow-2xl space-y-3 text-xs">
+<div class="flex items-center justify-between border-b border-slate-100 pb-2">
+<h3 class="font-bold text-slate-900 text-sm">登记新旅伴资料</h3>
+<button class="text-slate-400 hover:text-slate-600 text-base" onclick="closeMemberModal()" type="button">✕</button>
+</div>
+<form class="space-y-2.5" onsubmit="saveNewMember(event)">
+<div>
+<label class="block font-bold text-slate-700 mb-1">旅伴姓名</label>
+<input class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-bold text-slate-800" id="newMemberName" placeholder="如：阿伟" required="" type="text"/>
+</div>
+<div>
+<label class="block font-bold text-slate-700 mb-1">手机号码</label>
+<input class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-mono text-slate-800" id="newMemberPhone" placeholder="13800000000" type="tel"/>
+</div>
+<div>
+<label class="block font-bold text-slate-700 mb-1">登录 PIN (1-6位数字)</label>
+<input class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-mono text-center font-bold" id="newMemberPin" maxlength="6" pattern="[0-9]{1,6}" placeholder="1234" required="" type="password"/>
+</div>
+<div>
+<label class="block font-bold text-slate-700 mb-1">指派所属行程</label>
+<select class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800" id="newMemberTrip"></select>
+</div>
+<button class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 rounded-xl tap-scale mt-1" type="submit">
+          登记旅伴 (直接生效)
         </button>
-      </form>
-    </div>
-  </div>
-
-  <!-- ==================== 4. 纯原生核心逻辑 ==================== -->
-  <script>
-    // 初始状态
+</form>
+</div>
+</div>
+<!-- Modal: 编辑旅伴 (超管专享) -->
+<div class="fixed inset-0 z-50 modal-bg hidden flex items-center justify-center p-4" id="modalEditMember">
+<div class="bg-white w-full max-w-xs rounded-3xl p-4 shadow-2xl space-y-3 text-xs">
+<div class="flex items-center justify-between border-b border-slate-100 pb-2">
+<h3 class="font-bold text-slate-900 text-sm">编辑旅伴资料</h3>
+<button class="text-slate-400 hover:text-slate-600 text-base" onclick="closeEditMemberModal()" type="button">✕</button>
+</div>
+<form class="space-y-2.5" onsubmit="saveEditedMember(event)">
+<input id="editMemberId" type="hidden"/>
+<div>
+<label class="block font-bold text-slate-700 mb-1">旅伴姓名</label>
+<input class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-bold text-slate-800" id="editMemberName" required="" type="text"/>
+</div>
+<div>
+<label class="block font-bold text-slate-700 mb-1">手机号码</label>
+<input class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-mono text-slate-800" id="editMemberPhone" type="tel"/>
+</div>
+<div>
+<label class="block font-bold text-slate-700 mb-1">重置 PIN 密码 (留空则不修改)</label>
+<input class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-mono text-center font-bold" id="editMemberPin" maxlength="6" pattern="[0-9]{1,6}" placeholder="输入新密码" type="password"/>
+</div>
+<div>
+<label class="block font-bold text-slate-700 mb-1">头像 Emoji</label>
+<input class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 text-center text-base" id="editMemberAvatar" maxlength="4" type="text"/>
+</div>
+<div id="editMemberTripWrap">
+<label class="block font-bold text-slate-700 mb-1">授权归属行程</label>
+<select class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800" id="editMemberTrip"></select>
+</div>
+<button class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 rounded-xl tap-scale mt-1" type="submit">
+          保存修改
+        </button>
+</form>
+</div>
+</div>
+<!-- ==================== 4. 核心业务逻辑 ==================== -->
+<script>
+    // 初始状态：超管已更名为“老张”，记录与初始成员全部统一
     const INITIAL_STATE = {
       roomCode: "TYO-882",
-      currentUserId: "user_admin", // 默认超管小明
+      currentUserId: "user_admin", // 默认超管老张
       currentTripId: "trip_1",
       categoryFilter: "ALL",
       supabase: { url: "", key: "" },
@@ -508,10 +597,10 @@
         { id: "trip_2", name: "日本关东红叶季 · 东京-箱根", flag: "🇯🇵", startDate: "2023-11-15", endDate: "2023-11-23" }
       ],
       members: [
-        { id: "user_admin", name: "小明", role: "admin", isAdmin: true, pin: "1234", avatar: "👑", allowedTrips: ["trip_1", "trip_2"] },
-        { id: "user_2", name: "小林", role: "member", isAdmin: false, pin: "8888", avatar: "📷", allowedTrips: ["trip_1"] },
-        { id: "user_3", name: "阿伟", role: "member", isAdmin: false, pin: "6666", avatar: "🧭", allowedTrips: ["trip_1"] },
-        { id: "user_4", name: "小樱", role: "member", isAdmin: false, pin: "0000", avatar: "🐱", allowedTrips: ["trip_2"] }
+        { id: "user_admin", name: "老张", phone: "13900008888", role: "admin", isAdmin: true, status: "active", pin: "1234", avatar: "👑", allowedTrips: ["trip_1", "trip_2"] },
+        { id: "user_2", name: "小林", phone: "13711112222", role: "member", isAdmin: false, status: "active", pin: "8888", avatar: "📷", allowedTrips: ["trip_1"] },
+        { id: "user_3", name: "阿伟", phone: "13633334444", role: "member", isAdmin: false, status: "active", pin: "6666", avatar: "🧭", allowedTrips: ["trip_1"] },
+        { id: "user_4", name: "小樱", phone: "13555556666", role: "member", isAdmin: false, status: "active", pin: "0000", avatar: "🐱", allowedTrips: ["trip_2"] }
       ],
       currencies: [
         { code: "SGD", symbol: "S$", rateToSGD: 1.0, isBase: true },
@@ -521,18 +610,19 @@
         { code: "USD", symbol: "$", rateToSGD: 0.74, isBase: false }
       ],
       expenses: [
-        { id: "exp_1", tripId: "trip_1", title: "锦里川菜火锅聚餐", category: "餐饮美食", currency: "CNY", originalAmount: 1582.00, rateToSGD: 5.35, amountSGD: 295.70, payerId: "user_admin", recordedBy: "user_admin", splitIds: ["user_admin", "user_2", "user_3"], date: "2023-10-14" },
-        { id: "exp_2", tripId: "trip_1", title: "天府机场接机专车", category: "交通出行", currency: "CNY", originalAmount: 293.00, rateToSGD: 5.35, amountSGD: 54.77, payerId: "user_2", recordedBy: "user_2", splitIds: ["user_admin", "user_2", "user_3"], date: "2023-10-14" },
-        { id: "exp_3", tripId: "trip_1", title: "成都博舍酒店2晚", category: "酒店住宿", currency: "CNY", originalAmount: 4786.00, rateToSGD: 5.35, amountSGD: 894.58, payerId: "user_admin", recordedBy: "user_admin", splitIds: ["user_admin", "user_2", "user_3"], date: "2023-10-13" },
-        { id: "exp_4", tripId: "trip_2", title: "SHIBUYA SKY观景台", category: "门票娱乐", currency: "JPY", originalAmount: 6600.00, rateToSGD: 112.5, amountSGD: 58.67, payerId: "user_admin", recordedBy: "user_admin", splitIds: ["user_admin", "user_4"], date: "2023-11-16" }
+        { id: "exp_1", tripId: "trip_1", title: "锦里川菜火锅聚餐", category: "餐饮美食", currency: "CNY", originalAmount: 1582.00, rateToSGD: 5.35, amountSGD: 295.70, payerId: "user_admin", recordedBy: "user_admin", splitIds: ["user_admin", "user_2", "user_3"], date: "2023-10-14", receipt: "" },
+        { id: "exp_2", tripId: "trip_1", title: "天府机场接机专车", category: "交通出行", currency: "CNY", originalAmount: 293.00, rateToSGD: 5.35, amountSGD: 54.77, payerId: "user_2", recordedBy: "user_2", splitIds: ["user_admin", "user_2", "user_3"], date: "2023-10-14", receipt: "" },
+        { id: "exp_3", tripId: "trip_1", title: "成都博舍酒店2晚", category: "酒店住宿", currency: "CNY", originalAmount: 4786.00, rateToSGD: 5.35, amountSGD: 894.58, payerId: "user_admin", recordedBy: "user_admin", splitIds: ["user_admin", "user_2", "user_3"], date: "2023-10-13", receipt: "" },
+        { id: "exp_4", tripId: "trip_2", title: "SHIBUYA SKY观景台", category: "门票娱乐", currency: "JPY", originalAmount: 6600.00, rateToSGD: 112.5, amountSGD: 58.67, payerId: "user_admin", recordedBy: "user_admin", splitIds: ["user_admin", "user_4"], date: "2023-11-16", receipt: "" }
       ]
     };
 
     let appState = JSON.parse(JSON.stringify(INITIAL_STATE));
-    const DB_KEY = "ej_data_v4";
+    const DB_KEY = "ej_data_v5";
     let authMode = "login";
+    let currentUploadedReceiptBase64 = "";
 
-    // 辅助函数
+    // 辅助检索
     function getCurrentUser() {
       return appState.members.find(m => m.id === appState.currentUserId) || appState.members[0];
     }
@@ -551,12 +641,18 @@
       return appState.trips.filter(t => allowed.has(t.id));
     }
 
-    // 严密人员过滤：仅展示当前行程被授权的旅伴
+    // 严密人员过滤：仅展示当前行程被授权且已审核通过（active）的旅伴
     function getMembersForTrip(tripId) {
       return appState.members.filter(m => {
+        if (m.status === 'pending') return false; // 待审核不参与分摊
         if (m.isAdmin || m.role === "admin") return true;
         return Array.isArray(m.allowedTrips) && m.allowedTrips.includes(tripId);
       });
+    }
+
+    // 获取待审批列表（仅超管使用）
+    function getPendingMembers() {
+      return appState.members.filter(m => m.status === 'pending');
     }
 
     // 初始化
@@ -569,8 +665,27 @@
         } catch(e){}
       }
 
+      // 数据兜底修正：若旧本地缓存存在“小明”，重命名为“老张”
+      const adminMem = appState.members.find(m => m.id === "user_admin" || m.role === "admin");
+      if (adminMem && adminMem.name === "小明") {
+        adminMem.name = "老张";
+        adminMem.avatar = "👑";
+        adminMem.status = "active";
+      }
+
+      // 确保每位成员有 status
+      appState.members.forEach(m => {
+        if (!m.status) m.status = "active";
+      });
+
       if (appState.currentUserId) {
-        showApp();
+        const u = getCurrentUser();
+        if (u && u.status === 'active') {
+          showApp();
+        } else {
+          appState.currentUserId = "";
+          showAuth();
+        }
       } else {
         showAuth();
       }
@@ -583,7 +698,7 @@
       }
     }
 
-    // 全局精准联动渲染
+    // 全局渲染联动
     function renderAll() {
       const user = getCurrentUser();
       const isAdmin = isUserAdmin();
@@ -594,12 +709,16 @@
         appState.currentTripId = accessibleTrips[0]?.id || "";
       }
 
-      // 2. 缺陷 1 彻底修复：权限严格隔离
+      // 2. 权限隔离控制
       const btnCloud = document.getElementById('btnOpenCloudSync');
       const adminTripBtn = document.getElementById('adminNewTripBtn');
       const tripSelector = document.getElementById('tripSelector');
       const btnExportCSV = document.getElementById('btnExportCSV');
       const adminAddMemberBtn = document.getElementById('adminAddMemberBtn');
+      const adminPendingSection = document.getElementById('adminPendingSection');
+      const navMembersBadge = document.getElementById('navMembersBadge');
+
+      const pendingList = getPendingMembers();
 
       if (isAdmin) {
         btnCloud.classList.remove('hidden');
@@ -609,15 +728,25 @@
         btnExportCSV.disabled = false;
         btnExportCSV.classList.remove('opacity-40', 'cursor-not-allowed');
         document.getElementById('tripScopeBadge').textContent = `${accessibleTrips.length}个全局行程`;
+
+        if (pendingList.length > 0) {
+          adminPendingSection.classList.remove('hidden');
+          document.getElementById('pendingCountBadge').textContent = pendingList.length;
+          navMembersBadge.classList.remove('hidden');
+        } else {
+          adminPendingSection.classList.add('hidden');
+          navMembersBadge.classList.add('hidden');
+        }
       } else {
-        // 普通旅伴严格隐藏云端配置、新增行程和人员登记
         btnCloud.classList.add('hidden');
         adminTripBtn.classList.add('hidden');
         adminAddMemberBtn.classList.add('hidden');
-        tripSelector.disabled = true; // 锁定行程
+        tripSelector.disabled = true;
         btnExportCSV.disabled = true;
         btnExportCSV.classList.add('opacity-40', 'cursor-not-allowed');
         document.getElementById('tripScopeBadge').textContent = `专属授权行程`;
+        adminPendingSection.classList.add('hidden');
+        navMembersBadge.classList.add('hidden');
       }
 
       // 3. 头部信息
@@ -627,7 +756,7 @@
       document.getElementById('userAvatarBadge').textContent = user.avatar || "🎒";
       document.getElementById('roomCodeLabel').textContent = appState.roomCode;
 
-      // 4. 行程下拉框渲染 (普通旅伴仅能看其唯一行程)
+      // 4. 行程下拉框渲染
       tripSelector.innerHTML = accessibleTrips.map(t => `
         <option value="${t.id}" ${t.id === appState.currentTripId ? 'selected' : ''}>${t.flag} ${t.name}</option>
       `).join('');
@@ -640,25 +769,74 @@
         document.getElementById('bannerTripDate').textContent = `${curTrip.startDate || ''} ~ ${curTrip.endDate || ''}`;
       }
 
-      // 6. 核心模块精准联动重绘
+      // 6. 核心模块重绘
       renderExpensesList();
       renderSettlement();
       renderReports();
       renderMembersTab();
       renderCurrenciesTab();
+      if (isAdmin) renderPendingApprovals();
     }
 
-    // 渲染账本明细 (缺陷2打通)
+    // 渲染待审核旅伴列表 (超管专享)
+    function renderPendingApprovals() {
+      const pending = getPendingMembers();
+      const container = document.getElementById('pendingMembersContainer');
+      if (pending.length === 0) return;
+
+      container.innerHTML = pending.map(m => {
+        const targetTrip = appState.trips.find(t => m.allowedTrips?.includes(t.id));
+        const tripName = targetTrip ? `${targetTrip.flag} ${targetTrip.name}` : '未指定行程';
+        return `
+          <div class="bg-white p-2.5 rounded-xl border border-amber-200 flex items-center justify-between gap-2 text-xs">
+            <div class="min-w-0">
+              <div class="font-bold text-slate-800 flex items-center gap-1.5">
+                <span>${m.name}</span>
+                <span class="text-[10px] font-mono text-slate-400">📱 ${m.phone || '未填手机'}</span>
+              </div>
+              <div class="text-[10px] text-amber-800 font-semibold mt-0.5 truncate">申请加入：${tripName}</div>
+            </div>
+            <div class="flex items-center gap-1.5 shrink-0">
+              <button type="button" onclick="approveMember('${m.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-2 py-1 rounded-lg text-[11px] shadow-xs tap-scale">
+                ✓ 批准
+              </button>
+              <button type="button" onclick="rejectMember('${m.id}')" class="bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold px-2 py-1 rounded-lg text-[11px] border border-rose-200 tap-scale">
+                ✕ 拒绝
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function approveMember(userId) {
+      const m = appState.members.find(x => x.id === userId);
+      if (!m) return;
+      m.status = 'active';
+      persist(true);
+      renderAll();
+      alert(`已成功批准旅伴【${m.name}】加入！TA 现在可直接使用密码登入。`);
+    }
+
+    function rejectMember(userId) {
+      const m = appState.members.find(x => x.id === userId);
+      if (!m) return;
+      if (confirm(`确定拒绝并删除【${m.name}】的入队申请吗？`)) {
+        appState.members = appState.members.filter(x => x.id !== userId);
+        persist(true);
+        renderAll();
+      }
+    }
+
+    // 渲染流水明细 (带发票标识)
     function renderExpensesList() {
       const tripId = appState.currentTripId;
       const cat = appState.categoryFilter || "ALL";
       const tripMembers = getMembersForTrip(tripId);
 
-      // 严格仅筛选当前唯一授权行程的账目
       let list = appState.expenses.filter(e => e.tripId === tripId);
       if (cat !== "ALL") list = list.filter(e => e.category === cat);
 
-      // 算总和
       const tripAllExpenses = appState.expenses.filter(e => e.tripId === tripId);
       const tripTotalSGD = tripAllExpenses.reduce((s, e) => s + (e.amountSGD || 0), 0);
       const filteredTotalSGD = list.reduce((s, e) => s + (e.amountSGD || 0), 0);
@@ -684,11 +862,12 @@
         return;
       }
 
-      // 倒序展示最新消费
       list.sort((a,b) => new Date(b.date || 0) - new Date(a.date || 0));
 
       container.innerHTML = list.map(exp => {
         const payer = appState.members.find(m => m.id === exp.payerId) || { name: '未知', avatar: '🎒' };
+        const hasReceipt = !!exp.receipt;
+
         return `
           <div class="bg-white rounded-2xl p-3 border border-slate-200 shadow-2xs flex items-center justify-between gap-2">
             <div class="flex items-center gap-2.5 min-w-0">
@@ -696,7 +875,15 @@
                 ${getCategoryEmoji(exp.category)}
               </span>
               <div class="min-w-0">
-                <h4 class="font-bold text-slate-900 text-xs truncate">${exp.title}</h4>
+                <div class="flex items-center gap-1.5">
+                  <h4 class="font-bold text-slate-900 text-xs truncate">${exp.title}</h4>
+                  ${hasReceipt ? `
+                    <button type="button" onclick="viewReceipt('${exp.id}')" class="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded text-[9px] bg-teal-50 hover:bg-teal-100 text-teal-700 border border-teal-200 font-bold shrink-0 tap-scale" title="点击查看发票凭证">
+                      <span>🧾</span>
+                      <span>发票</span>
+                    </button>
+                  ` : ''}
+                </div>
                 <div class="text-[10px] text-slate-400 flex items-center gap-1 mt-0.5">
                   <span class="font-semibold text-slate-600">${payer.name} 垫付</span>
                   <span>·</span>
@@ -710,7 +897,7 @@
                 <div class="font-mono font-black text-slate-900 text-xs">S$ ${(exp.amountSGD || 0).toFixed(2)}</div>
                 <span class="text-[9px] text-emerald-700 bg-emerald-50 px-1 rounded font-semibold">折合SGD</span>
               </div>
-              <button type="button" onclick="deleteExpense('${exp.id}')" class="text-slate-300 hover:text-rose-500 text-xs p-1">🗑️</button>
+              <button type="button" onclick="deleteExpense('${exp.id}')" class="text-slate-300 hover:text-rose-500 text-xs p-1" title="删除该账目">🗑️</button>
             </div>
           </div>
         `;
@@ -720,6 +907,62 @@
     function getCategoryEmoji(cat) {
       const map = { '餐饮美食': '🍜', '交通出行': '🚕', '酒店住宿': '🏨', '门票娱乐': '🎟️', '购物买买': '🛍️', '签证保险': '📄', '通信WiFi': '📶' };
       return map[cat] || '📦';
+    }
+
+    // 发票凭证查看
+    function viewReceipt(expenseId) {
+      const exp = appState.expenses.find(e => e.id === expenseId);
+      if (!exp || !exp.receipt) return alert("未上传发票凭证！");
+
+      document.getElementById('receiptViewerTitle').textContent = exp.title;
+      document.getElementById('receiptViewerSub').textContent = `${exp.date} · ${exp.currency} ${exp.originalAmount}`;
+      const img = document.getElementById('receiptViewerImage');
+      img.src = exp.receipt;
+      const dlBtn = document.getElementById('receiptDownloadBtn');
+      dlBtn.href = exp.receipt;
+      dlBtn.download = `发票_${exp.title}_${exp.date}.jpg`;
+
+      document.getElementById('modalReceiptViewer').classList.remove('hidden');
+    }
+
+    function closeReceiptModal() {
+      document.getElementById('modalReceiptViewer').classList.add('hidden');
+    }
+
+    // 发票卷宗弹窗
+    function openAllReceiptsModal() {
+      const tripId = appState.currentTripId;
+      const tripList = appState.expenses.filter(e => e.tripId === tripId && !!e.receipt);
+      const gallery = document.getElementById('allReceiptsGallery');
+
+      if (tripList.length === 0) {
+        gallery.innerHTML = `
+          <div class="p-8 text-center text-xs text-slate-400">
+            当前行程下暂无上传的发票或收据凭证
+          </div>
+        `;
+      } else {
+        gallery.innerHTML = tripList.map(exp => `
+          <div class="bg-slate-50 p-2.5 rounded-2xl border border-slate-200 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <img src="${exp.receipt}" onclick="viewReceipt('${exp.id}')" class="w-12 h-12 rounded-xl object-cover border border-slate-200 shrink-0 cursor-pointer shadow-xs hover:opacity-90">
+              <div class="min-w-0">
+                <h4 class="text-xs font-bold text-slate-900 truncate">${exp.title}</h4>
+                <p class="text-[10px] text-slate-400 font-mono">${exp.date} · S$ ${(exp.amountSGD||0).toFixed(2)}</p>
+              </div>
+            </div>
+            <a href="${exp.receipt}" download="发票_${exp.title}.jpg" class="text-xs text-teal-700 bg-white border border-teal-200 hover:bg-teal-50 px-2.5 py-1.5 rounded-xl font-bold shrink-0 tap-scale">
+              下载凭证
+            </a>
+          </div>
+        `).join('');
+      }
+
+      document.getElementById('modalAllReceipts').classList.remove('hidden');
+    }
+
+    function closeAllReceiptsModal() {
+      document.getElementById('modalAllReceipts').classList.add('hidden');
     }
 
     // 智能清账 (双指针贪心抵消)
@@ -806,7 +1049,7 @@
       const tripExpenses = appState.expenses.filter(e => e.tripId === tripId);
       const total = tripExpenses.reduce((s, e) => s + (e.amountSGD || 0), 0);
 
-      // 分类
+      // 分类分布
       const catMap = {};
       tripExpenses.forEach(e => catMap[e.category] = (catMap[e.category] || 0) + (e.amountSGD || 0));
       const sortedCats = Object.entries(catMap).sort((a,b)=>b[1]-a[1]);
@@ -851,23 +1094,118 @@
       }).join('');
     }
 
+    // 旅伴管理 TAB (升级：支持编辑、删除及超管管理)
     function renderMembersTab() {
+      const isAdmin = isUserAdmin();
       const tripMembers = getMembersForTrip(appState.currentTripId);
-      document.getElementById('membersListContainer').innerHTML = tripMembers.map(m => `
-        <div class="py-2 flex items-center justify-between text-xs">
-          <div class="flex items-center gap-2">
-            <span class="w-7 h-7 rounded-lg bg-teal-600 text-white flex items-center justify-center text-xs">${m.avatar || '🎒'}</span>
-            <div>
-              <div class="font-bold text-slate-900 flex items-center gap-1">
-                <span>${m.name}</span>
-                ${m.id === appState.currentUserId ? '<span class="text-[9px] bg-teal-100 text-teal-800 px-1 rounded font-bold">我</span>' : ''}
-                ${m.isAdmin ? '<span class="text-[9px] bg-amber-100 text-amber-800 px-1 rounded font-bold">超管</span>' : ''}
+
+      document.getElementById('membersListContainer').innerHTML = tripMembers.map(m => {
+        const isSelf = m.id === appState.currentUserId;
+        const isMaster = m.isAdmin || m.id === "user_admin";
+
+        return `
+          <div class="py-2.5 flex items-center justify-between text-xs">
+            <div class="flex items-center gap-2">
+              <span class="w-8 h-8 rounded-xl bg-teal-600 text-white flex items-center justify-center text-sm shadow-2xs">${m.avatar || '🎒'}</span>
+              <div>
+                <div class="font-bold text-slate-900 flex items-center gap-1.5">
+                  <span>${m.name}</span>
+                  ${isSelf ? '<span class="text-[9px] bg-teal-100 text-teal-800 px-1 rounded font-bold">我</span>' : ''}
+                  ${isMaster ? '<span class="text-[9px] bg-amber-100 text-amber-800 px-1.5 rounded font-bold border border-amber-300">超管</span>' : ''}
+                </div>
+                <div class="text-[10px] text-slate-400 font-mono mt-0.5">
+                  ${m.phone ? `📱 ${m.phone}` : '未绑定手机'}
+                </div>
               </div>
             </div>
+
+            <!-- 操作区：超管可编辑/删除其他旅伴，普通成员仅查看 -->
+            <div class="flex items-center gap-1">
+              ${isAdmin ? `
+                <button type="button" onclick="openEditMemberModal('${m.id}')" class="p-1.5 text-slate-500 hover:text-teal-700 rounded-lg hover:bg-slate-100 tap-scale" title="编辑旅伴资料">
+                  ✏️
+                </button>
+                ${!isMaster ? `
+                  <button type="button" onclick="deleteMember('${m.id}')" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 tap-scale" title="删除该旅伴">
+                    🗑️
+                  </button>
+                ` : ''}
+              ` : `
+                <span class="text-[10px] text-teal-700 bg-teal-50 border border-teal-200 px-1.5 py-0.5 rounded font-mono">已加入</span>
+              `}
+            </div>
           </div>
-          <span class="text-[10px] text-slate-400 font-mono">已授权本行程</span>
-        </div>
-      `).join('');
+        `;
+      }).join('');
+    }
+
+    // 旅伴编辑
+    function openEditMemberModal(userId) {
+      if (!isUserAdmin()) return;
+      const m = appState.members.find(x => x.id === userId);
+      if (!m) return;
+
+      document.getElementById('editMemberId').value = m.id;
+      document.getElementById('editMemberName').value = m.name;
+      document.getElementById('editMemberPhone').value = m.phone || '';
+      document.getElementById('editMemberPin').value = '';
+      document.getElementById('editMemberAvatar').value = m.avatar || '🎒';
+
+      const tripSelect = document.getElementById('editMemberTrip');
+      tripSelect.innerHTML = appState.trips.map(t => `<option value="${t.id}" ${(m.allowedTrips && m.allowedTrips.includes(t.id)) ? 'selected' : ''}>${t.flag} ${t.name}</option>`).join('');
+
+      // 超管不可变更行程授权
+      if (m.isAdmin) {
+        document.getElementById('editMemberTripWrap').classList.add('hidden');
+      } else {
+        document.getElementById('editMemberTripWrap').classList.remove('hidden');
+      }
+
+      document.getElementById('modalEditMember').classList.remove('hidden');
+    }
+
+    function closeEditMemberModal() {
+      document.getElementById('modalEditMember').classList.add('hidden');
+    }
+
+    function saveEditedMember(e) {
+      e.preventDefault();
+      const id = document.getElementById('editMemberId').value;
+      const m = appState.members.find(x => x.id === id);
+      if (!m) return;
+
+      m.name = document.getElementById('editMemberName').value.trim();
+      m.phone = document.getElementById('editMemberPhone').value.trim();
+      m.avatar = document.getElementById('editMemberAvatar').value.trim() || '🎒';
+
+      const newPin = document.getElementById('editMemberPin').value.trim();
+      if (newPin && /^\d{1,6}$/.test(newPin)) {
+        m.pin = newPin;
+      }
+
+      if (!m.isAdmin) {
+        const selTrip = document.getElementById('editMemberTrip').value;
+        m.allowedTrips = [selTrip];
+      }
+
+      persist(true);
+      closeEditMemberModal();
+      renderAll();
+      alert("旅伴资料已成功更新！");
+    }
+
+    // 旅伴删除 (超管不可删自身)
+    function deleteMember(userId) {
+      if (!isUserAdmin()) return;
+      const m = appState.members.find(x => x.id === userId);
+      if (!m) return;
+      if (m.isAdmin || m.id === 'user_admin') return alert("超级管理员老张不可被删除！");
+
+      if (confirm(`确定彻底移除旅伴【${m.name}】吗？该操作不可撤销。`)) {
+        appState.members = appState.members.filter(x => x.id !== userId);
+        persist(true);
+        renderAll();
+      }
     }
 
     function renderCurrenciesTab() {
@@ -879,7 +1217,7 @@
       `).join('');
     }
 
-    // 记账逻辑 (缺陷2打通)
+    // 记账弹窗与发票凭证处理
     function openExpenseModal() {
       const accessibleTrips = getAccessibleTrips();
       if (accessibleTrips.length === 0) return alert("暂无可记账行程！");
@@ -887,12 +1225,11 @@
       document.getElementById('expenseTitleInput').value = '';
       document.getElementById('expenseAmountInput').value = '';
       document.getElementById('expenseDateInput').value = new Date().toISOString().split('T')[0];
+      clearReceiptUpload();
 
-      // 仅允许选择用户有权访问的行程
       const tripSelect = document.getElementById('expenseTripSelect');
       tripSelect.innerHTML = accessibleTrips.map(t => `<option value="${t.id}" ${t.id === appState.currentTripId ? 'selected' : ''}>${t.flag} ${t.name}</option>`).join('');
 
-      // 币种
       document.getElementById('expenseCurrencySelect').innerHTML = appState.currencies.map(c => `<option value="${c.code}" ${c.code === 'CNY' ? 'selected' : ''}>${c.code} (${c.symbol})</option>`).join('');
 
       onExpenseTripSelectChange(appState.currentTripId);
@@ -904,15 +1241,58 @@
       document.getElementById('modalExpense').classList.add('hidden');
     }
 
+    function handleReceiptFileSelect(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      // 压缩图片并转 Base64
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const maxDim = 1000;
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          currentUploadedReceiptBase64 = canvas.toDataURL('image/jpeg', 0.8);
+          document.getElementById('receiptPreviewImg').src = currentUploadedReceiptBase64;
+          document.getElementById('receiptPreviewBox').classList.remove('hidden');
+          document.getElementById('receiptPreviewBox').classList.add('flex');
+        };
+        img.src = evt.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clearReceiptUpload() {
+      currentUploadedReceiptBase64 = "";
+      document.getElementById('expenseReceiptInput').value = "";
+      document.getElementById('receiptPreviewImg').src = "";
+      document.getElementById('receiptPreviewBox').classList.add('hidden');
+      document.getElementById('receiptPreviewBox').classList.remove('flex');
+    }
+
     function onExpenseTripSelectChange(selectedTripId) {
       const tripMembers = getMembersForTrip(selectedTripId);
 
-      // 垫付人下拉
       document.getElementById('expensePayerSelect').innerHTML = tripMembers.map(m => `
         <option value="${m.id}" ${m.id === appState.currentUserId ? 'selected' : ''}>${m.avatar || '🎒'} ${m.name}</option>
       `).join('');
 
-      // 分摊勾选
       document.getElementById('expenseSplitBoxes').innerHTML = tripMembers.map(m => `
         <label class="flex items-center gap-1.5 bg-slate-50 p-1.5 rounded-lg border border-slate-200 cursor-pointer text-xs">
           <input type="checkbox" name="splitMember" value="${m.id}" checked class="rounded text-teal-600 focus:ring-teal-500">
@@ -961,23 +1341,16 @@
         payerId,
         recordedBy: appState.currentUserId,
         splitIds,
-        date
+        date,
+        receipt: currentUploadedReceiptBase64 || ""
       };
 
-      // 1. 添加进状态数组置顶
       appState.expenses.unshift(newExpense);
-
-      // 2. 本地持久化与云同步
       persist(true);
-
-      // 3. 关闭窗口
       closeExpenseModal();
-
-      // 4. 立即重绘全部模块 (明细、清账、统计、总金额全部联动)
       renderAll();
     }
 
-    // 快捷模拟添加一笔测试数据
     function quickAddTestExpense() {
       const tripId = appState.currentTripId;
       const tripMembers = getMembersForTrip(tripId);
@@ -986,7 +1359,7 @@
       const testExp = {
         id: "exp_" + Date.now(),
         tripId,
-        title: "大龙燚火锅测试消费",
+        title: "大龙燚火锅特色聚餐",
         category: "餐饮美食",
         currency: "CNY",
         originalAmount: 368.00,
@@ -995,7 +1368,8 @@
         payerId,
         recordedBy: payerId,
         splitIds: tripMembers.map(m => m.id),
-        date: new Date().toISOString().split('T')[0]
+        date: new Date().toISOString().split('T')[0],
+        receipt: ""
       };
 
       appState.expenses.unshift(testExp);
@@ -1011,25 +1385,29 @@
       }
     }
 
-    // 登入 / 注册 (缺陷1)
+    // 登入 / 注册 (需超管老张审核)
     function setAuthMode(mode) {
       authMode = mode;
       const loginBtn = document.getElementById('tabLoginBtn');
       const regBtn = document.getElementById('tabRegisterBtn');
-      const regSection = document.getElementById('registerTripSection');
+      const regTripSection = document.getElementById('registerTripSection');
+      const regPhoneSection = document.getElementById('registerPhoneSection');
       const submitBtn = document.getElementById('authSubmitBtn');
       document.getElementById('authErrorMsg').classList.add('hidden');
+      document.getElementById('authSuccessMsg').classList.add('hidden');
 
       if (mode === 'login') {
         loginBtn.className = "flex-1 py-1.5 rounded-lg text-xs font-bold text-teal-700 bg-white shadow-xs transition";
         regBtn.className = "flex-1 py-1.5 rounded-lg text-xs font-bold text-slate-500 hover:text-slate-800 transition";
-        regSection.classList.add('hidden');
+        regTripSection.classList.add('hidden');
+        regPhoneSection.classList.add('hidden');
         submitBtn.textContent = "登入账本";
       } else {
         regBtn.className = "flex-1 py-1.5 rounded-lg text-xs font-bold text-teal-700 bg-white shadow-xs transition";
         loginBtn.className = "flex-1 py-1.5 rounded-lg text-xs font-bold text-slate-500 hover:text-slate-800 transition";
-        regSection.classList.remove('hidden');
-        submitBtn.textContent = "登记并加入行程";
+        regTripSection.classList.remove('hidden');
+        regPhoneSection.classList.remove('hidden');
+        submitBtn.textContent = "提交注册申请";
         document.getElementById('registerTripSelect').innerHTML = appState.trips.map(t => `<option value="${t.id}">${t.flag} ${t.name}</option>`).join('');
       }
     }
@@ -1039,6 +1417,9 @@
       const name = document.getElementById('authNameInput').value.trim();
       const pin = document.getElementById('authPinInput').value.trim();
       const err = document.getElementById('authErrorMsg');
+      const succ = document.getElementById('authSuccessMsg');
+      err.classList.add('hidden');
+      succ.classList.add('hidden');
 
       if (authMode === 'login') {
         const found = appState.members.find(m => m.name.toLowerCase() === name.toLowerCase() && m.pin === pin);
@@ -1047,13 +1428,23 @@
           err.classList.remove('hidden');
           return;
         }
+
+        // 检查审核状态
+        if (found.status === 'pending') {
+          err.textContent = "⏳ 账号正在审核中，请联系超级管理员（老张）批准后登入。";
+          err.classList.remove('hidden');
+          return;
+        }
+
         doLogin(found);
       } else {
-        // 新注册：必须绑定单一行程且不可越权
+        // 新注册流程：状态直接为 pending
+        const phone = document.getElementById('authPhoneInput').value.trim();
         const tripId = document.getElementById('registerTripSelect').value;
+
         const exists = appState.members.find(m => m.name.toLowerCase() === name.toLowerCase());
         if (exists) {
-          err.textContent = "该姓名已存在，请直接输入密码登入！";
+          err.textContent = "该姓名已存在，请直接输入密码登入或使用其他姓名！";
           err.classList.remove('hidden');
           return;
         }
@@ -1061,17 +1452,27 @@
         const newMember = {
           id: "user_" + Date.now(),
           name,
+          phone,
           role: "member",
           isAdmin: false,
+          status: "pending", // 待审核
           pin,
           avatar: "🎒",
-          allowedTrips: [tripId] // 严格单一行程绑定！
+          allowedTrips: [tripId]
         };
 
         appState.members.push(newMember);
-        appState.currentTripId = tripId;
         persist(true);
-        doLogin(newMember);
+
+        succ.innerHTML = `🎉 <b>注册申请已提交！</b><br>正在等待超级管理员（老张）审批，审核通过后即可直接输入密码登入。`;
+        succ.classList.remove('hidden');
+
+        // 切换回登录标签并清空密码
+        document.getElementById('authPinInput').value = '';
+        setTimeout(() => {
+          setAuthMode('login');
+          document.getElementById('authNameInput').value = name;
+        }, 1800);
       }
     }
 
@@ -1108,10 +1509,10 @@
         const btn = document.getElementById('tabBtn' + t.charAt(0).toUpperCase() + t.slice(1));
         if (t === tab) {
           view.classList.remove('hidden');
-          btn.className = "flex-1 py-1 flex flex-col items-center text-teal-600 font-bold text-xs";
+          btn.className = "relative flex-1 py-1 flex flex-col items-center text-teal-600 font-bold text-xs";
         } else {
           view.classList.add('hidden');
-          btn.className = "flex-1 py-1 flex flex-col items-center text-slate-400 font-medium text-xs";
+          btn.className = "relative flex-1 py-1 flex flex-col items-center text-slate-400 font-medium text-xs";
         }
       });
     }
@@ -1129,9 +1530,9 @@
       renderExpensesList();
     }
 
-    // 模态控制与个人设置
+    // 云配置
     function openCloudModal() {
-      if (!isUserAdmin()) return alert("仅超管有权访问云端配置！");
+      if (!isUserAdmin()) return alert("仅超管老张有权访问云端配置！");
       document.getElementById('cloudRoomInput').value = appState.roomCode;
       document.getElementById('cloudUrlInput').value = appState.supabase?.url || '';
       document.getElementById('cloudKeyInput').value = appState.supabase?.key || '';
@@ -1145,10 +1546,11 @@
       appState.supabase.key = document.getElementById('cloudKeyInput').value.trim();
       persist(true);
       closeCloudModal();
-      alert("云配置已更新并推送！");
+      alert("云配置已保存！");
       renderAll();
     }
 
+    // 个人修改 PIN
     function openProfileModal() {
       document.getElementById('newPinInput').value = '';
       document.getElementById('modalProfile').classList.remove('hidden');
@@ -1157,7 +1559,7 @@
 
     function updatePersonalPin() {
       const pin = document.getElementById('newPinInput').value.trim();
-      if (!pin || pin.length < 1 || !/^\d+$/.test(pin)) return alert("请输入 1-6 位数字密码！");
+      if (!pin || pin.length < 1 || !/^\d+$/.test(pin)) return alert("请输入 1-6 位纯数字密码！");
       const u = getCurrentUser();
       if (u) {
         u.pin = pin;
@@ -1167,6 +1569,7 @@
       }
     }
 
+    // 新建行程
     function openNewTripModal() {
       if (!isUserAdmin()) return;
       document.getElementById('modalNewTrip').classList.remove('hidden');
@@ -1185,8 +1588,12 @@
       renderAll();
     }
 
+    // 超管手动登记旅伴（直接生效）
     function openMemberModal() {
       if (!isUserAdmin()) return;
+      document.getElementById('newMemberName').value = '';
+      document.getElementById('newMemberPhone').value = '';
+      document.getElementById('newMemberPin').value = '1234';
       document.getElementById('newMemberTrip').innerHTML = appState.trips.map(t => `<option value="${t.id}">${t.flag} ${t.name}</option>`).join('');
       document.getElementById('modalMember').classList.remove('hidden');
     }
@@ -1195,14 +1602,17 @@
     function saveNewMember(e) {
       e.preventDefault();
       const name = document.getElementById('newMemberName').value.trim();
+      const phone = document.getElementById('newMemberPhone').value.trim();
       const pin = document.getElementById('newMemberPin').value.trim();
       const tripId = document.getElementById('newMemberTrip').value;
 
       appState.members.push({
         id: "user_" + Date.now(),
         name,
+        phone,
         role: "member",
         isAdmin: false,
+        status: "active",
         pin,
         avatar: "🎒",
         allowedTrips: [tripId]
@@ -1211,7 +1621,7 @@
       closeMemberModal();
       persist(true);
       renderAll();
-      alert(`旅伴 ${name} 登记成功！已授权归属于所选行程。`);
+      alert(`旅伴 ${name} 登记成功，已直接激活！`);
     }
 
     function copySettlementSummary() {
@@ -1221,23 +1631,25 @@
       window.cachedTransfers.forEach((t, i) => {
         txt += `${i+1}. ${t.from.name} ➔ ${t.to.name}：S$ ${t.amount.toFixed(2)}\n`;
       });
-      navigator.clipboard.writeText(txt).then(() => alert("清账清单已复制到剪贴板，可直接发往群聊！"));
+      navigator.clipboard.writeText(txt).then(() => alert("清账清单已复制到剪贴板，可直接发往微信/WhatsApp群！"));
     }
 
+    // 导出 CSV（含发票凭证标记）
     function exportCSV() {
-      if (!isUserAdmin()) return alert("仅超级管理员有权导出 CSV！");
+      if (!isUserAdmin()) return alert("仅超级管理员老张有权导出 CSV！");
       const curTrip = appState.trips.find(t => t.id === appState.currentTripId);
       const list = appState.expenses.filter(e => e.tripId === curTrip.id);
       if (list.length === 0) return alert("当前行程暂无消费记录可导出！");
 
-      const headers = ["日期", "消费描述", "分类", "原币金额", "原币币种", "折合新币(SGD)", "垫付人", "分摊人"];
+      const headers = ["日期", "消费描述", "分类", "原币金额", "原币币种", "折合新币(SGD)", "垫付人", "分摊人", "发票凭证状态"];
       const rows = list.map(e => {
         const payer = appState.members.find(m => m.id === e.payerId)?.name || e.payerId;
         const splitters = (e.splitIds || []).map(id => appState.members.find(m => m.id === id)?.name || id).join(';');
+        const receiptStatus = e.receipt ? "已附发票凭证 (Base64)" : "无发票";
         return [
           `"${e.date}"`, `"${e.title.replace(/"/g, '""')}"`, `"${e.category}"`,
           `"${e.originalAmount}"`, `"${e.currency}"`, `"${e.amountSGD}"`,
-          `"${payer}"`, `"${splitters}"`
+          `"${payer}"`, `"${splitters}"`, `"${receiptStatus}"`
         ];
       });
 
@@ -1245,11 +1657,11 @@
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = `Equator_Journey_${curTrip.name}_账目.csv`;
+      a.download = `Equator_Journey_${curTrip.name}_账目明细.csv`;
       a.click();
     }
 
-    // 云同步推送
+    // 云同步推送与拉取
     async function pushToCloud() {
       const url = (appState.supabase?.url || '').trim().replace(/\/+$/, '');
       const key = (appState.supabase?.key || '').trim();
@@ -1310,5 +1722,4 @@
     // 启动
     window.onload = init;
   </script>
-</body>
-</html>
+</body></html>
