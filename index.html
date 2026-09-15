@@ -14,9 +14,15 @@
     .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
     .tap-scale:active { transform: scale(0.97); }
     .modal-bg { background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(4px); }
+    #toastNotice { transition: opacity 0.25s ease, transform 0.25s ease; }
   </style>
 </head>
 <body class="flex justify-center min-h-screen">
+<!-- 顶部浮动轻量 Toast 通知 -->
+<div class="fixed top-4 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 translate-y-[-10px] bg-slate-900/90 text-white px-4 py-2.5 rounded-2xl shadow-xl text-xs font-bold flex items-center gap-2 border border-slate-700/50" id="toastNotice">
+<span id="toastIcon">✨</span>
+<span id="toastMsg">操作成功</span>
+</div>
 <!-- ==================== 1. 登录 / 注册 Portal ==================== -->
 <div class="w-full max-w-md bg-white min-h-screen flex flex-col justify-between p-6 shadow-xl border-x border-slate-200" id="authPortal">
 <div class="pt-8 text-center space-y-3">
@@ -46,7 +52,7 @@
 <form class="space-y-3 text-xs" id="authForm" onsubmit="handleAuthSubmit(event)">
 <div>
 <label class="block font-bold text-slate-700 mb-1">旅伴姓名 / 昵称</label>
-<input class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold text-slate-800 focus:ring-2 focus:ring-teal-500" id="authNameInput" placeholder="如：老张 (超管) 或 新旅伴" required="" type="text"/>
+<input class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold text-slate-800 focus:ring-2 focus:ring-teal-500" id="authNameInput" placeholder="如：老张 (超管) 或 小林" required="" type="text"/>
 </div>
 <!-- 手机号（注册必填，登录选填或备用） -->
 <div class="hidden" id="registerPhoneSection">
@@ -55,7 +61,7 @@
 </div>
 <div>
 <label class="block font-bold text-slate-700 mb-1">登录密码 (1-6位数字 PIN)</label>
-<input class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-center font-mono text-sm tracking-widest text-slate-900 font-bold focus:ring-2 focus:ring-teal-500" id="authPinInput" maxlength="6" pattern="[0-9]{1,6}" placeholder="输入数字 PIN" required="" type="password"/>
+<input class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-center font-mono text-sm tracking-widest text-slate-900 font-bold focus:ring-2 focus:ring-teal-500" id="authPinInput" maxlength="6" pattern="[0-9]{1,6}" placeholder="输入数字 PIN (默认1234)" required="" type="password"/>
 </div>
 <!-- 注册时必须指派申请加入单一行程 -->
 <div class="hidden space-y-1" id="registerTripSection">
@@ -252,7 +258,7 @@
 </div>
 </div>
 </section>
-<!-- TAB 4: 旅伴与审批 (升级：超管待审批卡片 + 旅伴编辑/删除) -->
+<!-- TAB 4: 旅伴与审批与货币汇率 -->
 <section class="space-y-3 hidden" id="tabViewMembers">
 <!-- 超管专属：待审核旅伴申请卡片 -->
 <div class="hidden bg-amber-50 rounded-2xl p-3.5 border border-amber-200 space-y-2.5 shadow-xs" id="adminPendingSection">
@@ -281,8 +287,21 @@
 </div>
 <div class="space-y-2 divide-y divide-slate-100" id="membersListContainer"></div>
 </div>
-<div class="bg-white rounded-2xl p-4 border border-slate-200 space-y-2">
-<h2 class="text-sm font-bold text-slate-900">货币汇率参考</h2>
+<!-- 货币与汇率管理中心 -->
+<div class="bg-white rounded-2xl p-4 border border-slate-200 space-y-3">
+<div class="flex items-center justify-between">
+<div>
+<h2 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+<span>💱</span>
+<span>货币汇率管理</span>
+</h2>
+<p class="text-[11px] text-slate-400">所有记账自动按汇率折算为新币 (SGD)</p>
+</div>
+<button class="text-xs bg-teal-50 hover:bg-teal-100 text-teal-700 border border-teal-200 font-bold px-2.5 py-1 rounded-lg tap-scale flex items-center gap-1" id="btnManageCurrenciesTab" onclick="openCurrencyModal()" type="button">
+<span>⚙️</span>
+<span>管理/加币种</span>
+</button>
+</div>
 <div class="grid grid-cols-2 gap-2 text-xs" id="currenciesListContainer"></div>
 </div>
 </section>
@@ -309,7 +328,7 @@
 </nav>
 </div>
 <!-- ==================== 3. 模态弹窗集 ==================== -->
-<!-- Modal: 记一笔消费 (升级发票凭证上传) -->
+<!-- Modal: 记一笔消费 (彻底修复保存阻断问题 + 快捷货币管理入口) -->
 <div class="fixed inset-0 z-50 modal-bg hidden flex items-center justify-center p-4" id="modalExpense">
 <div class="bg-white w-full max-w-sm rounded-3xl p-4 shadow-2xl space-y-3 max-h-[92vh] overflow-y-auto custom-scroll">
 <div class="flex items-center justify-between border-b border-slate-100 pb-2">
@@ -317,9 +336,9 @@
 <span>🧾</span>
 <span>记一笔旅行消费</span>
 </h3>
-<button class="text-slate-400 hover:text-slate-600 text-base" onclick="closeExpenseModal()" type="button">✕</button>
+<button class="text-slate-400 hover:text-slate-600 text-base p-1" onclick="closeExpenseModal()" type="button">✕</button>
 </div>
-<form class="space-y-3 text-xs" onsubmit="saveExpense(event)">
+<form class="space-y-3 text-xs" id="expenseForm" onsubmit="handleExpenseFormSubmit(event)">
 <div>
 <label class="block font-bold text-slate-700 mb-1">所属行程账本</label>
 <select class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800" id="expenseTripSelect" onchange="onExpenseTripSelectChange(this.value)" required="">
@@ -328,7 +347,7 @@
 <div class="grid grid-cols-3 gap-2">
 <div class="col-span-2">
 <label class="block font-bold text-slate-700 mb-1">消费描述</label>
-<input class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800" id="expenseTitleInput" placeholder="如：锦里火锅、打车" required="" type="text"/>
+<input class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800" id="expenseTitleInput" placeholder="如：锦里火锅、打车、民宿" required="" type="text"/>
 </div>
 <div>
 <label class="block font-bold text-slate-700 mb-1">支出分类</label>
@@ -344,14 +363,19 @@
 </select>
 </div>
 </div>
-<!-- 货币与金额 -->
+<!-- 货币与金额 (提供快速管理/编辑货币按钮) -->
 <div class="bg-teal-50/70 p-3 rounded-xl border border-teal-200 space-y-2">
 <div class="flex justify-between items-center text-teal-900 font-bold">
 <span>原始花费金额</span>
-<span class="text-[10px] font-mono" id="expenseRateHint">1 SGD ≈ 5.35 CNY</span>
+<div class="flex items-center gap-1.5">
+<span class="text-[10px] font-mono text-teal-700" id="expenseRateHint">1 SGD ≈ 5.35 CNY</span>
+<button class="text-[10px] text-teal-700 bg-white/80 border border-teal-200 px-1.5 py-0.5 rounded hover:bg-white font-medium tap-scale" onclick="openCurrencyModal()" title="添加或调整货币汇率" type="button">
+    ⚙️ 管理汇率
+  </button>
+</div>
 </div>
 <div class="flex gap-2">
-<select class="w-1/3 bg-white border border-teal-300 rounded-xl px-2 py-2 font-bold text-xs text-slate-800" id="expenseCurrencySelect" onchange="calcConvertedSGD()">
+<select class="w-2/5 bg-white border border-teal-300 rounded-xl px-2 py-2 font-bold text-xs text-slate-800" id="expenseCurrencySelect" onchange="calcConvertedSGD()">
 </select>
 <input class="flex-1 bg-white border border-teal-300 rounded-xl px-3 py-2 text-base font-black font-mono text-slate-900 text-right" id="expenseAmountInput" min="0.01" oninput="calcConvertedSGD()" placeholder="0.00" required="" step="0.01" type="number"/>
 </div>
@@ -368,15 +392,18 @@
 </select>
 </div>
 <div>
-<label class="block font-bold text-slate-700 mb-1">分摊旅伴 (默认全员平摊)</label>
-<div class="grid grid-cols-2 gap-1.5" id="expenseSplitBoxes"></div>
+<div class="flex items-center justify-between mb-1">
+<label class="block font-bold text-slate-700">分摊旅伴 (默认全员平摊)</label>
+<button class="text-[10px] text-teal-700 hover:underline" onclick="selectAllSplitters(true)" type="button">全选</button>
+</div>
+<div class="grid grid-cols-2 gap-1.5 max-h-32 overflow-y-auto custom-scroll p-1" id="expenseSplitBoxes"></div>
 </div>
 </div>
 <div>
 <label class="block font-bold text-slate-700 mb-1">消费日期</label>
 <input class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 font-mono text-xs text-slate-800" id="expenseDateInput" required="" type="date"/>
 </div>
-<!-- 新增：发票/收据上传 -->
+<!-- 发票/收据上传 -->
 <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 space-y-2">
 <div class="flex items-center justify-between">
 <label class="block font-bold text-slate-700">📸 发票 / 收据凭证 (可选)</label>
@@ -392,10 +419,72 @@
 <button class="text-rose-600 text-xs hover:underline font-bold" onclick="clearReceiptUpload()" type="button">移除</button>
 </div>
 </div>
-<button class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 rounded-xl shadow-md text-sm tap-scale transition" type="submit">
+<button class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 rounded-xl shadow-md text-sm tap-scale transition" id="btnSaveExpenseSubmit" type="submit">
           💾 确认保存并实时结算
-        </button>
+</button>
 </form>
+</div>
+</div>
+<!-- Modal: 货币与汇率管理中心 (新增/编辑/删除) -->
+<div class="fixed inset-0 z-50 modal-bg hidden flex items-center justify-center p-4" id="modalCurrencyManager">
+<div class="bg-white w-full max-w-sm rounded-3xl p-4 shadow-2xl space-y-3.5 max-h-[90vh] overflow-y-auto custom-scroll text-xs">
+<div class="flex items-center justify-between border-b border-slate-100 pb-2">
+<div>
+<h3 class="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+<span>💱</span>
+<span>货币与汇率设置</span>
+</h3>
+<p class="text-[10px] text-slate-400">所有非基准货币均以 1 SGD 对外币汇率折算</p>
+</div>
+<button class="text-slate-400 hover:text-slate-600 text-base p-1" onclick="closeCurrencyModal()" type="button">✕</button>
+</div>
+<!-- 快速添加新货币区 -->
+<div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2">
+<div class="font-bold text-slate-800 text-xs flex items-center justify-between">
+<span>+ 添加新货币</span>
+<span class="text-[10px] text-slate-400">SGD为基准 (1 SGD = Rate)</span>
+</div>
+<form class="space-y-2" id="newCurrencyForm" onsubmit="handleAddNewCurrency(event)">
+<div class="grid grid-cols-3 gap-2">
+<div>
+<label class="block text-[10px] text-slate-600 font-semibold mb-0.5">代码 (如THB)</label>
+<input class="w-full bg-white border border-slate-300 rounded-lg px-2 py-1.5 font-mono uppercase font-bold text-slate-900 text-xs text-center" id="newCurrCode" maxlength="5" placeholder="THB" required="" type="text"/>
+</div>
+<div>
+<label class="block text-[10px] text-slate-600 font-semibold mb-0.5">符号 (如฿)</label>
+<input class="w-full bg-white border border-slate-300 rounded-lg px-2 py-1.5 font-bold text-slate-900 text-xs text-center" id="newCurrSymbol" maxlength="4" placeholder="฿" required="" type="text"/>
+</div>
+<div>
+<label class="block text-[10px] text-slate-600 font-semibold mb-0.5">名称 (如泰铢)</label>
+<input class="w-full bg-white border border-slate-300 rounded-lg px-2 py-1.5 font-semibold text-slate-900 text-xs" id="newCurrName" placeholder="泰铢" required="" type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<div class="flex-1">
+<label class="block text-[10px] text-slate-600 font-semibold mb-0.5">汇率 (1 SGD 兑换该外币数量)</label>
+<input class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 font-mono font-bold text-slate-900 text-xs" id="newCurrRate" min="0.0001" placeholder="例如：26.50" required="" step="0.0001" type="number"/>
+</div>
+<button class="bg-teal-600 hover:bg-teal-700 text-white font-bold px-3 py-1.5 rounded-lg tap-scale shrink-0 text-xs self-end" type="submit">
+        确认添加
+      </button>
+</div>
+</form>
+</div>
+<!-- 已有货币列表与实时修改 -->
+<div class="space-y-2">
+<div class="font-bold text-slate-700 text-xs flex justify-between items-center">
+<span>当前有效货币列表</span>
+<span class="text-[10px] text-slate-400">修改后实时生效</span>
+</div>
+<div class="space-y-2 max-h-56 overflow-y-auto custom-scroll" id="currencyEditorList">
+<!-- 动态渲染货币行 -->
+</div>
+</div>
+<div class="pt-2 border-t border-slate-100 flex justify-end">
+<button class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2 rounded-xl text-xs tap-scale" onclick="closeCurrencyModal()" type="button">
+    完成并关闭
+  </button>
+</div>
 </div>
 </div>
 <!-- Modal: 查看单张发票大图 -->
@@ -480,7 +569,7 @@
 </div>
 </div>
 </div>
-<!-- Modal: 个人改密 (所有成员均可改自己密码) -->
+<!-- Modal: 个人改密 -->
 <div class="fixed inset-0 z-50 modal-bg hidden flex items-center justify-center p-4" id="modalProfile">
 <div class="bg-white w-full max-w-xs rounded-3xl p-4 shadow-2xl space-y-3 text-xs">
 <div class="flex items-center justify-between border-b border-slate-100 pb-2">
@@ -585,7 +674,7 @@
 </div>
 <!-- ==================== 4. 核心业务逻辑 ==================== -->
 <script>
-    // 初始状态：超管已更名为“老张”，记录与初始成员全部统一
+    // 初始状态常量
     const INITIAL_STATE = {
       roomCode: "TYO-882",
       currentUserId: "user_admin", // 默认超管老张
@@ -603,11 +692,12 @@
         { id: "user_4", name: "小樱", phone: "13555556666", role: "member", isAdmin: false, status: "active", pin: "0000", avatar: "🐱", allowedTrips: ["trip_2"] }
       ],
       currencies: [
-        { code: "SGD", symbol: "S$", rateToSGD: 1.0, isBase: true },
-        { code: "CNY", symbol: "¥", rateToSGD: 5.35, isBase: false },
-        { code: "JPY", symbol: "¥", rateToSGD: 112.5, isBase: false },
-        { code: "EUR", symbol: "€", rateToSGD: 0.69, isBase: false },
-        { code: "USD", symbol: "$", rateToSGD: 0.74, isBase: false }
+        { code: "SGD", symbol: "S$", name: "新加坡元", rateToSGD: 1.0, isBase: true },
+        { code: "CNY", symbol: "¥", name: "人民币", rateToSGD: 5.35, isBase: false },
+        { code: "JPY", symbol: "¥", name: "日元", rateToSGD: 112.5, isBase: false },
+        { code: "EUR", symbol: "€", name: "欧元", rateToSGD: 0.69, isBase: false },
+        { code: "USD", symbol: "$", name: "美元", rateToSGD: 0.74, isBase: false },
+        { code: "THB", symbol: "฿", name: "泰铢", rateToSGD: 26.80, isBase: false }
       ],
       expenses: [
         { id: "exp_1", tripId: "trip_1", title: "锦里川菜火锅聚餐", category: "餐饮美食", currency: "CNY", originalAmount: 1582.00, rateToSGD: 5.35, amountSGD: 295.70, payerId: "user_admin", recordedBy: "user_admin", splitIds: ["user_admin", "user_2", "user_3"], date: "2023-10-14", receipt: "" },
@@ -617,22 +707,38 @@
       ]
     };
 
+    // 存储持久化 Key，保持一致性
+    const DB_KEY = "equator_journey_state";
     let appState = JSON.parse(JSON.stringify(INITIAL_STATE));
-    const DB_KEY = "ej_data_v5";
     let authMode = "login";
     let currentUploadedReceiptBase64 = "";
 
-    // 辅助检索
+    // 快速 Toast 提醒
+    function showToast(msg, icon = "✅") {
+      const toast = document.getElementById('toastNotice');
+      if (!toast) return;
+      document.getElementById('toastMsg').textContent = msg;
+      document.getElementById('toastIcon').textContent = icon;
+      toast.classList.remove('opacity-0', 'translate-y-[-10px]');
+      toast.classList.add('opacity-100', 'translate-y-0');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', 'translate-y-[-10px]');
+      }, 2500);
+    }
+
+    // 辅助检索当前用户
     function getCurrentUser() {
       return appState.members.find(m => m.id === appState.currentUserId) || appState.members[0];
     }
 
     function isUserAdmin() {
       const u = getCurrentUser();
-      return !!(u && (u.isAdmin || u.role === "admin"));
+      return !!(u && (u.isAdmin || u.role === "admin" || u.id === "user_admin"));
     }
 
-    // 严密行程过滤：普通旅伴只允许获取其被指派的单一行程
+    // 严密行程过滤：普通旅伴只允许获取其被指派的行程
     function getAccessibleTrips() {
       const u = getCurrentUser();
       if (!u) return [];
@@ -644,33 +750,52 @@
     // 严密人员过滤：仅展示当前行程被授权且已审核通过（active）的旅伴
     function getMembersForTrip(tripId) {
       return appState.members.filter(m => {
-        if (m.status === 'pending') return false; // 待审核不参与分摊
-        if (m.isAdmin || m.role === "admin") return true;
+        if (m.status === 'pending') return false;
+        if (m.isAdmin || m.role === "admin" || m.id === "user_admin") return true;
         return Array.isArray(m.allowedTrips) && m.allowedTrips.includes(tripId);
       });
     }
 
-    // 获取待审批列表（仅超管使用）
     function getPendingMembers() {
       return appState.members.filter(m => m.status === 'pending');
     }
 
-    // 初始化
+    // 初始化载入
     function init() {
-      const saved = localStorage.getItem(DB_KEY);
+      // 兼容读取新旧本地存储
+      const saved = localStorage.getItem(DB_KEY) || localStorage.getItem("ej_data_v5");
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
           appState = Object.assign({}, INITIAL_STATE, parsed);
-        } catch(e){}
+        } catch(e){
+          console.error("加载本地数据失败，已使用初始数据", e);
+        }
       }
 
-      // 数据兜底修正：若旧本地缓存存在“小明”，重命名为“老张”
+      // 修正超管名称老张
       const adminMem = appState.members.find(m => m.id === "user_admin" || m.role === "admin");
-      if (adminMem && adminMem.name === "小明") {
+      if (adminMem) {
         adminMem.name = "老张";
         adminMem.avatar = "👑";
         adminMem.status = "active";
+        adminMem.isAdmin = true;
+      }
+
+      // 补全货币结构中的名称字段与默认汇率
+      if (!Array.isArray(appState.currencies) || appState.currencies.length === 0) {
+        appState.currencies = JSON.parse(JSON.stringify(INITIAL_STATE.currencies));
+      } else {
+        appState.currencies.forEach(c => {
+          if (!c.name) {
+            const def = INITIAL_STATE.currencies.find(x => x.code === c.code);
+            c.name = def ? def.name : c.code;
+          }
+          if (c.code === 'SGD') {
+            c.rateToSGD = 1.0;
+            c.isBase = true;
+          }
+        });
       }
 
       // 确保每位成员有 status
@@ -691,8 +816,15 @@
       }
     }
 
+    // 核心持久化存储
     function persist(syncCloud = true) {
-      localStorage.setItem(DB_KEY, JSON.stringify(appState));
+      try {
+        localStorage.setItem(DB_KEY, JSON.stringify(appState));
+        // 同步兼容旧 key
+        localStorage.setItem("ej_data_v5", JSON.stringify(appState));
+      } catch (err) {
+        console.error("本地持久化存储错误", err);
+      }
       if (syncCloud && appState.supabase?.url && appState.supabase?.key) {
         pushToCloud();
       }
@@ -717,49 +849,57 @@
       const adminAddMemberBtn = document.getElementById('adminAddMemberBtn');
       const adminPendingSection = document.getElementById('adminPendingSection');
       const navMembersBadge = document.getElementById('navMembersBadge');
-
       const pendingList = getPendingMembers();
 
       if (isAdmin) {
-        btnCloud.classList.remove('hidden');
-        adminTripBtn.classList.remove('hidden');
-        adminAddMemberBtn.classList.remove('hidden');
-        tripSelector.disabled = false;
-        btnExportCSV.disabled = false;
-        btnExportCSV.classList.remove('opacity-40', 'cursor-not-allowed');
+        if (btnCloud) btnCloud.classList.remove('hidden');
+        if (adminTripBtn) adminTripBtn.classList.remove('hidden');
+        if (adminAddMemberBtn) adminAddMemberBtn.classList.remove('hidden');
+        if (tripSelector) tripSelector.disabled = false;
+        if (btnExportCSV) {
+          btnExportCSV.disabled = false;
+          btnExportCSV.classList.remove('opacity-40', 'cursor-not-allowed');
+        }
         document.getElementById('tripScopeBadge').textContent = `${accessibleTrips.length}个全局行程`;
 
         if (pendingList.length > 0) {
-          adminPendingSection.classList.remove('hidden');
-          document.getElementById('pendingCountBadge').textContent = pendingList.length;
-          navMembersBadge.classList.remove('hidden');
+          if (adminPendingSection) adminPendingSection.classList.remove('hidden');
+          const badge = document.getElementById('pendingCountBadge');
+          if (badge) badge.textContent = pendingList.length;
+          if (navMembersBadge) navMembersBadge.classList.remove('hidden');
         } else {
-          adminPendingSection.classList.add('hidden');
-          navMembersBadge.classList.add('hidden');
+          if (adminPendingSection) adminPendingSection.classList.add('hidden');
+          if (navMembersBadge) navMembersBadge.classList.add('hidden');
         }
       } else {
-        btnCloud.classList.add('hidden');
-        adminTripBtn.classList.add('hidden');
-        adminAddMemberBtn.classList.add('hidden');
-        tripSelector.disabled = true;
-        btnExportCSV.disabled = true;
-        btnExportCSV.classList.add('opacity-40', 'cursor-not-allowed');
+        if (btnCloud) btnCloud.classList.add('hidden');
+        if (adminTripBtn) adminTripBtn.classList.add('hidden');
+        if (adminAddMemberBtn) adminAddMemberBtn.classList.add('hidden');
+        if (tripSelector) tripSelector.disabled = true;
+        if (btnExportCSV) {
+          btnExportCSV.disabled = true;
+          btnExportCSV.classList.add('opacity-40', 'cursor-not-allowed');
+        }
         document.getElementById('tripScopeBadge').textContent = `专属授权行程`;
-        adminPendingSection.classList.add('hidden');
-        navMembersBadge.classList.add('hidden');
+        if (adminPendingSection) adminPendingSection.classList.add('hidden');
+        if (navMembersBadge) navMembersBadge.classList.add('hidden');
       }
 
       // 3. 头部信息
       document.getElementById('headerUserName').textContent = user.name;
       document.getElementById('headerRoleBadge').textContent = isAdmin ? "超级管理员" : "授权旅伴";
-      document.getElementById('headerRoleBadge').className = isAdmin ? "text-[9px] bg-amber-100 text-amber-800 font-bold px-1.5 py-0.2 rounded border border-amber-300" : "text-[9px] bg-teal-50 text-teal-700 font-bold px-1.5 py-0.2 rounded border border-teal-200";
+      document.getElementById('headerRoleBadge').className = isAdmin 
+        ? "text-[9px] bg-amber-100 text-amber-800 font-bold px-1.5 py-0.2 rounded border border-amber-300" 
+        : "text-[9px] bg-teal-50 text-teal-700 font-bold px-1.5 py-0.2 rounded border border-teal-200";
       document.getElementById('userAvatarBadge').textContent = user.avatar || "🎒";
-      document.getElementById('roomCodeLabel').textContent = appState.roomCode;
+      document.getElementById('roomCodeLabel').textContent = appState.roomCode || "TYO-882";
 
       // 4. 行程下拉框渲染
-      tripSelector.innerHTML = accessibleTrips.map(t => `
-        <option value="${t.id}" ${t.id === appState.currentTripId ? 'selected' : ''}>${t.flag} ${t.name}</option>
-      `).join('');
+      if (tripSelector) {
+        tripSelector.innerHTML = accessibleTrips.map(t => `
+          <option value="${t.id}" ${t.id === appState.currentTripId ? 'selected' : ''}>${t.flag} ${t.name}</option>
+        `).join('');
+      }
 
       // 5. 行程横幅
       const curTrip = appState.trips.find(t => t.id === appState.currentTripId) || appState.trips[0];
@@ -769,7 +909,7 @@
         document.getElementById('bannerTripDate').textContent = `${curTrip.startDate || ''} ~ ${curTrip.endDate || ''}`;
       }
 
-      // 6. 核心模块重绘
+      // 6. 各子视图重新渲染
       renderExpensesList();
       renderSettlement();
       renderReports();
@@ -782,7 +922,11 @@
     function renderPendingApprovals() {
       const pending = getPendingMembers();
       const container = document.getElementById('pendingMembersContainer');
-      if (pending.length === 0) return;
+      if (!container) return;
+      if (pending.length === 0) {
+        container.innerHTML = '';
+        return;
+      }
 
       container.innerHTML = pending.map(m => {
         const targetTrip = appState.trips.find(t => m.allowedTrips?.includes(t.id));
@@ -815,7 +959,7 @@
       m.status = 'active';
       persist(true);
       renderAll();
-      alert(`已成功批准旅伴【${m.name}】加入！TA 现在可直接使用密码登入。`);
+      showToast(`已成功批准旅伴【${m.name}】加入！`, "🎉");
     }
 
     function rejectMember(userId) {
@@ -825,10 +969,11 @@
         appState.members = appState.members.filter(x => x.id !== userId);
         persist(true);
         renderAll();
+        showToast(`已拒绝入队申请`);
       }
     }
 
-    // 渲染流水明细 (带发票标识)
+    // 渲染流水明细
     function renderExpensesList() {
       const tripId = appState.currentTripId;
       const cat = appState.categoryFilter || "ALL";
@@ -838,14 +983,14 @@
       if (cat !== "ALL") list = list.filter(e => e.category === cat);
 
       const tripAllExpenses = appState.expenses.filter(e => e.tripId === tripId);
-      const tripTotalSGD = tripAllExpenses.reduce((s, e) => s + (e.amountSGD || 0), 0);
-      const filteredTotalSGD = list.reduce((s, e) => s + (e.amountSGD || 0), 0);
+      const tripTotalSGD = tripAllExpenses.reduce((s, e) => s + (Number(e.amountSGD) || 0), 0);
+      const filteredTotalSGD = list.reduce((s, e) => s + (Number(e.amountSGD) || 0), 0);
       const perCapita = tripMembers.length > 0 ? (tripTotalSGD / tripMembers.length) : 0;
 
       document.getElementById('bannerTripTotalSGD').textContent = `S$ ${tripTotalSGD.toFixed(2)}`;
       document.getElementById('bannerMemberCount').textContent = `${tripMembers.length} 位旅伴`;
       document.getElementById('bannerTripMembersList').innerHTML = tripMembers.map(m => `
-        <span class="w-6 h-6 rounded-full bg-teal-600 border-2 border-white text-white text-[10px] flex items-center justify-center shadow-xs">${m.avatar || '🎒'}</span>
+        <span class="w-6 h-6 rounded-full bg-teal-600 border-2 border-white text-white text-[10px] flex items-center justify-center shadow-xs" title="${m.name}">${m.avatar || '🎒'}</span>
       `).join('');
 
       document.getElementById('filteredCount').textContent = list.length;
@@ -865,11 +1010,14 @@
       list.sort((a,b) => new Date(b.date || 0) - new Date(a.date || 0));
 
       container.innerHTML = list.map(exp => {
-        const payer = appState.members.find(m => m.id === exp.payerId) || { name: '未知', avatar: '🎒' };
-        const hasReceipt = !!exp.receipt;
+        const payer = appState.members.find(m => m.id === exp.payerId) || { name: '未知旅伴', avatar: '🎒' };
+        const hasReceipt = Boolean(exp.receipt && exp.receipt.length > 10);
+        const originalCurr = exp.currency || 'SGD';
+        const originalAmt = Number(exp.originalAmount || 0).toFixed(2);
+        const amtSGD = Number(exp.amountSGD || 0).toFixed(2);
 
         return `
-          <div class="bg-white rounded-2xl p-3 border border-slate-200 shadow-2xs flex items-center justify-between gap-2">
+          <div class="bg-white rounded-2xl p-3 border border-slate-200 shadow-2xs flex items-center justify-between gap-2 hover:border-teal-200 transition">
             <div class="flex items-center gap-2.5 min-w-0">
               <span class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-base shrink-0 border border-slate-200">
                 ${getCategoryEmoji(exp.category)}
@@ -888,16 +1036,16 @@
                   <span class="font-semibold text-slate-600">${payer.name} 垫付</span>
                   <span>·</span>
                   <span class="font-mono">${exp.date || ''}</span>
-                  ${exp.currency !== 'SGD' ? `<span class="text-teal-700 bg-teal-50 px-1 rounded font-mono">${exp.currency} ${exp.originalAmount}</span>` : ''}
+                  ${originalCurr !== 'SGD' ? `<span class="text-teal-700 bg-teal-50 px-1 rounded font-mono font-semibold">${originalCurr} ${originalAmt}</span>` : ''}
                 </div>
               </div>
             </div>
             <div class="text-right shrink-0 flex items-center gap-2">
               <div>
-                <div class="font-mono font-black text-slate-900 text-xs">S$ ${(exp.amountSGD || 0).toFixed(2)}</div>
+                <div class="font-mono font-black text-slate-900 text-xs">S$ ${amtSGD}</div>
                 <span class="text-[9px] text-emerald-700 bg-emerald-50 px-1 rounded font-semibold">折合SGD</span>
               </div>
-              <button type="button" onclick="deleteExpense('${exp.id}')" class="text-slate-300 hover:text-rose-500 text-xs p-1" title="删除该账目">🗑️</button>
+              <button type="button" onclick="deleteExpense('${exp.id}')" class="text-slate-300 hover:text-rose-500 text-xs p-1 tap-scale" title="删除该账目">🗑️</button>
             </div>
           </div>
         `;
@@ -905,14 +1053,17 @@
     }
 
     function getCategoryEmoji(cat) {
-      const map = { '餐饮美食': '🍜', '交通出行': '🚕', '酒店住宿': '🏨', '门票娱乐': '🎟️', '购物买买': '🛍️', '签证保险': '📄', '通信WiFi': '📶' };
+      const map = { '餐饮美食': '🍜', '交通出行': '🚕', '酒店住宿': '🏨', '门票娱乐': '🎟️', '购物买买': '🛍️', '签证保险': '📄', '通信WiFi': '📶', '其他费用': '📦' };
       return map[cat] || '📦';
     }
 
     // 发票凭证查看
     function viewReceipt(expenseId) {
       const exp = appState.expenses.find(e => e.id === expenseId);
-      if (!exp || !exp.receipt) return alert("未上传发票凭证！");
+      if (!exp || !exp.receipt) {
+        alert("未上传发票凭证！");
+        return;
+      }
 
       document.getElementById('receiptViewerTitle').textContent = exp.title;
       document.getElementById('receiptViewerSub').textContent = `${exp.date} · ${exp.currency} ${exp.originalAmount}`;
@@ -932,7 +1083,7 @@
     // 发票卷宗弹窗
     function openAllReceiptsModal() {
       const tripId = appState.currentTripId;
-      const tripList = appState.expenses.filter(e => e.tripId === tripId && !!e.receipt);
+      const tripList = appState.expenses.filter(e => e.tripId === tripId && e.receipt && e.receipt.length > 10);
       const gallery = document.getElementById('allReceiptsGallery');
 
       if (tripList.length === 0) {
@@ -948,7 +1099,7 @@
               <img src="${exp.receipt}" onclick="viewReceipt('${exp.id}')" class="w-12 h-12 rounded-xl object-cover border border-slate-200 shrink-0 cursor-pointer shadow-xs hover:opacity-90">
               <div class="min-w-0">
                 <h4 class="text-xs font-bold text-slate-900 truncate">${exp.title}</h4>
-                <p class="text-[10px] text-slate-400 font-mono">${exp.date} · S$ ${(exp.amountSGD||0).toFixed(2)}</p>
+                <p class="text-[10px] text-slate-400 font-mono">${exp.date} · S$ ${Number(exp.amountSGD||0).toFixed(2)}</p>
               </div>
             </div>
             <a href="${exp.receipt}" download="发票_${exp.title}.jpg" class="text-xs text-teal-700 bg-white border border-teal-200 hover:bg-teal-50 px-2.5 py-1.5 rounded-xl font-bold shrink-0 tap-scale">
@@ -965,7 +1116,7 @@
       document.getElementById('modalAllReceipts').classList.add('hidden');
     }
 
-    // 智能清账 (双指针贪心抵消)
+    // 智能清账
     function renderSettlement() {
       const tripId = appState.currentTripId;
       const tripMembers = getMembersForTrip(tripId);
@@ -975,7 +1126,7 @@
       tripMembers.forEach(m => balances[m.id] = { member: m, paid: 0, should: 0, net: 0 });
 
       tripExpenses.forEach(exp => {
-        const cost = exp.amountSGD || 0;
+        const cost = Number(exp.amountSGD) || 0;
         if (balances[exp.payerId]) balances[exp.payerId].paid += cost;
 
         let splitters = (exp.splitIds && exp.splitIds.length > 0)
@@ -1047,11 +1198,11 @@
     function renderReports() {
       const tripId = appState.currentTripId;
       const tripExpenses = appState.expenses.filter(e => e.tripId === tripId);
-      const total = tripExpenses.reduce((s, e) => s + (e.amountSGD || 0), 0);
+      const total = tripExpenses.reduce((s, e) => s + (Number(e.amountSGD) || 0), 0);
 
       // 分类分布
       const catMap = {};
-      tripExpenses.forEach(e => catMap[e.category] = (catMap[e.category] || 0) + (e.amountSGD || 0));
+      tripExpenses.forEach(e => catMap[e.category] = (catMap[e.category] || 0) + (Number(e.amountSGD) || 0));
       const sortedCats = Object.entries(catMap).sort((a,b)=>b[1]-a[1]);
 
       document.getElementById('statsCategories').innerHTML = sortedCats.length === 0 ? '<p class="text-xs text-slate-400">暂无数据</p>' : sortedCats.map(([cat, amt]) => {
@@ -1074,7 +1225,7 @@
       const memMap = {};
       tripMembers.forEach(m => memMap[m.id] = 0);
       tripExpenses.forEach(e => {
-        if (memMap[e.payerId] !== undefined) memMap[e.payerId] += (e.amountSGD || 0);
+        if (memMap[e.payerId] !== undefined) memMap[e.payerId] += (Number(e.amountSGD) || 0);
       });
 
       document.getElementById('statsPayers').innerHTML = tripMembers.map(m => {
@@ -1094,7 +1245,7 @@
       }).join('');
     }
 
-    // 旅伴管理 TAB (升级：支持编辑、删除及超管管理)
+    // 旅伴名录渲染
     function renderMembersTab() {
       const isAdmin = isUserAdmin();
       const tripMembers = getMembersForTrip(appState.currentTripId);
@@ -1119,7 +1270,7 @@
               </div>
             </div>
 
-            <!-- 操作区：超管可编辑/删除其他旅伴，普通成员仅查看 -->
+            <!-- 操作区：超管可编辑/删除其他旅伴 -->
             <div class="flex items-center gap-1">
               ${isAdmin ? `
                 <button type="button" onclick="openEditMemberModal('${m.id}')" class="p-1.5 text-slate-500 hover:text-teal-700 rounded-lg hover:bg-slate-100 tap-scale" title="编辑旅伴资料">
@@ -1139,101 +1290,202 @@
       }).join('');
     }
 
-    // 旅伴编辑
-    function openEditMemberModal(userId) {
-      if (!isUserAdmin()) return;
-      const m = appState.members.find(x => x.id === userId);
-      if (!m) return;
-
-      document.getElementById('editMemberId').value = m.id;
-      document.getElementById('editMemberName').value = m.name;
-      document.getElementById('editMemberPhone').value = m.phone || '';
-      document.getElementById('editMemberPin').value = '';
-      document.getElementById('editMemberAvatar').value = m.avatar || '🎒';
-
-      const tripSelect = document.getElementById('editMemberTrip');
-      tripSelect.innerHTML = appState.trips.map(t => `<option value="${t.id}" ${(m.allowedTrips && m.allowedTrips.includes(t.id)) ? 'selected' : ''}>${t.flag} ${t.name}</option>`).join('');
-
-      // 超管不可变更行程授权
-      if (m.isAdmin) {
-        document.getElementById('editMemberTripWrap').classList.add('hidden');
-      } else {
-        document.getElementById('editMemberTripWrap').classList.remove('hidden');
-      }
-
-      document.getElementById('modalEditMember').classList.remove('hidden');
-    }
-
-    function closeEditMemberModal() {
-      document.getElementById('modalEditMember').classList.add('hidden');
-    }
-
-    function saveEditedMember(e) {
-      e.preventDefault();
-      const id = document.getElementById('editMemberId').value;
-      const m = appState.members.find(x => x.id === id);
-      if (!m) return;
-
-      m.name = document.getElementById('editMemberName').value.trim();
-      m.phone = document.getElementById('editMemberPhone').value.trim();
-      m.avatar = document.getElementById('editMemberAvatar').value.trim() || '🎒';
-
-      const newPin = document.getElementById('editMemberPin').value.trim();
-      if (newPin && /^\d{1,6}$/.test(newPin)) {
-        m.pin = newPin;
-      }
-
-      if (!m.isAdmin) {
-        const selTrip = document.getElementById('editMemberTrip').value;
-        m.allowedTrips = [selTrip];
-      }
-
-      persist(true);
-      closeEditMemberModal();
-      renderAll();
-      alert("旅伴资料已成功更新！");
-    }
-
-    // 旅伴删除 (超管不可删自身)
-    function deleteMember(userId) {
-      if (!isUserAdmin()) return;
-      const m = appState.members.find(x => x.id === userId);
-      if (!m) return;
-      if (m.isAdmin || m.id === 'user_admin') return alert("超级管理员老张不可被删除！");
-
-      if (confirm(`确定彻底移除旅伴【${m.name}】吗？该操作不可撤销。`)) {
-        appState.members = appState.members.filter(x => x.id !== userId);
-        persist(true);
-        renderAll();
-      }
-    }
-
+    // 货币卡片渲染
     function renderCurrenciesTab() {
-      document.getElementById('currenciesListContainer').innerHTML = appState.currencies.map(c => `
-        <div class="bg-slate-50 p-2 rounded-xl border border-slate-200">
-          <div class="font-mono font-bold text-slate-900">${c.code} (${c.symbol})</div>
-          <div class="text-[10px] text-slate-500 font-mono">1 SGD = ${c.rateToSGD}</div>
+      const container = document.getElementById('currenciesListContainer');
+      if (!container) return;
+      container.innerHTML = appState.currencies.map(c => `
+        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="font-mono font-bold text-slate-900 text-xs">${c.code} (${c.symbol})</span>
+            <span class="text-[10px] text-teal-700 bg-teal-50 px-1.5 py-0.2 rounded font-semibold">${c.name || c.code}</span>
+          </div>
+          <div class="text-[10px] text-slate-500 font-mono mt-1">
+            ${c.isBase ? '🇸🇬 基准货币' : `1 SGD ≈ ${c.rateToSGD} ${c.code}`}
+          </div>
         </div>
       `).join('');
     }
 
-    // 记账弹窗与发票凭证处理
+    // ================== 货币管理核心功能 ==================
+
+    function openCurrencyModal() {
+      renderCurrencyEditorList();
+      // 清空新增输入框
+      document.getElementById('newCurrCode').value = '';
+      document.getElementById('newCurrSymbol').value = '';
+      document.getElementById('newCurrName').value = '';
+      document.getElementById('newCurrRate').value = '';
+      document.getElementById('modalCurrencyManager').classList.remove('hidden');
+    }
+
+    function closeCurrencyModal() {
+      document.getElementById('modalCurrencyManager').classList.add('hidden');
+      // 刷新记账弹窗内的币种列表
+      refreshExpenseCurrenciesSelect();
+      calcConvertedSGD();
+    }
+
+    function renderCurrencyEditorList() {
+      const listEl = document.getElementById('currencyEditorList');
+      if (!listEl) return;
+
+      listEl.innerHTML = appState.currencies.map(c => {
+        const isBase = c.isBase || c.code === 'SGD';
+        return `
+          <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex items-center justify-between gap-2">
+            <div class="min-w-0">
+              <div class="font-bold text-slate-900 text-xs flex items-center gap-1.5">
+                <span class="font-mono">${c.code}</span>
+                <span class="text-slate-500 font-normal">(${c.symbol})</span>
+                <span class="text-[10px] bg-teal-100 text-teal-800 px-1 rounded">${c.name || c.code}</span>
+                ${isBase ? '<span class="text-[9px] bg-amber-100 text-amber-800 px-1 rounded font-bold">基准</span>' : ''}
+              </div>
+              <div class="text-[10px] text-slate-400 font-mono mt-0.5">
+                ${isBase ? '1 SGD = 1.00 SGD' : `1 SGD ≈ ${c.rateToSGD} ${c.code} (1 ${c.code} ≈ ${(1/c.rateToSGD).toFixed(4)} SGD)`}
+              </div>
+            </div>
+
+            <div class="flex items-center gap-1.5 shrink-0">
+              ${!isBase ? `
+                <div class="flex items-center gap-1">
+                  <input type="number" step="0.0001" min="0.0001" value="${c.rateToSGD}" id="rateInput_${c.code}" 
+                    class="w-16 bg-white border border-slate-300 rounded px-1.5 py-1 text-xs font-mono font-bold text-right" title="修改汇率"/>
+                  <button type="button" onclick="updateCurrencyRate('${c.code}')" class="bg-teal-600 hover:bg-teal-700 text-white font-bold px-2 py-1 rounded text-[11px] tap-scale">
+                    保存
+                  </button>
+                  <button type="button" onclick="deleteCurrency('${c.code}')" class="text-slate-400 hover:text-rose-600 p-1 rounded hover:bg-rose-50 tap-scale" title="删除该货币">
+                    🗑️
+                  </button>
+                </div>
+              ` : `
+                <span class="text-[10px] text-slate-400 font-mono px-2 py-1">默认锚定</span>
+              `}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function handleAddNewCurrency(e) {
+      e.preventDefault();
+      const code = document.getElementById('newCurrCode').value.trim().toUpperCase();
+      const symbol = document.getElementById('newCurrSymbol').value.trim();
+      const name = document.getElementById('newCurrName').value.trim();
+      const rate = parseFloat(document.getElementById('newCurrRate').value);
+
+      if (!code || !symbol || isNaN(rate) || rate <= 0) {
+        alert("请填写完整且正确的货币代码、符号及汇率！");
+        return;
+      }
+
+      const exists = appState.currencies.find(c => c.code === code);
+      if (exists) {
+        alert(`货币代码 ${code} 已存在，可在列表中直接修改其汇率！`);
+        return;
+      }
+
+      appState.currencies.push({
+        code,
+        symbol,
+        name: name || code,
+        rateToSGD: rate,
+        isBase: false
+      });
+
+      persist(true);
+      renderCurrencyEditorList();
+      renderCurrenciesTab();
+      refreshExpenseCurrenciesSelect(code);
+      showToast(`已添加新货币 ${code} (${name})`, "💱");
+
+      document.getElementById('newCurrCode').value = '';
+      document.getElementById('newCurrSymbol').value = '';
+      document.getElementById('newCurrName').value = '';
+      document.getElementById('newCurrRate').value = '';
+    }
+
+    function updateCurrencyRate(code) {
+      const input = document.getElementById(`rateInput_${code}`);
+      if (!input) return;
+      const newRate = parseFloat(input.value);
+      if (isNaN(newRate) || newRate <= 0) {
+        alert("请输入有效的汇率数值！");
+        return;
+      }
+
+      const curr = appState.currencies.find(c => c.code === code);
+      if (curr) {
+        curr.rateToSGD = newRate;
+        persist(true);
+        renderCurrencyEditorList();
+        renderCurrenciesTab();
+        calcConvertedSGD();
+        showToast(`${code} 汇率已更新为 1 SGD ≈ ${newRate} ${code}`);
+      }
+    }
+
+    function deleteCurrency(code) {
+      if (code === 'SGD') {
+        alert("基准货币 SGD 不可被删除！");
+        return;
+      }
+
+      if (confirm(`确定删除外币【${code}】吗？`)) {
+        appState.currencies = appState.currencies.filter(c => c.code !== code);
+        persist(true);
+        renderCurrencyEditorList();
+        renderCurrenciesTab();
+        refreshExpenseCurrenciesSelect();
+        showToast(`已删除货币 ${code}`);
+      }
+    }
+
+    function refreshExpenseCurrenciesSelect(selectedCode = null) {
+      const select = document.getElementById('expenseCurrencySelect');
+      if (!select) return;
+      const curSelected = selectedCode || select.value || 'CNY';
+
+      select.innerHTML = appState.currencies.map(c => `
+        <option value="${c.code}" ${c.code === curSelected ? 'selected' : ''}>
+          ${c.code} (${c.symbol}) · ${c.name || ''}
+        </option>
+      `).join('');
+
+      // 兜底若选中的不存在
+      if (!appState.currencies.some(c => c.code === select.value)) {
+        select.value = appState.currencies[0]?.code || 'SGD';
+      }
+    }
+
+    // ================== 记一笔消费模态框与保存逻辑修复 ==================
+
     function openExpenseModal() {
       const accessibleTrips = getAccessibleTrips();
-      if (accessibleTrips.length === 0) return alert("暂无可记账行程！");
+      if (accessibleTrips.length === 0) {
+        alert("暂无可记账行程，请先联系管理员指派或创建行程！");
+        return;
+      }
 
+      // 重置各表单域
       document.getElementById('expenseTitleInput').value = '';
       document.getElementById('expenseAmountInput').value = '';
       document.getElementById('expenseDateInput').value = new Date().toISOString().split('T')[0];
       clearReceiptUpload();
 
+      // 渲染所属行程选项
       const tripSelect = document.getElementById('expenseTripSelect');
-      tripSelect.innerHTML = accessibleTrips.map(t => `<option value="${t.id}" ${t.id === appState.currentTripId ? 'selected' : ''}>${t.flag} ${t.name}</option>`).join('');
+      tripSelect.innerHTML = accessibleTrips.map(t => `
+        <option value="${t.id}" ${t.id === appState.currentTripId ? 'selected' : ''}>${t.flag} ${t.name}</option>
+      `).join('');
 
-      document.getElementById('expenseCurrencySelect').innerHTML = appState.currencies.map(c => `<option value="${c.code}" ${c.code === 'CNY' ? 'selected' : ''}>${c.code} (${c.symbol})</option>`).join('');
+      // 刷新币种选择
+      refreshExpenseCurrenciesSelect();
 
+      // 联动垫付人与分摊人
       onExpenseTripSelectChange(appState.currentTripId);
       calcConvertedSGD();
+
       document.getElementById('modalExpense').classList.remove('hidden');
     }
 
@@ -1241,11 +1493,150 @@
       document.getElementById('modalExpense').classList.add('hidden');
     }
 
+    function onExpenseTripSelectChange(selectedTripId) {
+      const tripMembers = getMembersForTrip(selectedTripId);
+      const payerSelect = document.getElementById('expensePayerSelect');
+      const splitContainer = document.getElementById('expenseSplitBoxes');
+
+      if (!payerSelect || !splitContainer) return;
+
+      payerSelect.innerHTML = tripMembers.map(m => `
+        <option value="${m.id}" ${m.id === appState.currentUserId ? 'selected' : ''}>${m.avatar || '🎒'} ${m.name}</option>
+      `).join('');
+
+      splitContainer.innerHTML = tripMembers.map(m => `
+        <label class="flex items-center gap-1.5 bg-slate-50 p-1.5 rounded-lg border border-slate-200 cursor-pointer text-xs hover:bg-slate-100">
+          <input type="checkbox" name="splitMember" value="${m.id}" checked class="rounded text-teal-600 focus:ring-teal-500">
+          <span class="font-bold text-slate-800 truncate">${m.name}</span>
+        </label>
+      `).join('');
+    }
+
+    function selectAllSplitters(checked = true) {
+      const boxes = document.querySelectorAll('input[name="splitMember"]');
+      boxes.forEach(cb => cb.checked = checked);
+    }
+
+    function calcConvertedSGD() {
+      const currSelect = document.getElementById('expenseCurrencySelect');
+      const amtInput = document.getElementById('expenseAmountInput');
+      if (!currSelect || !amtInput) return;
+
+      const curr = currSelect.value;
+      const amt = parseFloat(amtInput.value) || 0;
+      const cObj = appState.currencies.find(c => c.code === curr) || { rateToSGD: 1.0, symbol: '$' };
+      
+      const rateHintEl = document.getElementById('expenseRateHint');
+      if (rateHintEl) {
+        if (curr === 'SGD') {
+          rateHintEl.textContent = `🇸🇬 基准货币 1:1`;
+        } else {
+          rateHintEl.textContent = `1 SGD ≈ ${cObj.rateToSGD} ${curr}`;
+        }
+      }
+
+      // 计算基准 SGD: 如果外币汇率为 rateToSGD (如 1 SGD = 5.35 CNY), 则 sgd = amt / 5.35
+      const sgd = curr === 'SGD' ? amt : (cObj.rateToSGD > 0 ? (amt / cObj.rateToSGD) : amt);
+      const resultEl = document.getElementById('expenseSGDResult');
+      if (resultEl) {
+        resultEl.textContent = `S$ ${sgd.toFixed(2)}`;
+      }
+    }
+
+    // 核心表单提交处理函数 (确保绝无阻断，发票有无均可顺畅保存)
+    function handleExpenseFormSubmit(e) {
+      if (e && e.preventDefault) e.preventDefault();
+
+      try {
+        const tripSelect = document.getElementById('expenseTripSelect');
+        const titleInput = document.getElementById('expenseTitleInput');
+        const catSelect = document.getElementById('expenseCatSelect');
+        const currSelect = document.getElementById('expenseCurrencySelect');
+        const amountInput = document.getElementById('expenseAmountInput');
+        const payerSelect = document.getElementById('expensePayerSelect');
+        const dateInput = document.getElementById('expenseDateInput');
+
+        const tripId = tripSelect ? tripSelect.value : appState.currentTripId;
+        const title = titleInput ? titleInput.value.trim() : "无标题消费";
+        const category = catSelect ? catSelect.value : "其他费用";
+        const currency = currSelect ? currSelect.value : "SGD";
+        const originalAmount = parseFloat(amountInput ? amountInput.value : 0) || 0;
+        const payerId = payerSelect ? payerSelect.value : appState.currentUserId;
+        const date = (dateInput && dateInput.value) ? dateInput.value : new Date().toISOString().split('T')[0];
+
+        if (!title) {
+          alert("请输入消费描述！");
+          return;
+        }
+        if (originalAmount <= 0) {
+          alert("请输入大于 0 的有效消费金额！");
+          return;
+        }
+
+        // 读取分摊人员
+        const checkedBoxes = document.querySelectorAll('input[name="splitMember"]:checked');
+        let splitIds = Array.from(checkedBoxes).map(cb => cb.value);
+        if (splitIds.length === 0) {
+          // 如果未勾选任何人，默认由当前行程所有人均摊
+          splitIds = getMembersForTrip(tripId).map(m => m.id);
+        }
+
+        // 汇率计算
+        const cObj = appState.currencies.find(c => c.code === currency) || { rateToSGD: 1.0 };
+        const rate = (cObj.rateToSGD && cObj.rateToSGD > 0) ? cObj.rateToSGD : 1.0;
+        const amountSGD = parseFloat((currency === 'SGD' ? originalAmount : (originalAmount / rate)).toFixed(2));
+
+        // 构造安全的对象
+        const newExpense = {
+          id: "exp_" + Date.now() + "_" + Math.floor(Math.random()*1000),
+          tripId,
+          title,
+          category,
+          currency,
+          originalAmount: parseFloat(originalAmount.toFixed(2)),
+          rateToSGD: rate,
+          amountSGD,
+          payerId,
+          recordedBy: appState.currentUserId || "user_admin",
+          splitIds,
+          date,
+          receipt: currentUploadedReceiptBase64 || ""
+        };
+
+        // 插入全局列表头部
+        if (!Array.isArray(appState.expenses)) {
+          appState.expenses = [];
+        }
+        appState.expenses.unshift(newExpense);
+
+        // 如果用户选择了其他行程记账，则同步将当前主界面切换至该行程
+        if (tripId && appState.currentTripId !== tripId) {
+          appState.currentTripId = tripId;
+        }
+
+        // 持久化存储
+        persist(true);
+
+        // 关闭弹窗
+        closeExpenseModal();
+
+        // 完整重绘界面
+        renderAll();
+
+        // 成功反馈 Toast
+        showToast(`记账成功！已折合 S$ ${amountSGD.toFixed(2)}`, "🧾");
+
+      } catch (err) {
+        console.error("保存消费时发生异常:", err);
+        alert("保存失败，请检查填写内容重试: " + err.message);
+      }
+    }
+
+    // 处理发票图片上传与压缩
     function handleReceiptFileSelect(e) {
       const file = e.target.files[0];
       if (!file) return;
 
-      // 压缩图片并转 Base64
       const reader = new FileReader();
       reader.onload = function(evt) {
         const img = new Image();
@@ -1280,75 +1671,15 @@
 
     function clearReceiptUpload() {
       currentUploadedReceiptBase64 = "";
-      document.getElementById('expenseReceiptInput').value = "";
-      document.getElementById('receiptPreviewImg').src = "";
-      document.getElementById('receiptPreviewBox').classList.add('hidden');
-      document.getElementById('receiptPreviewBox').classList.remove('flex');
-    }
-
-    function onExpenseTripSelectChange(selectedTripId) {
-      const tripMembers = getMembersForTrip(selectedTripId);
-
-      document.getElementById('expensePayerSelect').innerHTML = tripMembers.map(m => `
-        <option value="${m.id}" ${m.id === appState.currentUserId ? 'selected' : ''}>${m.avatar || '🎒'} ${m.name}</option>
-      `).join('');
-
-      document.getElementById('expenseSplitBoxes').innerHTML = tripMembers.map(m => `
-        <label class="flex items-center gap-1.5 bg-slate-50 p-1.5 rounded-lg border border-slate-200 cursor-pointer text-xs">
-          <input type="checkbox" name="splitMember" value="${m.id}" checked class="rounded text-teal-600 focus:ring-teal-500">
-          <span class="font-bold text-slate-800">${m.name}</span>
-        </label>
-      `).join('');
-    }
-
-    function calcConvertedSGD() {
-      const curr = document.getElementById('expenseCurrencySelect').value;
-      const amt = parseFloat(document.getElementById('expenseAmountInput').value) || 0;
-      const cObj = appState.currencies.find(c => c.code === curr) || { rateToSGD: 1.0 };
-      document.getElementById('expenseRateHint').textContent = `1 SGD ≈ ${cObj.rateToSGD} ${curr}`;
-      const sgd = curr === 'SGD' ? amt : (amt / cObj.rateToSGD);
-      document.getElementById('expenseSGDResult').textContent = `S$ ${sgd.toFixed(2)}`;
-    }
-
-    function saveExpense(e) {
-      e.preventDefault();
-      const tripId = document.getElementById('expenseTripSelect').value;
-      const title = document.getElementById('expenseTitleInput').value.trim();
-      const category = document.getElementById('expenseCatSelect').value;
-      const currency = document.getElementById('expenseCurrencySelect').value;
-      const originalAmount = parseFloat(document.getElementById('expenseAmountInput').value) || 0;
-      const payerId = document.getElementById('expensePayerSelect').value;
-      const date = document.getElementById('expenseDateInput').value;
-
-      const checkedBoxes = document.querySelectorAll('input[name="splitMember"]:checked');
-      let splitIds = Array.from(checkedBoxes).map(cb => cb.value);
-      if (splitIds.length === 0) {
-        splitIds = getMembersForTrip(tripId).map(m => m.id);
+      const input = document.getElementById('expenseReceiptInput');
+      if (input) input.value = "";
+      const previewImg = document.getElementById('receiptPreviewImg');
+      if (previewImg) previewImg.src = "";
+      const box = document.getElementById('receiptPreviewBox');
+      if (box) {
+        box.classList.add('hidden');
+        box.classList.remove('flex');
       }
-
-      const cObj = appState.currencies.find(c => c.code === currency) || { rateToSGD: 1.0 };
-      const amountSGD = parseFloat((currency === 'SGD' ? originalAmount : (originalAmount / cObj.rateToSGD)).toFixed(2));
-
-      const newExpense = {
-        id: "exp_" + Date.now(),
-        tripId,
-        title,
-        category,
-        currency,
-        originalAmount: parseFloat(originalAmount.toFixed(2)),
-        rateToSGD: cObj.rateToSGD,
-        amountSGD,
-        payerId,
-        recordedBy: appState.currentUserId,
-        splitIds,
-        date,
-        receipt: currentUploadedReceiptBase64 || ""
-      };
-
-      appState.expenses.unshift(newExpense);
-      persist(true);
-      closeExpenseModal();
-      renderAll();
     }
 
     function quickAddTestExpense() {
@@ -1375,6 +1706,7 @@
       appState.expenses.unshift(testExp);
       persist(true);
       renderAll();
+      showToast("已模拟注入一笔消费 (CNY 368.00)");
     }
 
     function deleteExpense(id) {
@@ -1382,10 +1714,84 @@
         appState.expenses = appState.expenses.filter(e => e.id !== id);
         persist(true);
         renderAll();
+        showToast("消费账目已删除");
       }
     }
 
-    // 登入 / 注册 (需超管老张审核)
+    // ================== 旅伴编辑与删除 ==================
+
+    function openEditMemberModal(userId) {
+      if (!isUserAdmin()) return;
+      const m = appState.members.find(x => x.id === userId);
+      if (!m) return;
+
+      document.getElementById('editMemberId').value = m.id;
+      document.getElementById('editMemberName').value = m.name;
+      document.getElementById('editMemberPhone').value = m.phone || '';
+      document.getElementById('editMemberPin').value = '';
+      document.getElementById('editMemberAvatar').value = m.avatar || '🎒';
+
+      const tripSelect = document.getElementById('editMemberTrip');
+      tripSelect.innerHTML = appState.trips.map(t => `<option value="${t.id}" ${(m.allowedTrips && m.allowedTrips.includes(t.id)) ? 'selected' : ''}>${t.flag} ${t.name}</option>`).join('');
+
+      if (m.isAdmin || m.id === "user_admin") {
+        document.getElementById('editMemberTripWrap').classList.add('hidden');
+      } else {
+        document.getElementById('editMemberTripWrap').classList.remove('hidden');
+      }
+
+      document.getElementById('modalEditMember').classList.remove('hidden');
+    }
+
+    function closeEditMemberModal() {
+      document.getElementById('modalEditMember').classList.add('hidden');
+    }
+
+    function saveEditedMember(e) {
+      e.preventDefault();
+      const id = document.getElementById('editMemberId').value;
+      const m = appState.members.find(x => x.id === id);
+      if (!m) return;
+
+      m.name = document.getElementById('editMemberName').value.trim();
+      m.phone = document.getElementById('editMemberPhone').value.trim();
+      m.avatar = document.getElementById('editMemberAvatar').value.trim() || '🎒';
+
+      const newPin = document.getElementById('editMemberPin').value.trim();
+      if (newPin && /^\d{1,6}$/.test(newPin)) {
+        m.pin = newPin;
+      }
+
+      if (!m.isAdmin && m.id !== "user_admin") {
+        const selTrip = document.getElementById('editMemberTrip').value;
+        m.allowedTrips = [selTrip];
+      }
+
+      persist(true);
+      closeEditMemberModal();
+      renderAll();
+      showToast("旅伴资料已成功更新！");
+    }
+
+    function deleteMember(userId) {
+      if (!isUserAdmin()) return;
+      const m = appState.members.find(x => x.id === userId);
+      if (!m) return;
+      if (m.isAdmin || m.id === 'user_admin') {
+        alert("超级管理员老张不可被删除！");
+        return;
+      }
+
+      if (confirm(`确定彻底移除旅伴【${m.name}】吗？该操作不可撤销。`)) {
+        appState.members = appState.members.filter(x => x.id !== userId);
+        persist(true);
+        renderAll();
+        showToast(`旅伴 ${m.name} 已移除`);
+      }
+    }
+
+    // ================== 登录与注册 Portal ==================
+
     function setAuthMode(mode) {
       authMode = mode;
       const loginBtn = document.getElementById('tabLoginBtn');
@@ -1424,12 +1830,11 @@
       if (authMode === 'login') {
         const found = appState.members.find(m => m.name.toLowerCase() === name.toLowerCase() && m.pin === pin);
         if (!found) {
-          err.textContent = "旅伴姓名或 PIN 密码不正确，请重新输入！";
+          err.textContent = "旅伴姓名或 PIN 密码不正确，请重新输入！(老张默认密码: 1234)";
           err.classList.remove('hidden');
           return;
         }
 
-        // 检查审核状态
         if (found.status === 'pending') {
           err.textContent = "⏳ 账号正在审核中，请联系超级管理员（老张）批准后登入。";
           err.classList.remove('hidden');
@@ -1438,7 +1843,6 @@
 
         doLogin(found);
       } else {
-        // 新注册流程：状态直接为 pending
         const phone = document.getElementById('authPhoneInput').value.trim();
         const tripId = document.getElementById('registerTripSelect').value;
 
@@ -1455,7 +1859,7 @@
           phone,
           role: "member",
           isAdmin: false,
-          status: "pending", // 待审核
+          status: "pending",
           pin,
           avatar: "🎒",
           allowedTrips: [tripId]
@@ -1467,7 +1871,6 @@
         succ.innerHTML = `🎉 <b>注册申请已提交！</b><br>正在等待超级管理员（老张）审批，审核通过后即可直接输入密码登入。`;
         succ.classList.remove('hidden');
 
-        // 切换回登录标签并清空密码
         document.getElementById('authPinInput').value = '';
         setTimeout(() => {
           setAuthMode('login');
@@ -1482,6 +1885,7 @@
         appState.currentTripId = user.allowedTrips?.[0] || appState.trips[0].id;
       }
       showApp();
+      showToast(`欢迎回来，${user.name}！`);
     }
 
     function showApp() {
@@ -1499,20 +1903,21 @@
     function handleLogout() {
       appState.currentUserId = "";
       showAuth();
+      showToast("已安全退出账本");
     }
 
-    // 选项卡切换
+    // 导航 Tab 切换
     function switchNavTab(tab) {
       const tabs = ['expenses', 'settlement', 'reports', 'members'];
       tabs.forEach(t => {
         const view = document.getElementById('tabView' + t.charAt(0).toUpperCase() + t.slice(1));
         const btn = document.getElementById('tabBtn' + t.charAt(0).toUpperCase() + t.slice(1));
         if (t === tab) {
-          view.classList.remove('hidden');
-          btn.className = "relative flex-1 py-1 flex flex-col items-center text-teal-600 font-bold text-xs";
+          if (view) view.classList.remove('hidden');
+          if (btn) btn.className = "relative flex-1 py-1 flex flex-col items-center text-teal-600 font-bold text-xs";
         } else {
-          view.classList.add('hidden');
-          btn.className = "relative flex-1 py-1 flex flex-col items-center text-slate-400 font-medium text-xs";
+          if (view) view.classList.add('hidden');
+          if (btn) btn.className = "relative flex-1 py-1 flex flex-col items-center text-slate-400 font-medium text-xs";
         }
       });
     }
@@ -1533,7 +1938,7 @@
     // 云配置
     function openCloudModal() {
       if (!isUserAdmin()) return alert("仅超管老张有权访问云端配置！");
-      document.getElementById('cloudRoomInput').value = appState.roomCode;
+      document.getElementById('cloudRoomInput').value = appState.roomCode || 'TYO-882';
       document.getElementById('cloudUrlInput').value = appState.supabase?.url || '';
       document.getElementById('cloudKeyInput').value = appState.supabase?.key || '';
       document.getElementById('modalCloud').classList.remove('hidden');
@@ -1546,7 +1951,7 @@
       appState.supabase.key = document.getElementById('cloudKeyInput').value.trim();
       persist(true);
       closeCloudModal();
-      alert("云配置已保存！");
+      showToast("云配置已保存！");
       renderAll();
     }
 
@@ -1559,13 +1964,16 @@
 
     function updatePersonalPin() {
       const pin = document.getElementById('newPinInput').value.trim();
-      if (!pin || pin.length < 1 || !/^\d+$/.test(pin)) return alert("请输入 1-6 位纯数字密码！");
+      if (!pin || pin.length < 1 || !/^\d+$/.test(pin)) {
+        alert("请输入 1-6 位纯数字密码！");
+        return;
+      }
       const u = getCurrentUser();
       if (u) {
         u.pin = pin;
         persist(true);
         closeProfileModal();
-        alert("密码修改成功！");
+        showToast("密码修改成功！");
       }
     }
 
@@ -1586,9 +1994,10 @@
       closeNewTripModal();
       persist(true);
       renderAll();
+      showToast(`已创建新行程【${name}】`);
     }
 
-    // 超管手动登记旅伴（直接生效）
+    // 超管手动登记旅伴
     function openMemberModal() {
       if (!isUserAdmin()) return;
       document.getElementById('newMemberName').value = '';
@@ -1621,33 +2030,42 @@
       closeMemberModal();
       persist(true);
       renderAll();
-      alert(`旅伴 ${name} 登记成功，已直接激活！`);
+      showToast(`旅伴 ${name} 登记成功，已直接激活！`);
     }
 
     function copySettlementSummary() {
-      if (!window.cachedTransfers || window.cachedTransfers.length === 0) return alert("当前行程已结平，无需转账！");
+      if (!window.cachedTransfers || window.cachedTransfers.length === 0) {
+        alert("当前行程已结平，无需转账！");
+        return;
+      }
       const curTrip = appState.trips.find(t => t.id === appState.currentTripId);
       let txt = `【Equator Journey 智能清账对账单】\n行程：${curTrip?.name || ''}\n-------------------------\n`;
       window.cachedTransfers.forEach((t, i) => {
         txt += `${i+1}. ${t.from.name} ➔ ${t.to.name}：S$ ${t.amount.toFixed(2)}\n`;
       });
-      navigator.clipboard.writeText(txt).then(() => alert("清账清单已复制到剪贴板，可直接发往微信/WhatsApp群！"));
+      navigator.clipboard.writeText(txt).then(() => showToast("清账清单已复制到剪贴板！", "📋"));
     }
 
-    // 导出 CSV（含发票凭证标记）
+    // 导出 CSV
     function exportCSV() {
-      if (!isUserAdmin()) return alert("仅超级管理员老张有权导出 CSV！");
+      if (!isUserAdmin()) {
+        alert("仅超级管理员老张有权导出 CSV！");
+        return;
+      }
       const curTrip = appState.trips.find(t => t.id === appState.currentTripId);
       const list = appState.expenses.filter(e => e.tripId === curTrip.id);
-      if (list.length === 0) return alert("当前行程暂无消费记录可导出！");
+      if (list.length === 0) {
+        alert("当前行程暂无消费记录可导出！");
+        return;
+      }
 
       const headers = ["日期", "消费描述", "分类", "原币金额", "原币币种", "折合新币(SGD)", "垫付人", "分摊人", "发票凭证状态"];
       const rows = list.map(e => {
         const payer = appState.members.find(m => m.id === e.payerId)?.name || e.payerId;
         const splitters = (e.splitIds || []).map(id => appState.members.find(m => m.id === id)?.name || id).join(';');
-        const receiptStatus = e.receipt ? "已附发票凭证 (Base64)" : "无发票";
+        const receiptStatus = (e.receipt && e.receipt.length > 10) ? "已附发票凭证" : "无发票";
         return [
-          `"${e.date}"`, `"${e.title.replace(/"/g, '""')}"`, `"${e.category}"`,
+          `"${e.date}"`, `"${(e.title || '').replace(/"/g, '""')}"`, `"${e.category}"`,
           `"${e.originalAmount}"`, `"${e.currency}"`, `"${e.amountSGD}"`,
           `"${payer}"`, `"${splitters}"`, `"${receiptStatus}"`
         ];
@@ -1659,13 +2077,14 @@
       a.href = URL.createObjectURL(blob);
       a.download = `Equator_Journey_${curTrip.name}_账目明细.csv`;
       a.click();
+      showToast("CSV 导出已触发");
     }
 
-    // 云同步推送与拉取
+    // 云同步交互
     async function pushToCloud() {
       const url = (appState.supabase?.url || '').trim().replace(/\/+$/, '');
       const key = (appState.supabase?.key || '').trim();
-      const room = (appState.roomCode || 'DEFAULT').trim();
+      const room = (appState.roomCode || 'TYO-882').trim();
       if (!url || !key) return;
 
       try {
@@ -1688,13 +2107,15 @@
             updated_at: new Date().toISOString()
           })
         });
-      } catch(err){}
+      } catch(err){
+        console.error("云端同步失败", err);
+      }
     }
 
     async function pullFromCloud() {
       const url = (appState.supabase?.url || '').trim().replace(/\/+$/, '');
       const key = (appState.supabase?.key || '').trim();
-      const room = (appState.roomCode || 'DEFAULT').trim();
+      const room = (appState.roomCode || 'TYO-882').trim();
       if (!url || !key) return alert("请先配置正确的 Supabase URL 与 Key！");
 
       try {
@@ -1711,7 +2132,7 @@
             if (d.expenses) appState.expenses = d.expenses;
             persist(false);
             renderAll();
-            alert("已成功从云端拉取最新数据！");
+            showToast("已成功从云端拉取最新数据！");
           }
         }
       } catch(err) {
@@ -1719,7 +2140,7 @@
       }
     }
 
-    // 启动
+    // 页面加载就绪
     window.onload = init;
-  </script>
+</script>
 </body></html>
