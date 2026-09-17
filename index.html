@@ -117,7 +117,7 @@ function blankState(code){
   return {v:1, room:{code:code||String(Math.floor(100000+Math.random()*900000))},
     members:[], trips:[], expenses:[],
     currencies:[{code:'SGD',name:'新加坡元',symbol:'S$',rate:1}],
-    supabase:{url:'',key:''}, meta:{updatedAt:0}};
+    supabase:{url:'',key:''}, meta:{updatedAt:0,rev:0}};
 }
 
 var S=null, ME=null, curTripId=null, tab='ledger';
@@ -128,10 +128,34 @@ var pushTimer=null, cloudOk=false, cloudMsg='';
 
 function load(){ try{var r=localStorage.getItem(LS_KEY); if(r){S=JSON.parse(r);return}}catch(e){} S=blankState() }
 function save(){
+  S.meta.rev=(S.meta.rev||0)+1;
   S.meta.updatedAt=Date.now();
   try{ localStorage.setItem(LS_KEY, JSON.stringify(S)); }
   catch(e){ toast('⚠️ 存储空间不足，请删除部分发票图片'); }
   schedulePush(); updateCloudDot();
+}
+function b64(buf){ var s=''; new Uint8Array(buf).forEach(function(x){s+=String.fromCharCode(x)}); return btoa(s) }
+function _unb64(s){ return Uint8Array.from(atob(s),function(c){return c.charCodeAt(0)}) }
+var _key=null;
+async function roomKey(){
+  if(_key) return _key;
+  var hbuf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('jt-lock-v1:'+S.room.code));
+  _key=await crypto.subtle.importKey('raw',hbuf,{name:'AES-GCM'},false,['encrypt','decrypt']);
+  return _key;
+}
+async function encPack(obj){
+  try{
+    if(!(crypto&&crypto.subtle)) return JSON.stringify(obj);
+    var k=await roomKey(), iv=crypto.getRandomValues(new Uint8Array(12));
+    var ct=await crypto.subtle.encrypt({name:'AES-GCM',iv:iv},k,new TextEncoder().encode(JSON.stringify(obj)));
+    return 'enc1:'+b64(iv)+':'+b64(ct);
+  }catch(e){ return JSON.stringify(obj) }
+}
+async function decPack(s){
+  if(typeof s!=='string'||s.indexOf('enc1:')!==0) return (typeof s==='string')?JSON.parse(s):s;
+  var p=s.split(':'); var k=await roomKey();
+  var pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:_unb64(p[1])},k,_unb64(p[2]));
+  return JSON.parse(new TextDecoder().decode(pt));
 }
 function toast(msg){ var t=$('toast'); t.textContent=msg; t.classList.remove('hidden'); clearTimeout(t._h); t._h=setTimeout(function(){t.classList.add('hidden')},1800) }
 
@@ -153,7 +177,7 @@ async function pushNow(){
   if(!cfg.url||!cfg.key){cloudOk=false;updateCloudDot();return}
   updateCloudDot();
   try{
-    var row={room_code:S.room.code, data:S, updated_at:new Date().toISOString()};
+    var row={room_code:S.room.code, data:await encPack(S), updated_at:new Date().toISOString()};
     var r=await fetch(cfg.url.replace(/\/$/,'')+'/rest/v1/journey_sync',{
       method:'POST', headers:Object.assign(sbHeaders(),{'Prefer':'return=minimal,resolution=merge-duplicates,on_conflict=room_code'}),
       body:JSON.stringify(row)});
@@ -170,13 +194,14 @@ async function pullNow(){
     var rows=await r.json();
     cloudOk=true; cloudMsg='';
     if(rows&&rows.length){
-      var rt=new Date(rows[0].updated_at).getTime();
-      if(rt>S.meta.updatedAt){
-        S=rows[0].data; try{localStorage.setItem(LS_KEY,JSON.stringify(S))}catch(e){}
+      var rd=await decPack(rows[0].data);
+      var rr=rd&&rd.meta?(rd.meta.rev||0):0, lr=S.meta.rev||0;
+      if(rr>lr){
+        S=rd; try{localStorage.setItem(LS_KEY,JSON.stringify(S))}catch(e){}
         if(ME) ME=S.members.find(function(m){return m.id===ME.id})||null;
         if(!ME){ location.reload(); return }
         ensureCurTrip(); renderAll();
-      }
+      } else if(rr<lr){ schedulePush() }
     }
   }catch(e){ cloudOk=false; cloudMsg=(e&&e.message)||'网络错误' }
   updateCloudDot();
@@ -233,17 +258,22 @@ function switchTab(t){
   document.querySelectorAll('.tabbtn').forEach(function(b){b.classList.toggle('on',b.dataset.tab===t)});
   ['ledger','add','settle','stats','me'].forEach(function(k){$('tab-'+k).classList.toggle('hidden',k!==t)});
   if(t==='add'&&!editingExp) resetAddForm();
-  renderAll(); window.scrollTo(0,0);
+  renderAll(true); window.scrollTo(0,0);
 }
 document.querySelectorAll('.tabbtn').forEach(function(b){ b.onclick=function(){switchTab(b.dataset.tab)} });
 $('hUser').onclick=function(){switchTab('me')};
 
-function renderAll(){
+var lastRev=-1, formDirty=false;
+document.addEventListener('input',function(e){ if(e.target&&e.target.closest&&e.target.closest('#tab-add')) formDirty=true });
+function renderAll(force){
   if(!ME) return;
+  var _r=S.meta.rev||0;
+  if(!force&&_r===lastRev) return;
+  lastRev=_r;
   $('hUser').innerHTML='<span class="text-lg">'+ME.avatar+'</span>'+esc(ME.name)+(ME.isAdmin?' <span class="text-amber-300">👑</span>':'');
   renderTripChips();
   if(tab==='ledger') renderLedger();
-  else if(tab==='add') renderAdd();
+  else if(tab==='add'){ if(!formDirty) renderAdd(); }
   else if(tab==='settle') renderSettle();
   else if(tab==='stats') renderStats();
   else renderMe();
@@ -256,7 +286,7 @@ function renderTripChips(){
   if(ME.isAdmin) h+='<button class="chip" onclick="switchTab(\'me\');admSub(\'trips\')">＋ 管理行程</button>';
   $('tripChips').innerHTML=h;
 }
-function pickTrip(id){ curTripId=id; sessionStorage.setItem('jt_trip',id); filters={cat:'all',who:'all'}; renderAll() }
+function pickTrip(id){ curTripId=id; sessionStorage.setItem('jt_trip',id); filters={cat:'all',who:'all'}; renderAll(true) }
 </script>
 <script>
 /* ═══════════════════════ 账本明细 ═══════════════════════ */
@@ -312,9 +342,7 @@ function renderLedger(){
 
 /* ═══════════════════════ 记一笔 ═══════════════════════ */
 function resetAddForm(){
-  editingExp=null; receiptData=null; selCat='dinner';
-  var t=curTrip();
-  if(t){ var ms=tripMembers(t.id); $('fSplit') && null }
+  editingExp=null; receiptData=null; selCat='dinner'; formDirty=false;
   renderAdd();
 }
 function renderAdd(){
@@ -398,7 +426,7 @@ function saveExpense(){
     split: split, note: $('fNote').value.trim(),
     receipt: receiptData||(old?old.receipt:null), ts: old?old.ts:Date.now() };
   if(old){ S.expenses[S.expenses.indexOf(old)]=rec } else { S.expenses.push(rec) }
-  save(); editingExp=null; receiptData=null;
+  save(); editingExp=null; receiptData=null; formDirty=false;
   toast('✅ 已保存'); switchTab('ledger');
 }
 
@@ -636,7 +664,7 @@ function renderAdm(){
      +'<button class="btn-g !py-3 w-full mb-3" onclick="pushNow();toast(\'正在推送到云端…\')">⬆️ 本地覆盖云端</button>'
      +'<div class="flex gap-2 items-center"><input id="roomCode" class="inp num" value="'+S.room.code+'">'
      +'<button class="btn-g !py-2.5 whitespace-nowrap" onclick="changeRoom()">切换/新建房间</button></div>'
-     +'<p class="text-[11px] text-slate-400 mt-2">状态：'+(!cfg.url?'未配置，当前为纯本地模式':'已配置')+' · 多端输入同一房间号即可实时协同</p>';
+     +'<p class="text-[11px] text-amber-600 bg-amber-50 rounded-lg p-2 mt-1">⚠️ 所有设备必须填写相同房间号（建议长一点，如 SG2026-JP-7KQ2）并保存配置；新设备首次使用点「云端覆盖本地」拉取数据。</p>'+'<p class="text-[11px] text-slate-400 mt-2">状态：'+(!cfg.url?'未配置，当前为纯本地模式':'已配置')+' · 多端输入同一房间号即可实时协同</p>';
   }
   b.innerHTML=h;
 }
@@ -716,12 +744,24 @@ function saveSb(){
   save(); cloudOk=false; updateCloudDot(); pushNow(); toast('☁️ 配置已保存，正在连接…');
 }
 function copySQL(){
-  copyText("create table if not exists public.journey_sync (\n  room_code text primary key,\n  data jsonb not null,\n  updated_at timestamptz not null default now()\n);\nalter table public.journey_sync disable row level security; -- 或按需配置 RLS 策略","建表 SQL 已复制，请到 Supabase SQL Editor 执行");
+  copyText([
+    'create table if not exists public.journey_sync (',
+    '  room_code text primary key,',
+    '  data jsonb not null,',
+    '  updated_at timestamptz not null default now()',
+    ');',
+    'alter table public.journey_sync enable row level security;',
+    'drop policy if exists "Allow public access for ALL" on public.journey_sync;',
+    'create policy "journey_select" on public.journey_sync for select using (true);',
+    'create policy "journey_insert" on public.journey_sync for insert with check (true);',
+    'create policy "journey_update" on public.journey_sync for update using (true) with check (true);',
+    'drop table if exists public.trip_rooms; -- 清理非本应用残留表'
+  ].join('\n'),"建表 SQL 已复制，请到 Supabase SQL Editor 执行");
 }
 async function changeRoom(){
   var code=$('roomCode').value.trim(); if(!code){toast('请输入房间号');return}
   if(!confirm('切换到房间 '+code+'？若云端已有数据将拉取覆盖本地，否则以当前数据新建。'))return;
-  var old=S.room.code; S.room.code=code;
+  S.room.code=code; _key=null;
   await pullNow();
   if(cloudOk){ toast('☁️ 已切换到房间 '+code) } else { toast('🏠 已新建房间 '+code); save() }
   renderAll();
