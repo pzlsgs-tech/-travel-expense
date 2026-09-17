@@ -44,6 +44,8 @@
       <p class="text-sm text-teal-600 mt-1">多币种 · 智能清账 · 多人协同</p>
     </div>
     <p id="authSub" class="text-xs text-teal-700 bg-teal-50 border border-teal-200 rounded-xl p-3 mb-4 text-center"></p>
+    <label class="text-xs font-bold text-teal-700">协同房间号（同队所有设备须一致）</label>
+    <input id="aRoom" class="inp mt-1 mb-3 num" placeholder="例如 SG2026-JP-7KQ2">
     <label class="text-xs font-bold text-teal-700">旅伴姓名 / 昵称</label>
     <input id="aName" class="inp mt-1 mb-3" placeholder="例如：小明" maxlength="12">
     <label class="text-xs font-bold text-teal-700">数字密码 (1-6 位 PIN)</label>
@@ -186,6 +188,22 @@ async function pushNow(){
   }catch(e){ cloudOk=false; cloudMsg=(e&&e.message)||'网络错误' }
   updateCloudDot();
 }
+async function adoptFromCloud(){
+  var cfg=sbCfg(); if(!cfg.url||!cfg.key) return false;
+  try{
+    var r=await fetch(cfg.url.replace(/\/$/,'')+'/rest/v1/journey_sync?room_code=eq.'+encodeURIComponent(S.room.code)+'&select=data',{headers:sbHeaders()});
+    if(!r.ok) return false;
+    var rows=await r.json();
+    if(rows&&rows.length){
+      var rd=await decPack(rows[0].data);
+      if(rd&&rd.members&&rd.members.length&&((rd.meta&&rd.meta.rev||0)>(S.meta.rev||0)||S.members.length===0)){
+        S=rd; try{localStorage.setItem(LS_KEY,JSON.stringify(S))}catch(e){}
+        return true;
+      }
+    }
+  }catch(e){}
+  return false;
+}
 async function pullNow(){
   var cfg=sbCfg(); if(!cfg.url||!cfg.key) return;
   try{
@@ -198,8 +216,13 @@ async function pullNow(){
       var rr=rd&&rd.meta?(rd.meta.rev||0):0, lr=S.meta.rev||0;
       if(rr>lr){
         S=rd; try{localStorage.setItem(LS_KEY,JSON.stringify(S))}catch(e){}
-        if(ME) ME=S.members.find(function(m){return m.id===ME.id})||null;
-        if(!ME){ location.reload(); return }
+        if(ME){
+          ME=S.members.find(function(m){return m.id===ME.id})||null;
+          if(!ME||ME.name!==sessionStorage.getItem('jt_mename')){
+            sessionStorage.removeItem('jt_me'); sessionStorage.removeItem('jt_mename'); ME=null;
+            showAuth(); return;
+          }
+        }
         ensureCurTrip(); renderAll();
       } else if(rr<lr){ schedulePush() }
     }
@@ -216,22 +239,31 @@ function showAuth(){
   $('authSub').textContent = isFirst ? '👑 欢迎！本机尚无成员，首位注册者将自动成为超级管理员' : '输入旅伴姓名与 PIN 码登录';
   $('aBtn').textContent = isFirst ? '创建超管账号并进入' : '登 录';
   $('authMsg').textContent='';
-  $('aName').value=''; $('aPin').value='';
+  $('aName').value=''; $('aPin').value=''; $('aRoom').value=S.room.code;
 }
-$('aBtn').onclick=function(){
-  var name=$('aName').value.trim(), pin=$('aPin').value.trim();
-  if(!name){$('authMsg').textContent='请输入姓名';return}
-  if(!/^\d{1,6}$/.test(pin)){$('authMsg').textContent='PIN 码须为 1-6 位数字';return}
-  if(S.members.length===0){
-    ME={id:uid(),name:name,pin:pin,avatar:AVATARS[0],phone:'',tripIds:[],isAdmin:true};
-    S.members.push(ME); save();
-    sessionStorage.setItem('jt_me',ME.id);
-    enterApp(); toast('👑 超管账号已创建');
-  }else{
-    var m=S.members.find(function(x){return x.name===name&&x.pin===pin});
-    if(!m){$('authMsg').textContent='姓名或密码不正确';return}
-    ME=m; sessionStorage.setItem('jt_me',ME.id); enterApp();
-  }
+$('aBtn').onclick=async function(){
+  if(this._busy) return; this._busy=true;
+  try{
+    var name=$('aName').value.trim(), pin=$('aPin').value.trim();
+    if(!name){$('authMsg').textContent='请输入姓名';return}
+    if(!/^\d{1,6}$/.test(pin)){$('authMsg').textContent='PIN 码须为 1-6 位数字';return}
+    var roomIn=($('aRoom')?$('aRoom').value.trim():'')||S.room.code;
+    if(roomIn!==S.room.code){ S.room.code=roomIn; _key=null; try{localStorage.setItem(LS_KEY,JSON.stringify(S))}catch(e){} }
+    // 防覆写守卫：登录/注册前先从云端收养本房间已有数据，绝不凭空新建超管覆写云端
+    $('authMsg').textContent='正在同步云端房间数据…';
+    await adoptFromCloud();
+    $('authMsg').textContent='';
+    if(S.members.length===0){
+      ME={id:uid(),name:name,pin:pin,avatar:AVATARS[0],phone:'',tripIds:[],isAdmin:true};
+      S.members.push(ME); save();
+      sessionStorage.setItem('jt_me',ME.id); sessionStorage.setItem('jt_mename',ME.name);
+      enterApp(); toast('👑 超管账号已创建');
+    }else{
+      var m=S.members.find(function(x){return x.name===name&&x.pin===pin});
+      if(!m){$('authMsg').textContent=S.members.some(function(x){return x.name===name})?'密码不正确':'该旅伴不存在，请联系超管在「成员管理」登记';return}
+      ME=m; sessionStorage.setItem('jt_me',ME.id); sessionStorage.setItem('jt_mename',ME.name); enterApp();
+    }
+  } finally { this._busy=false }
 };
 $('aPin').addEventListener('keydown',function(e){ if(e.key==='Enter') $('aBtn').click() });
 
@@ -588,7 +620,7 @@ function renderMe(){
   el.innerHTML=h;
   if(ME.isAdmin) renderAdm();
 }
-function logout(){ sessionStorage.removeItem('jt_me'); ME=null; showAuth() }
+function logout(){ sessionStorage.removeItem('jt_me'); sessionStorage.removeItem('jt_mename'); ME=null; showAuth() }
 function setAvatar(a){ ME.avatar=a; save(); renderAll() }
 function changePin(){
   var p=$('myPin').value.trim();
@@ -773,6 +805,7 @@ async function changeRoom(){
   pendingReceipt=new URLSearchParams(location.search).get('receipt');
   var sid=sessionStorage.getItem('jt_me');
   ME=sid?S.members.find(function(m){return m.id===sid}):null;
+  if(ME&&ME.name!==sessionStorage.getItem('jt_mename')){ ME=null; sessionStorage.removeItem('jt_me'); sessionStorage.removeItem('jt_mename'); }
   updateCloudDot();
   if(ME) enterApp(); else showAuth();
 })();
