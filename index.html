@@ -280,9 +280,13 @@ function ensureCurTrip(){
 }
 function enterApp(){
   $('vAuth').classList.add('hidden'); $('vApp').classList.remove('hidden');
+  // 换人登录时彻底重置 UI 状态，避免停留在上一用户的页面
+  tab='ledger'; formDirty=false; editingExp=null; editingTrip=null; editingCur=null; editingMem=null; receiptData=null;
+  document.querySelectorAll('.tabbtn').forEach(function(bb){bb.classList.toggle('on',bb.dataset.tab==='ledger')});
+  ['ledger','add','settle','stats','me'].forEach(function(k){$('tab-'+k).classList.toggle('hidden',k!=='ledger')});
   var saved=sessionStorage.getItem('jt_trip');
   if(saved&&visibleTrips().some(function(t){return t.id===saved})) curTripId=saved;
-  ensureCurTrip(); renderAll(); pullNow();
+  ensureCurTrip(); renderAll(true); pullNow();
   if(pendingReceipt){ var e=S.expenses.find(function(x){return x.id===pendingReceipt}); if(e){openExpense(e.id)} pendingReceipt=null }
 }
 function switchTab(t){
